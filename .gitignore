@@ -26,6 +26,4 @@ toolchain/
 *.tar.gz
 *.tgz
 
-# 编译期生成(static_help.h 是母本输入,需版本控制)
-khelpfr.cc
-khelpen.cc
+# 编译期生成物(mkhelp 输出;khelpfr.cc/khelpen.cc 是上游源文件,需跟踪)
