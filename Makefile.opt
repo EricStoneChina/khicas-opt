@@ -1,0 +1,190 @@
+# ============================================================================
+# Makefile.opt — KhiCAS 优化构建配置(基于上游 Makefile,提交 d4806dd)
+#
+# 与上游的差异:
+#   1. CASIOLOCAL 参数化(不再写死 /home/parisse/casiolocal)
+#   2. 混合优化:纯 CAS 计算模块(z*/y*/k* 核心、libbf、cutils)→ -O3 -finline-functions
+#      GUI/IO 模块(zdisplay、console、menu 等)→ 保持 -Os 省主段(2MB)空间
+#   3. -ffunction-sections/-fdata-sections 配合 --gc-sections 回收死代码(可关闭)
+#
+# 构建:cp Makefile.opt Makefile && make [FAST=0 关闭混合优化] [FUNCSEC= 关闭分段]
+# 注意:.rominram 段(z* 模块)有 2500K 预算,-O3 膨胀不会挤占主段。
+# ============================================================================
+
+# --- 工具链 ----------------------------------------------------------------
+CXX	= sh3eb-elf-g++
+CC	= sh3eb-elf-gcc
+AR	= sh3eb-elf-gcc-ar
+RANLIB	= sh3eb-elf-gcc-ranlib
+OBJCOPY = sh3eb-elf-objcopy
+RM	= /bin/rm
+
+# casiolocal 位置(环境变量可覆盖;build.sh 自动探测)
+CASIOLOCAL ?= /home/parisse/casiolocal
+
+# --- 架构与特性 ------------------------------------------------------------
+FP = -m4a-nofpu            # SH4A 指令集、无 FPU(软件浮点)
+FLTO =                     # -flto 不适用于双 addin(上游注明)
+FULL = -DCONFIG_BIGNUM -DCONFIG_VERSION=\"2020-11-08\" -DMICROPY_LIB
+
+# 函数/数据分段(配合 --gc-sections 丢弃死代码);make FUNCSEC= 可关闭
+FUNCSEC ?= -ffunction-sections -fdata-sections
+
+# --- 编译选项 ---------------------------------------------------------------
+# 公共部分
+BASE = -mb $(FP) -mhitachi -std=c++11 -fpermissive $(FLTO) $(FUNCSEC) \
+       -fno-use-cxa-atexit -fno-threadsafe-statics -fno-strict-aliasing \
+       -fno-exceptions -DHAVE_CONFIG_H -DTIMEOUT -DRELEASE \
+       -I. -I$(CASIOLOCAL)/include/ustl -DFILEICON -DGINT_MALLOC -DKMALLOC \
+       -DTURTLETAB $(FULL)
+
+# 常规(尺寸优先):GUI/IO 等
+CXXFLAGS = -Wno-narrowing -Wno-write-strings -g -Os $(BASE)
+
+# 快速(速度优先):纯 CAS 计算模块(-O3 + 激进内联)
+CXXFLAGS_FAST = -Wno-narrowing -Wno-write-strings -g -O3 -finline-functions \
+		-funroll-loops $(BASE)
+
+# C 代码
+CFLAGS = -Wno-narrowing -Wno-write-strings -Os -DFXCG $(BASE)
+CFLAGS_FAST = -Wno-narrowing -Wno-write-strings -O3 -funroll-loops -DFXCG $(BASE)
+
+# --- 链接 -------------------------------------------------------------------
+LDFLAGS =  -g -static -nostdlib -Tprizm.ld -Wl,--gc-sections,--print-memory-usage
+LDEMUFLAGS =  -g -static -nostdlib -Tprizmemu.ld -Wl,--gc-sections,--print-memory-usage
+
+# --- 目标文件列表(与上游一致) ----------------------------------------------
+# CAS 引擎:z*/y* 等计算模块 → 编译进 .rominram(3MB 段)
+CAS_OBJS = ysym2poly.o kgausspol.o kthreaded.o zcsturm.o zmaple.o zrpn.o zmoyal.o \
+	kmisc.o zpermu.o input_parser.o ksymbolic.o index.o kmodpoly.o kmodfactor.o \
+	kezgcd.o yderive.o zsolve.o yintg.o zintgab.o zlin.o zseries.o ksubst.o \
+	zvecteur.o kglobal.o zifactor.o yalg_ext.o zgauss.o zti89.o zplot.o zplot3d.o \
+	zprog.o yunary.o zusual.o yidentificateur.o kgen.o zrisch.o input_lexer.o \
+	first.o zdesolve.o ztex.o zisom.o zquater.o zadd.o overclock.o qrcodegen.o \
+	cutils.o libbf.o
+
+# GUI/IO → 主段(2MB 预算)
+GUI_OBJS = fileGUI.o menuGUI.o textGUI.o fileProvider.o graphicsProvider.o \
+	stringsProvider.o zdisplay.o console.o main.o
+
+# 使用 -O3 的模块(纯计算,排除 zdisplay 等 GUI 的 z 开头文件)
+FAST_CXX_OBJS = ysym2poly.o kgausspol.o kthreaded.o zcsturm.o zmaple.o zrpn.o \
+	zmoyal.o kmisc.o zpermu.o input_parser.o ksymbolic.o index.o kmodpoly.o \
+	kmodfactor.o kezgcd.o yderive.o zsolve.o yintg.o zintgab.o zlin.o zseries.o \
+	ksubst.o zvecteur.o kglobal.o zifactor.o yalg_ext.o zgauss.o zti89.o zplot.o \
+	zplot3d.o zprog.o yunary.o zusual.o yidentificateur.o kgen.o zrisch.o \
+	input_lexer.o first.o zdesolve.o ztex.o zisom.o zquater.o zadd.o
+
+# 使用 -O3 的 C 模块(大数引擎)
+FAST_C_OBJS = cutils.o libbf.o
+
+LIBS = -L. -L$(CASIOLOCAL)/lib -Wl,--start-group -lsupc++ -lmicropy -ltommath \
+	-lustl -lm -lc -lgcc -Wl,--end-group
+
+.PRECIOUS: libcas.a libgui.a
+
+all: khicas90.g3a khicas90.ac2 emucas90.g3a khicas90.882 khicas50.g3a \
+	khicas50.ac2 emucas50.g3a khicas50.882
+
+# --- 混合优化规则:计算模块 -O3,其余 -Os ------------------------------------
+$(FAST_CXX_OBJS): %.o: %.cc
+	$(CXX) $(CXXFLAGS_FAST) -c $<
+
+$(FAST_C_OBJS): %.o: %.c
+	$(CC) $(CFLAGS_FAST) -c $<
+
+# 其余模块沿用上游规则
+%.o: %.cc
+	$(CXX) $(CXXFLAGS) -c $<
+
+qrcodegen.o: qrcodegen.c
+	$(CC) -std=c99 $(CFLAGS) -c $<
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $<
+
+libgui.a: $(GUI_OBJS)
+	$(RM) -f $@
+	$(AR) cru $@ $^
+	$(RANLIB) $@
+
+libcas.a: $(CAS_OBJS)
+	$(RM) -f $@
+	$(AR) cru $@ $^
+	$(RANLIB) $@
+
+mkhelp: mkhelp.cc
+	c++ mkhelp.cc -o mkhelp
+
+khelpfr.o: khelpfr.cc static_help.h mkhelp
+	./mkhelp
+	$(CXX) $(CXXFLAGS) -c khelpfr.cc -o khelpfr.o
+
+khelpen.o: khelpen.cc static_help.h
+	./mkhelp
+	$(CXX) $(CXXFLAGS) -c khelpen.cc -o khelpen.o
+
+# --- 链接与打包(与上游一致) -------------------------------------------------
+khicas.elf: $(CAS_OBJS) $(GUI_OBJS) khelpfr.o catalogfr.o helpfr.o prizm.ld
+	$(CXX) $(LDFLAGS) -Wl,-Map=khicas.map catalogfr.o helpfr.o $(CAS_OBJS) khelpfr.o $(GUI_OBJS) $(LIBS) -o $@
+	sh3eb-elf-objdump -C -t khicas.elf | sort > dump_t
+
+emucas.elf: $(CAS_OBJS) $(GUI_OBJS) khelpfr.o catalogfr.o helpfr.o prizmemu.ld
+	$(CXX) $(LDEMUFLAGS) -Wl,-Map=emucas.map catalogfr.o helpfr.o $(CAS_OBJS) khelpfr.o $(GUI_OBJS) $(LIBS) -o $@
+	sh3eb-elf-objdump -C -t emucas.elf | sort > dumpm_t
+
+OBJFLAGS= -O binary -R .bss -R .gint_bss -R .debug_info -R .debug_abbrev -R .debug_loc -R .debug_aranges -R .debug_ranges -R .debug_line -R .debug_str -R.comment -R  debug_frame
+khicas.bin: khicas.elf prizm.ld
+	$(OBJCOPY) $(OBJFLAGS) -R .rominram khicas.elf khicas.bin
+
+khicas90.ac2: khicas.elf prizm.ld
+	$(OBJCOPY)  $(OBJFLAGS) -j .rominram khicas.elf khicas90.ac2
+
+khicas90.g3a: khicas.bin
+	mkg3a -n basic:Khicas90 -n internal:KHICAS90 -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
+
+emucas.bin: emucas.elf prizmemu.ld
+	$(OBJCOPY) $(OBJFLAGS) -R .rominram emucas.elf emucas.bin
+
+khicas90.882: emucas.elf prizmemu.ld
+	$(OBJCOPY)  $(OBJFLAGS) -j .rominram emucas.elf khicas90.882
+
+emucas90.g3a: emucas.bin
+	mkg3a -n basic:Khicas90 -n internal:KHICAS90 -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
+
+khicasen.elf: $(CAS_OBJS) $(GUI_OBJS) khelpen.o catalogen.o helpen.o prizm.ld
+	$(CXX) $(LDFLAGS) -Wl,-Map=khicasen.map catalogen.o helpen.o $(CAS_OBJS) khelpen.o $(GUI_OBJS) $(LIBS) -o $@
+	sh3eb-elf-objdump -C -t khicasen.elf | sort > dump_t
+
+khicasenm.elf: $(CAS_OBJS) $(GUI_OBJS) khelpen.o catalogen.o helpen.o prizmemu.ld
+	$(CXX) $(LDEMUFLAGS) -Wl,-Map=khicasenm.map catalogen.o helpen.o $(CAS_OBJS) khelpen.o $(GUI_OBJS) $(LIBS) -o $@
+	sh3eb-elf-objdump -C -t khicasenm.elf | sort > dumpm_t
+
+khicasen.bin: khicasen.elf prizm.ld
+	$(OBJCOPY) $(OBJFLAGS) -R .rominram khicasen.elf khicasen.bin
+
+khicas50.ac2: khicasen.elf prizm.ld
+	$(OBJCOPY)  $(OBJFLAGS) -j .rominram khicasen.elf khicas50.ac2
+
+khicas50.g3a: khicasen.bin
+	mkg3a -n basic:Khicas50 -n internal:KHICAS50 -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
+
+emucasen.bin: khicasenm.elf prizmemu.ld
+	$(OBJCOPY) $(OBJFLAGS) -R .rominram khicasenm.elf emucasen.bin
+
+khicas50.882: khicasenm.elf prizmemu.ld
+	$(OBJCOPY)  $(OBJFLAGS) -j .rominram khicasenm.elf khicas50.882
+
+emucas50.g3a: emucasen.bin
+	mkg3a -n basic:Khicas50 -n internal:KHICAS50 -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
+
+# --- 辅助目标 ---------------------------------------------------------------
+# 报告各 .o 尺寸,用于评估 -O3 膨胀
+sizes:
+	sh3eb-elf-size *.o | sort -rn | head -30
+
+clean:
+	$(RM) -f *.o libcas.a libgui.a  *.elf *.882 *.ac2 *.g3a *.bin *.map dump*
