@@ -1,0 +1,32 @@
+# KhiCAS 构建产物
+*.o
+*.a
+*.elf
+*.bin
+*.g3a
+*.g1a
+*.ac2
+*.882
+*.map
+dump_t
+dumpm_t
+mkhelp
+
+# 备份与编辑器残留
+*~
+*.old
+*.new
+#%2A*
+.swp
+
+# 依赖包(通过 build.sh 拉取)
+casiolocal.tgz
+casiolocal/
+toolchain/
+*.tar.gz
+*.tgz
+
+# 编译期生成
+static_help.h
+khelpfr.cc
+khelpen.cc
