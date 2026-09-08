@@ -1,6 +1,8 @@
 # KhiCAS 构建产物
 *.o
 *.a
+# 上游预编译依赖(MicroPython 静态库,构建必需,非构建产物)
+!giacbf/libmicropy.a
 *.elf
 *.bin
 *.g3a
