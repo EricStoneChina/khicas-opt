@@ -3,12 +3,12 @@
 #
 # 与上游的差异:
 #   1. CASIOLOCAL 参数化(不再写死 /home/parisse/casiolocal)
-#   2. 混合优化:纯 CAS 计算模块(z*/y*/k* 核心、libbf、cutils)→ -O3 -finline-functions
-#      GUI/IO 模块(zdisplay、console、menu 等)→ 保持 -Os 省主段(2MB)空间
+#   2. 混合优化:仅 .rominram 段的 z* CAS 模块 → -O2 -finline-functions 提速
+#      (z* 在 3MB 预算的 .ac2 段;-O3 实测把 r8c2 撑爆,故用 -O2)
+#      其余一切(GUI/IO + 主段计算模块)→ -Os 控 2MB 主段尺寸
 #   3. -ffunction-sections/-fdata-sections 配合 --gc-sections 回收死代码(可关闭)
 #
-# 构建:cp Makefile.opt Makefile && make [FAST=0 关闭混合优化] [FUNCSEC= 关闭分段]
-# 注意:.rominram 段(z* 模块)有 2500K 预算,-O3 膨胀不会挤占主段。
+# 构建:cp Makefile.opt Makefile && make [FUNCSEC= 关闭分段]
 # ============================================================================
 
 # --- 工具链 ----------------------------------------------------------------
@@ -38,16 +38,16 @@ BASE = -mb $(FP) -mhitachi -std=c++11 -fpermissive $(FLTO) $(FUNCSEC) \
        -I. -I$(CASIOLOCAL)/include/ustl -DFILEICON -DGINT_MALLOC -DKMALLOC \
        -DTURTLETAB $(FULL)
 
-# 常规(尺寸优先):GUI/IO 等
+# 常规(尺寸优先):GUI/IO + 主段(2MB)内的计算模块
 CXXFLAGS = -Wno-narrowing -Wno-write-strings -g -Os $(BASE)
 
-# 快速(速度优先):纯 CAS 计算模块(-O3 + 激进内联)
-CXXFLAGS_FAST = -Wno-narrowing -Wno-write-strings -g -O3 -finline-functions \
-		-funroll-loops $(BASE)
+# 快速(速度优先):仅 .rominram 段(3MB 预算)的 z* CAS 模块
+# 用 -O2 而非 -O3/-funroll-loops:-O3 会把 r8c2 段撑爆(实测溢出 820KB)
+CXXFLAGS_FAST = -Wno-narrowing -Wno-write-strings -g -O2 -finline-functions \
+		$(BASE)
 
-# C 代码
+# C 代码(均在主段,保持 -Os 控尺寸)
 CFLAGS = -Wno-narrowing -Wno-write-strings -Os -DFXCG $(BASE)
-CFLAGS_FAST = -Wno-narrowing -Wno-write-strings -O3 -funroll-loops -DFXCG $(BASE)
 
 # --- 链接 -------------------------------------------------------------------
 LDFLAGS =  -g -static -nostdlib -Tprizm.ld -Wl,--gc-sections,--print-memory-usage
@@ -67,16 +67,12 @@ CAS_OBJS = ysym2poly.o kgausspol.o kthreaded.o zcsturm.o zmaple.o zrpn.o zmoyal.
 GUI_OBJS = fileGUI.o menuGUI.o textGUI.o fileProvider.o graphicsProvider.o \
 	stringsProvider.o zdisplay.o console.o main.o
 
-# 使用 -O3 的模块(纯计算,排除 zdisplay 等 GUI 的 z 开头文件)
-FAST_CXX_OBJS = ysym2poly.o kgausspol.o kthreaded.o zcsturm.o zmaple.o zrpn.o \
-	zmoyal.o kmisc.o zpermu.o input_parser.o ksymbolic.o index.o kmodpoly.o \
-	kmodfactor.o kezgcd.o yderive.o zsolve.o yintg.o zintgab.o zlin.o zseries.o \
-	ksubst.o zvecteur.o kglobal.o zifactor.o yalg_ext.o zgauss.o zti89.o zplot.o \
-	zplot3d.o zprog.o yunary.o zusual.o yidentificateur.o kgen.o zrisch.o \
-	input_lexer.o first.o zdesolve.o ztex.o zisom.o zquater.o zadd.o
-
-# 使用 -O3 的 C 模块(大数引擎)
-FAST_C_OBJS = cutils.o libbf.o
+# 使用 -O2 的模块:仅 .rominram 段(z* 前缀,CAS 计算引擎,3MB 预算)
+# 注意:链接脚本 prizm.ld 只把 z*.o 放进 .rominram(→ .ac2),
+# 其他计算模块(ysym2poly/kgausspol/libbf/... )在主段(2MB),必须 -Os 控尺寸
+FAST_CXX_OBJS = zcsturm.o zmaple.o zrpn.o zmoyal.o zpermu.o zsolve.o zintgab.o \
+	zlin.o zseries.o zvecteur.o zifactor.o zgauss.o zti89.o zplot.o zplot3d.o \
+	zprog.o zusual.o zrisch.o zdesolve.o ztex.o zisom.o zquater.o zadd.o
 
 LIBS = -L. -L$(CASIOLOCAL)/lib -Wl,--start-group -lsupc++ -lmicropy -ltommath \
 	-lustl -lm -lc -lgcc -Wl,--end-group
@@ -89,9 +85,6 @@ all: khicas90.g3a khicas90.ac2 emucas90.g3a khicas90.882 khicas50.g3a \
 # --- 混合优化规则:计算模块 -O3,其余 -Os ------------------------------------
 $(FAST_CXX_OBJS): %.o: %.cc
 	$(CXX) $(CXXFLAGS_FAST) -c $<
-
-$(FAST_C_OBJS): %.o: %.c
-	$(CC) $(CFLAGS_FAST) -c $<
 
 # 其余模块沿用上游规则
 %.o: %.cc
