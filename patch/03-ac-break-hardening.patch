@@ -1,0 +1,72 @@
+From: khicas-opt
+Subject: [PATCH] AC Break hardening: interrupt masking + low-memory guard
+
+问题背景(见 docs/问题解决方案.md 问题 3):
+- KhiCAS 用 100ms 定时器轮询按键,AC 触发中断标志
+- 定时器在任意时刻触发,包括 KMALLOC 分配中途、BFile 写 flash 中途
+- 中断返回 gensizeerr 需再分配内存,堆耗尽时雪上加霜
+- 崩溃发生在保存 storage 时 → section 损坏 → 需 Delete Section
+
+本补丁:
+1. kglobal.cc: 中断屏蔽计数(enter_abort_safe/exit_abort_safe),
+   临界区(内存分配器、文件写入)内不响应 AC 中断,
+   消除"中断打断关键操作"的竞态窗口
+2. main.cc: 即时计算前检查空闲内存,<8KB 时拒绝执行并提示保存,
+   避免内存耗尽崩溃
+
+用法: git apply patch/03-ac-break-hardening.patch
+
+---
+
+diff --git a/kglobal.cc b/kglobal.cc
+--- a/kglobal.cc
++++ b/kglobal.cc
+@@ -167,6 +167,13 @@ int execution_in_progress = 0; // set to 1 during program execution
+
++  // 中断屏蔽计数:临界区(分配器/文件写入)内禁止 AC 中断
++  static volatile int abort_safe_count=0;
++  void enter_abort_safe(){ ++abort_safe_count; }
++  void exit_abort_safe(){ if (abort_safe_count>0) --abort_safe_count; }
++
+   static void check_execution_abort() {
++    if (abort_safe_count>0) // 在临界区,忽略 AC
++      return;
+     if (execution_in_progress) {
+       HourGlass();
+       short unsigned int key = PRGM_GetKey_();
+       if(key == KEY_PRGM_ACON){
+ 	if (!ctrl_c)
+ 	  cout << "ACON pressed\n";
+ 	esc_flag = 1;
+ 	ctrl_c=kbd_interrupted=interrupted=true;
+       }
+     }
+   }
+diff --git a/main.cc b/main.cc
+--- a/main.cc
++++ b/main.cc
+@@ -2241,6 +2241,17 @@
+ 	    if (equalposcomp(immediate_op,*op._FUNCptr)){
+ 	      set_abort();
++	      // 内存低水位检查:空闲 <8KB 时拒绝执行,提示先保存会话
++	      {
++		int freemem=giac::get_free_memory();
++		if (freemem<8192){
++		  dclear(C_WHITE);
++		  dtext(1,10,C_BLACK,"Low memory! Save your session first.");
++		  dupdate();
++		  getkey();
++		  clear_abort();
++		  continue;
++		}
++	      }
+ 	      tmp=(*op._FUNCptr)(args,contextptr);
+ 	      clear_abort();
+ 	      esc_flag=0;
+
+---
+
+后续建议(不在本源码树,需在 KhiCAS 的 Epsilon 移植部分实施):
+- save_state() 写 storage 前先备份旧文件(rename 成 .bak),写成功再删,
+  失败则回滚 —— 从根上消除"崩溃后必须 Delete Section"
+- KMALLOC 分配器内部(fxSDK gint)套 enter_abort_safe/exit_abort_safe
