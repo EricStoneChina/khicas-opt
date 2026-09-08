@@ -66,6 +66,43 @@ done
 export PATH="$SH3BIN:$PATH"
 info "工具链: $SH3BIN ($(sh3eb-elf-gcc --version | head -1))"
 
+# 工具链的 cc1plus 需要老版本 MPFR(libmpfr.so.4),系统只有 .so.6
+# 上游 linux_compile_khicas.sh 的做法:从作者服务器下载并安装
+if ! ldconfig -p 2>/dev/null | grep -q "libmpfr.so.4"; then
+    info "安装 libmpfr.so.4(工具链运行时依赖)..."
+    if curl -fL --retry 3 --retry-delay 5 --ssl-no-revoke --max-time 120 \
+        -o libmpfr.so.4 "$BASE_URL/libmpfr.so.4"; then
+        if [ -w /usr/local/lib ]; then
+            cp libmpfr.so.4 /usr/local/lib/ && ldconfig 2>/dev/null || true
+        else
+            sudo cp libmpfr.so.4 /usr/local/lib/ && sudo ldconfig
+        fi
+        rm -f libmpfr.so.4
+        ok "libmpfr.so.4 已安装"
+    else
+        # 回退:符号链接系统 libmpfr.so.6 → libmpfr.so.4(ABI 向后兼容)
+        info "下载失败,回退:符号链接系统 libmpfr.so.6"
+        MPFR6=$(ldconfig -p 2>/dev/null | grep -oE "/[^ ]*libmpfr\.so\.6" | head -1)
+        if [ -n "$MPFR6" ]; then
+            if [ -w /usr/local/lib ]; then
+                ln -sf "$MPFR6" /usr/local/lib/libmpfr.so.4 && ldconfig 2>/dev/null || true
+            else
+                sudo ln -sf "$MPFR6" /usr/local/lib/libmpfr.so.4 && sudo ldconfig
+            fi
+            ok "libmpfr.so.4 → $MPFR6(符号链接)"
+        else
+            die "无法获取 libmpfr.so.4"
+        fi
+    fi
+    # 验证 cc1plus 可加载
+    if ! sh3eb-elf-gcc -print-prog-name=cc1plus >/dev/null 2>&1 \
+       && ! LD_LIBRARY_PATH=/usr/local/lib sh3eb-elf-gcc --version >/dev/null 2>&1; then
+        export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+    fi
+else
+    info "libmpfr.so.4 已就绪"
+fi
+
 CASIOLOCAL=""
 for cand in \
     "$TOOLS_DIR/casiolocal" \
