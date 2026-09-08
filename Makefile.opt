@@ -123,7 +123,9 @@ khelpfr.o: khelpfr.cc static_help.h mkhelp
 	./mkhelp
 	$(CXX) $(CXXFLAGS) -c khelpfr.cc -o khelpfr.o
 
-khelpen.o: khelpen.cc static_help.h
+# 上游 Makefile 的并行构建竞态:khelpen.o 执行 ./mkhelp 却未声明依赖,
+# -jN 下 mkhelp 未构建即执行 → Error 127。补上依赖修复。
+khelpen.o: khelpen.cc static_help.h mkhelp
 	./mkhelp
 	$(CXX) $(CXXFLAGS) -c khelpen.cc -o khelpen.o
 
