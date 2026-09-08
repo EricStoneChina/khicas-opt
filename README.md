@@ -50,4 +50,6 @@ docs/            # 优化分析与决策记录
 - [x] 画图操作速查表(docs/画图操作速查.md)
 - [x] AC Break 防御补丁(patch/03-ac-break-hardening.patch)
 - [x] GitHub Actions CI(.github/workflows/build.yml)
-- [ ] 构建验证(需 Linux/WSL2 或推送 GitHub 触发 CI)
+- [x] ✅ 构建成功!产物 khicas50.g3a(1.9MB)+ khicas50.ac2(2.4MB)
+      可下载:GitHub Actions → 最新 run → Artifacts → khicas50-optimized
+      或运行 CI 时 build 步骤自动上传

@@ -29,3 +29,6 @@ toolchain/
 *.tgz
 
 # 编译期生成物(mkhelp 输出;khelpfr.cc/khelpen.cc 是上游源文件,需跟踪)
+
+# 构建产物(从 CI Artifacts 下载)
+dist/
