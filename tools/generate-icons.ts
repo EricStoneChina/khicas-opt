@@ -119,8 +119,10 @@ function render(selected: boolean): PNG {
   return c.toPNG();
 }
 
-fs.writeFileSync(path.join(outDir, "khicasio.png"), PNG.sync.write(render(false)));
-fs.writeFileSync(path.join(outDir, "khicasio1.png"), PNG.sync.write(render(true)));
-console.log(`已生成(92x64,官方风格):`);
+// mkg3a 只接受 RGB-8(无 alpha),pngjs 默认输出 RGBA,须显式设 colorType:2
+const iconOpts = { colorType: 2, deflateLevel: 9 };
+fs.writeFileSync(path.join(outDir, "khicasio.png"), PNG.sync.write(render(false), iconOpts));
+fs.writeFileSync(path.join(outDir, "khicasio1.png"), PNG.sync.write(render(true), iconOpts));
+console.log(`已生成(92x64,官方风格,RGB-8 供 mkg3a):`);
 console.log(`  ${path.join(outDir, "khicasio.png")}   (未选中:黑底+抖动+χ+阴影)`);
 console.log(`  ${path.join(outDir, "khicasio1.png")}  (选中:蓝渐变+高光+χ+阴影)`);
