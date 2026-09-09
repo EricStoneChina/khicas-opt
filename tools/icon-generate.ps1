@@ -31,52 +31,20 @@ function New-Icon([string]$path, [bool]$selected) {
     $g.FillRectangle($sheen, 0, 0, $W, 18)
     $sheen.Dispose()
 
-    # ---- pictogram: white chi ----
-    $cx = 44.0; $y0 = 16.0; $y1 = 48.0; $halfX = 21.0; $penW = 9.0
+    # ---- light frame around the tile (official icons have a light ~2px edge) ----
+    $frameCol = [System.Drawing.Color]::FromArgb(214, 238, 255)
+    $framePen = New-Object System.Drawing.Pen($frameCol, 2)
+    $g.DrawRectangle($framePen, 1, 1, $W - 3, $H - 3)
+    $framePen.Dispose()
+
+    # ---- pictogram: white chi (no corner badge: the OS draws its own) ----
+    $cx = 46.0; $y0 = 15.0; $y1 = 49.0; $halfX = 22.0; $penW = 9.5
     $pen = New-Object System.Drawing.Pen([System.Drawing.Color]::White, $penW)
     $pen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
     $pen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
     $g.DrawLine($pen, $cx - $halfX, $y0, $cx + $halfX, $y1)
     $g.DrawLine($pen, $cx + $halfX, $y0, $cx - $halfX, $y1)
     $pen.Dispose()
-
-    # ---- badge: dark rounded square, white "CAS" (like official corner badges) ----
-    # rendered at 4x then downscaled -> crisp small text
-    $font = New-Object System.Drawing.Font('Arial', 7, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
-    $sfTight = [System.Drawing.StringFormat]::GenericTypographic
-    $sz = $g.MeasureString('CAS', $font, 1000, $sfTight)
-    $bw = [int][Math]::Ceiling($sz.Width) + 6
-    $bh = [int][Math]::Ceiling($sz.Height) + 3
-    $bx = $W - $bw - 3; $by = 3
-    $ss = 4
-    $tmp = New-Object System.Drawing.Bitmap(($bw*$ss), ($bh*$ss), [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
-    $gt = [System.Drawing.Graphics]::FromImage($tmp)
-    $gt.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-    $gt.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAlias
-    $gt.Clear([System.Drawing.Color]::Transparent)
-    $badge = New-Object System.Drawing.Drawing2D.GraphicsPath
-    $d = 4*$ss
-    $badge.AddArc(0, 0, $d, $d, 180, 90)
-    $badge.AddArc($bw*$ss - $d, 0, $d, $d, 270, 90)
-    $badge.AddArc($bw*$ss - $d, $bh*$ss - $d, $d, $d, 0, 90)
-    $badge.AddArc(0, $bh*$ss - $d, $d, $d, 90, 90)
-    $badge.CloseFigure()
-    $badgeBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(20, 24, 34))
-    $gt.FillPath($badgeBrush, $badge)
-    $badgeBrush.Dispose()
-    $bigFont = New-Object System.Drawing.Font('Arial', (7*$ss), [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
-    $tb = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-    $sf = New-Object System.Drawing.StringFormat
-    $sf.Alignment = [System.Drawing.StringAlignment]::Center
-    $sf.LineAlignment = [System.Drawing.StringAlignment]::Center
-    $rectF = New-Object System.Drawing.RectangleF(0, 0, ($bw*$ss), ($bh*$ss))
-    $gt.DrawString('CAS', $bigFont, $tb, $rectF, $sf)
-    $gt.Dispose()
-    $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-    $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-    $g.DrawImage($tmp, (New-Object System.Drawing.Rectangle($bx, $by, $bw, $bh)))
-    $tmp.Dispose()
-    $tb.Dispose(); $font.Dispose(); $bigFont.Dispose(); $sf.Dispose(); $sfTight.Dispose(); $badge.Dispose()
 
     $g.Dispose()
     $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
