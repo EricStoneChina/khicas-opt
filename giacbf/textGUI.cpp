@@ -16,6 +16,7 @@
 
 #include "textGUI.hpp"
 #include "khicas_gb18030.h" // GB18030 (Chinese) text marker support
+#include "zhui.h" // Chinese UI strings (zhui() lookup)
 #include "stringsProvider.hpp"
 #include "graphicsProvider.hpp"
 #include "catalogGUI.hpp"

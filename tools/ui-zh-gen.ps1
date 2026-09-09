@@ -23,6 +23,7 @@ function To-MarkedGB18030([string]$text) {
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append('"')
     [void]$sb.Append('\x01')
+    [void]$sb.Append('""')   # close+reopen: a following hex digit must not merge into the escape
     foreach ($ch in $text.ToCharArray()) {
         $cb = $enc.GetBytes([string]$ch)
         if ($cb.Length -gt 2) { $cb = @([byte][char]'?') }

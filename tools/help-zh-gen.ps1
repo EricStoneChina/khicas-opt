@@ -65,6 +65,7 @@ function To-MarkedGB18030([string]$text) {
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append('"')
     [void]$sb.Append('\x01')
+    [void]$sb.Append('""')   # close+reopen: a following hex digit must not merge into the escape
     foreach ($b in $bytes) {
         if ($b -ge 0x80) {
             # content-level ""\xNN"" -> caller quotes yield "ascii""\xNN""ascii"

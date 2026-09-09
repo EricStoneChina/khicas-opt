@@ -41,6 +41,7 @@ $sb = New-Object System.Text.StringBuilder
 [void]$sb.Append('const char apropos_string[]="')
 for ($i = 0; $i -lt $zhLines.Count; $i++) {
   [void]$sb.Append('\x01')
+    [void]$sb.Append('""')   # close+reopen: a following hex digit must not merge into the escape
   foreach ($b in $gb.GetBytes($zhLines[$i])) {
     if ($b -ge 0x80) { [void]$sb.Append('\x'); [void]$sb.Append($b.ToString('x2')) }
     elseif ($b -eq 0x22) { [void]$sb.Append('\"') }
@@ -86,6 +87,7 @@ function To-MarkedGB18030([string]$text) {
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append('"')
     [void]$sb.Append('\x01')
+    [void]$sb.Append('""')   # close+reopen: a following hex digit must not merge into the escape
     foreach ($ch in $text.ToCharArray()) {
         $cb = $enc.GetBytes([string]$ch)
         if ($cb.Length -gt 2) { $cb = @([byte][char]'?') }

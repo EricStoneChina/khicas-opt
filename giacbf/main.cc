@@ -30,6 +30,7 @@ extern "C" {
 #include "console.h"
   //#include "memmgr.h"
 #include "catalogGUI.hpp"
+#include "zhui.h" // Chinese UI strings (zhui() lookup)
 #include "fileGUI.hpp"
 #include "textGUI.hpp"
 #include "graphicsProvider.hpp"
