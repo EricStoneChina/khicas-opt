@@ -15,6 +15,7 @@
 
 #include "menuGUI.hpp"
 #include "graphicsProvider.hpp"
+#include "khicas_gb18030.h"
 extern "C" int ck_getkey(int * keyptr);
 
 typedef scrollbar TScrollbar;
@@ -131,11 +132,17 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) { // returns code telling what u
     if(showtitle) {
       if(menu->miniMiniTitle) {
         int textX = 0, textY=(menu->startY-1)*24;
-        PrintMiniMini( &textX, &textY, menu->title, 16, menu->titleColor, 0 );
+        const char * t; int gb=khicas_gb_strip(menu->title,&t);
+        if (gb) khicas_enable_gb18030();
+        PrintMiniMini( &textX, &textY, (unsigned char*)t, 16, menu->titleColor, 0 );
+        if (gb) khicas_disable_gb18030();
       } else mPrintXY(menu->startX, menu->startY, menu->title, TEXT_MODE_TRANSPARENT_BACKGROUND, menu->titleColor);
       if(menu->subtitle != NULL) {
         int textX=(MB_ElementCount(menu->title)+menu->startX-1)*18+10, textY=6;
-        PrintMini(&textX, &textY, menu->subtitle, 0, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+        const char * st; int gb=khicas_gb_strip(menu->subtitle,&st);
+        if (gb) khicas_enable_gb18030();
+        PrintMini(&textX, &textY, (unsigned char*)st, 0, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+        if (gb) khicas_disable_gb18030();
       }
       mPrintXY(18, 1, "____", 0, TEXT_COLOR_BLACK);
       mPrintXY(18, 1, keyword, 0, TEXT_COLOR_BLACK);

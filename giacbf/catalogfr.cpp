@@ -71,6 +71,7 @@ void reset_alpha(){
 
 const char ram_filename[]="\\\\fls0\\khicas90.8c2";
 int lang=1;
+int zh_ui_enabled=0; /* Chinese UI strings off for the French build */
 const catalogFunc completeCat[] = { // list of all functions (including some not in any category)
     {" boucle for (pour)", "for ", "Boucle definie pour un indice variant entre 2 valeurs fixees", "#\nfor ", 0, CAT_CATEGORY_PROG},
     {" boucle liste", "for in", "Boucle sur tous les elements d'une liste.", "#\nfor in", 0, CAT_CATEGORY_PROG},

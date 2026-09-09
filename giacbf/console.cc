@@ -118,13 +118,13 @@ void menu_setup(){
   smallmenuitems[3].text = (char*)"Sqrt";
   smallmenuitems[6].type = MENUITEM_CHECKBOX;
   smallmenuitems[6].text = (char*)"Step/step";
-  smallmenuitems[7].text = (char *) (lang?"Raccourcis":"Shortcuts");
-  smallmenuitems[8].text = (char*) (lang?"A propos":"About");
+  smallmenuitems[7].text = (char *) (zhui("Shortcuts", "Raccourcis"));
+  smallmenuitems[8].text = (char*) (zhui("About", "A propos"));
   smallmenuitems[9].text = (char*) "Quit";
   // smallmenuitems[2].text = (char*)(isRecording ? "Stop Recording" : "Record Script");
   while(1) {
 #ifdef MICROPY_LIB
-    string heaps((lang?"Tas Python ":"Python heap ")+giac::print_INT_(pythonjs_heap_size/1024)+"K");
+    string heaps((zhui("Python heap ", "Tas Python "))+giac::print_INT_(pythonjs_heap_size/1024)+"K");
     smallmenuitems[5].text = (char *) heaps.c_str();
 #else
     smallmenuitems[5].text = (char *) "Python not available";    
@@ -149,7 +149,7 @@ void menu_setup(){
 	double d=decimal_digits(contextptr);
 	if (
 	    inputdouble(
-			lang?"Digits (9, 19, 28)?":"Digits (9, 19, 28)?"
+			zhui("Digits (9, 19, 28)?", "Digits (9, 19, 28)?")
 			,d) && d==int(d) &&
 	    d>=9 && d<=1000
 	    ){
@@ -162,7 +162,7 @@ void menu_setup(){
 	double d=pythonjs_heap_size/1024;
 	if (
 	    inputdouble(
-			lang?"Tas en K (64-480)?":"Heap size in K"
+			zhui("Heap size in K", "Tas en K (64-480)?")
 			,d) && d==int(d) &&
 	    d>=64 && d<=480
 	    ){
@@ -207,14 +207,14 @@ void menu_setup(){
 #ifdef MICROPY_LIB
 	  if (xcas_python_eval!=old_xcas_python_eval){
 	    if (old_xcas_python_eval==0 && xcas_python_eval>0 && ((int) python_heap)>1 &&
-		do_confirm((lang==1)?"Effacer les variables Xcas?":"Clear Xcas variables?"))
+		do_confirm(zhui("Clear Xcas variables?", "Effacer les variables Xcas?")))
 	      do_restart();
 	  }
-	  if (old_xcas_python_eval==1 && ((int) python_heap)>1 && do_confirm((lang==1)?"Effacer le tas MicroPython?":"Clear MicroPython heap?"))
+	  if (old_xcas_python_eval==1 && ((int) python_heap)>1 && do_confirm(zhui("Clear MicroPython heap?", "Effacer le tas MicroPython?")))
 	    python_free();
 #endif
 #ifdef QUICKKS
-	  if (0 && old_xcas_python_eval==-1 && do_confirm((lang==1)?"Effacer le tas QuickJS?":"Clear QuickJS heap?"))
+	  if (0 && old_xcas_python_eval==-1 && do_confirm(zhui("Clear QuickJS heap?", "Effacer le tas QuickJS?")))
 	    js_end(global_js_context);
 #endif
 	  // warn_python(p,false);
@@ -314,7 +314,7 @@ bool inputdouble(const char * msg1,double & d){
     s1=giac::print_INT_(d);
   else
     s1=giac::print_DOUBLE_(d,giac::context0);
-  inputline(msg1,lang?"Nouvelle valeur?":"New value?",s1,false);
+  inputline(msg1,zhui("New value?", "Nouvelle valeur?"),s1,false);
   return stringtodouble(s1,d);
 }
 
@@ -325,7 +325,7 @@ bool inputdouble(const char * msg1,double & d){
       s1=giac::print_INT_(di);
     else
       s1=giac::print_DOUBLE_(d,3);
-    inputline(msg1,((lang==1)?"Nouvelle valeur? ":"New value? "),s1,false);
+    inputline(msg1,(zhui("New value? ", "Nouvelle valeur? ")),s1,false);
     return stringtodouble(s1,d);
   }
 
@@ -435,7 +435,7 @@ void cleanup(ustl::string & s){
 }
 
 bool do_confirm(const char * s){
-  return confirm(s,(lang?"F1: oui,    F6:annuler":"F1: yes,     F6: cancel"))==KEY_CTRL_F1;
+  return confirm(s,(zhui("F1: yes,     F6: cancel", "F1: oui,    F6:annuler")))==KEY_CTRL_F1;
 }
 
 int confirm(const char * msg1,const char * msg2,bool acexit){
@@ -460,11 +460,11 @@ int confirm4(const char * msg1,const char * msg2,bool acexit,int textY){
 }  
 
 bool confirm_overwrite(){
-  return do_confirm(lang?"F1: oui,    F6:annuler":"F1: yes,     F6: cancel")==KEY_CTRL_F1;
+  return do_confirm(zhui("F1: yes,     F6: cancel", "F1: oui,    F6:annuler"))==KEY_CTRL_F1;
 }
 
 void invalid_varname(){
-  confirm(lang?"Nom de variable incorrect":"Invalid variable name", lang?"F1 ou F6: ok":"F1 or F6: ok");
+  confirm(zhui("Invalid variable name", "Nom de variable incorrect"), zhui("F1 or F6: ok", "F1 ou F6: ok"));
 }
 
 void warn_python(int mode,bool autochange){
@@ -472,11 +472,11 @@ void warn_python(int mode,bool autochange){
     confirm(autochange?(lang?"Source en syntaxe Xcas detecte.":"Xcas syntax source code detected."):(lang?"Syntaxe Xcas.":"Xcas syntax."),"F1/F6: ok");
   if (mode==1)
     if (autochange)
-      confirm(lang?"Source en syntaxe Python. Passage":"Python syntax source detected. Setting",lang?"en Python avec ^=**, F1/F6: ok":"Python mode with ^=**, F1/F6:ok");
+      confirm(zhui("Python syntax source detected. Setting", "Source en syntaxe Python. Passage"),zhui("Python mode with ^=**, F1/F6:ok", "en Python avec ^=**, F1/F6: ok"));
     else
-      confirm(lang?"Syntaxe Python avec ^==**, tapez":"Python syntax with ^==**, type",lang?"python_compat(2) pour xor. F1: ok":"python_compat(2) for xor. F1: ok");
+      confirm(zhui("Python syntax with ^==**, type", "Syntaxe Python avec ^==**, tapez"),zhui("python_compat(2) for xor. F1: ok", "python_compat(2) pour xor. F1: ok"));
   if (mode==2){
-    confirm(lang?"Syntaxe Python avec ^==xor":"Python syntax with ^==xor",lang?"python_compat(1) pour **. F1: ok":"python_compat(1) for **. F1: ok");
+    confirm(zhui("Python syntax with ^==xor", "Syntaxe Python avec ^==xor"),zhui("python_compat(1) for **. F1: ok", "python_compat(1) pour **. F1: ok"));
   }
 }
 
@@ -519,9 +519,9 @@ const char * input_matrix(bool list){
   }
   ustl::string msg;
   if (w.empty())
-    msg=lang?"Creer nouveau":"Create new";
+    msg=zhui("Create new", "Creer nouveau");
   else
-    msg=((lang?"Creer nouveau ou editer ":"Create new or edit ")+(w.size()==1?w.front():giac::gen(w,giac::_SEQ__VECT)).print(contextptr));
+    msg=((zhui("Create new or edit ", "Creer nouveau ou editer "))+(w.size()==1?w.front():giac::gen(w,giac::_SEQ__VECT)).print(contextptr));
   handle_f5();
   if (inputline(msg.c_str(),(lang?"Nom de variable:":"Variable name:"),*sptr,false) && !sptr->empty() && isalpha((*sptr)[0])){
     giac::gen g(*sptr,contextptr);
@@ -542,7 +542,7 @@ const char * input_matrix(bool list){
       }
       if (ge==g || confirm_overwrite()){
 	*sptr="";
-	if (inputline((lang?"Nombre de lignes":"Line number"),"",*sptr,true)){
+	if (inputline((zhui("Line number", "Nombre de lignes")),"",*sptr,true)){
 	  int l=strtol(sptr->c_str(),0,10);
 	  if (l>0 && l<256){
 	    int c;
@@ -551,7 +551,7 @@ const char * input_matrix(bool list){
 	    else {
 	      ustl::string tmp(*sptr+(lang?" lignes.":" lines."));
 	      *sptr="";
-	      inputline(tmp.c_str(),lang?"Colonnes:":"Columns:",*sptr,true);
+	      inputline(tmp.c_str(),zhui("Columns:", "Colonnes:"),*sptr,true);
 	      c=strtol(sptr->c_str(),0,10);
 	    }
 	    if (c==0){
@@ -583,7 +583,7 @@ const char * input_matrix(bool list){
 int get_filename(char * filename,const char * extension){
   handle_f5();
   ustl::string str;
-  int res=inputline(lang?"EXIT ou chaine vide: annulation":"EXIT or empty string: cancel",lang?"Nom de fichier:":"Filename:",str,false);
+  int res=inputline(zhui("EXIT or empty string: cancel", "EXIT ou chaine vide: annulation"),zhui("Filename:", "Nom de fichier:"),str,false);
   if (res==KEY_CTRL_EXIT || str.empty())
     return 0;
   strcpy(filename,"\\\\fls0\\");
@@ -606,7 +606,7 @@ int get_filename(char * filename,const char * extension){
     return 1;
   }
   Bfile_CloseFile_OS(hFile);
-  if (confirm(lang?"     Le fichier existe!":"     File exists!",lang?"F1: ecraser,           F6: annuler":"F1:overwrite,           F6: cancel")==KEY_CTRL_F1)
+  if (confirm(zhui("     File exists!", "     Le fichier existe!"),zhui("F1:overwrite,           F6: cancel", "F1: ecraser,           F6: annuler"))==KEY_CTRL_F1)
     return 1;
   return 0;
 }
@@ -622,7 +622,7 @@ int get_filename(char * filename){
   myconsoley += 5;
   if(!strlen(inputname)) {
     // user aborted
-    puts(lang?"Annulation.":"Cancelled.");
+    puts(zhui("Cancelled.", "Annulation."));
     return 0;
   }
   strcpy(filename,"\\\\fls0\\");
@@ -642,7 +642,7 @@ int get_filename(char * filename){
     return 1;
   }
   Bfile_CloseFile_OS(hFile);
-  if (confirm(lang?"     Le fichier existe!":"     File exists!",lang?"F1: ecraser,           F6: annuler":"F1:overwrite,           F6: cancel")==KEY_CTRL_F1)
+  if (confirm(zhui("     File exists!", "     Le fichier existe!"),zhui("F1:overwrite,           F6: cancel", "F1: ecraser,           F6: annuler"))==KEY_CTRL_F1)
     return 1;
   return 0;
 }
@@ -652,13 +652,13 @@ ustl::string get_searchitem(ustl::string & replace){
   replace="";
   ustl::string search;
   handle_f5();
-  int res=inputline(lang?"EXIT ou chaine vide: annulation":"EXIT or empty string: cancel",lang?"Chercher:":"Search:",search,false);
+  int res=inputline(zhui("EXIT or empty string: cancel", "EXIT ou chaine vide: annulation"),zhui("Search:", "Chercher:"),search,false);
   if (search.empty() || res==KEY_CTRL_EXIT)
     return "";
   replace="";
-  ustl::string tmp=(lang?"EXIT: recherche seule de ":"EXIT: search only ")+search;
+  ustl::string tmp=(zhui("EXIT: search only ", "EXIT: recherche seule de "))+search;
   handle_f5();
-  res=inputline(tmp.c_str(),lang?"Remplacer par:":"Replace by:",replace,false);
+  res=inputline(tmp.c_str(),zhui("Replace by:", "Remplacer par:"),replace,false);
   if (res==KEY_CTRL_EXIT)
     replace="";
   return search;
@@ -1053,9 +1053,9 @@ const char * input_matrix(bool list){
   }
   ustl::string msg;
   if (w.empty())
-    msg=lang?"Creer nouveau":"Create new";
+    msg=zhui("Create new", "Creer nouveau");
   else
-    msg=((lang?"Creer nouveau ou editer ":"Create new or edit ")+(w.size()==1?w.front():giac::gen(w,giac::_SEQ__VECT)).print(contextptr));
+    msg=((zhui("Create new or edit ", "Creer nouveau ou editer "))+(w.size()==1?w.front():giac::gen(w,giac::_SEQ__VECT)).print(contextptr));
   giac::handle_f5();
   if (giac::inputline(msg.c_str(),(lang?"Nom de variable:":"Variable name:"),*sptr,false) && !sptr->empty() && isalpha((*sptr)[0])){
     giac::gen g(*sptr,contextptr);
@@ -1074,7 +1074,7 @@ const char * input_matrix(bool list){
       }
       if (ge==g || giac::confirm_overwrite()){
 	*sptr="";
-	if (giac::inputline((lang?"Nombre de lignes":"Line number"),"",*sptr,true)){
+	if (giac::inputline((zhui("Line number", "Nombre de lignes")),"",*sptr,true)){
 	  int l=strtol(sptr->c_str(),0,10);
 	  if (l>0 && l<256){
 	    int c;
@@ -1083,7 +1083,7 @@ const char * input_matrix(bool list){
 	    else {
 	      ustl::string tmp(*sptr+(lang?" lignes.":" lines."));
 	      *sptr="";
-	      giac::inputline(tmp.c_str(),lang?"Colonnes:":"Columns:",*sptr,true);
+	      giac::inputline(tmp.c_str(),zhui("Columns:", "Colonnes:"),*sptr,true);
 	      c=strtol(sptr->c_str(),0,10);
 	    }
 	    if (c==0){
@@ -1705,7 +1705,7 @@ void translate_fkey(int & input_key){
 
 void chk_clearscreen(){
   drawRectangle(0, 24, LCD_WIDTH_PX, LCD_HEIGHT_PX-24, COLOR_WHITE);
-  if (confirm(lang?"Effacer l'historique?":"Clear history?",lang?"F1: annuler,   F6: effacer":"F1: cancel,   F6: erase",true)==KEY_CTRL_F6){
+  if (confirm(zhui("Clear history?", "Effacer l'historique?"),zhui("F1: cancel,   F6: erase", "F1: annuler,   F6: effacer"),true)==KEY_CTRL_F6){
     Console_Init();
     Console_Clear_EditLine();
   }    
@@ -1803,7 +1803,7 @@ void draw_menu(int editor){
   }
   else {
     drawRectangle(5*fkeyw,LCD_HEIGHT_PX-18, fkeyw, 16, TEXT_COLOR_BLACK);
-    Bdisp_MMPrint(5*fkeyw+2,LCD_HEIGHT_PX-STATUS_AREA_PX-18,editor==2?" eval":(lang?"Fich,Cfg":"File,Cfg"),0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
+    Bdisp_MMPrint(5*fkeyw+2,LCD_HEIGHT_PX-STATUS_AREA_PX-18,editor==2?" eval":(zhui("File,Cfg", "Fich,Cfg")),0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
   }
 #else
   mPrintXY(12,8,"cat",TEXT_MODE_INVERT,TEXT_COLOR_BLACK);
@@ -2344,7 +2344,7 @@ const char * inputparam(char curname,int symbolic){
 	ustl::string s1; double d;
 	if (paramenu.selection==2){
 	  handle_f5();
-	  if (inputline(menu_name,lang?"Nouvelle valeur?":"New value?",s1,false)==KEY_CTRL_EXE && s1.size()>0 && isalpha(s1[0])){
+	  if (inputline(menu_name,zhui("New value?", "Nouvelle valeur?"),s1,false)==KEY_CTRL_EXE && s1.size()>0 && isalpha(s1[0])){
 	    if (s1.size()>10)
 	      s1=s1.substr(0,10);
 	    strcpy(menu_name,("name "+s1).c_str());
@@ -2527,24 +2527,24 @@ int Console_GetKey(){
       smallmenu.scrollbar=1;
       smallmenu.scrollout=1;
       //smallmenu.title = "KhiCAS";
-      smallmenuitems[0].text = (char *) (lang?"Applications":"Applications");
-      smallmenuitems[1].text = (char *) (lang?"Enregistrer session":"Save session ");
-      smallmenuitems[2].text = (char *) (lang?"Enregistrer sous":"Save session as");
-      smallmenuitems[3].text = (char*) (lang?"Charger session":"Load session");
-      smallmenuitems[4].text = (char*)(lang?"Nouvelle session":"New session");
-      smallmenuitems[5].text = (char*)(lang?"Executer session":"Run session");
-      smallmenuitems[6].text = (char*)(lang?"Editeur script":"Script editor");
-      smallmenuitems[7].text = (char*)(lang?"Ouvrir script":"Open script");
-      smallmenuitems[8].text = (char*)(lang?"Executer script":"Run script");
-      smallmenuitems[9].text = (char*)(lang?"Effacer historique":"Clear history");
-      smallmenuitems[10].text = (char*)(lang?"Effacer script":"Clear script");
-      smallmenuitems[11].text = (char*)(lang?"Editer matrice":"Matrix editor");
+      smallmenuitems[0].text = (char *) (zhui("Applications", "Applications"));
+      smallmenuitems[1].text = (char *) (zhui("Save session ", "Enregistrer session"));
+      smallmenuitems[2].text = (char *) (zhui("Save session as", "Enregistrer sous"));
+      smallmenuitems[3].text = (char*) (zhui("Load session", "Charger session"));
+      smallmenuitems[4].text = (char*)(zhui("New session", "Nouvelle session"));
+      smallmenuitems[5].text = (char*)(zhui("Run session", "Executer session"));
+      smallmenuitems[6].text = (char*)(zhui("Script editor", "Editeur script"));
+      smallmenuitems[7].text = (char*)(zhui("Open script", "Ouvrir script"));
+      smallmenuitems[8].text = (char*)(zhui("Run script", "Executer script"));
+      smallmenuitems[9].text = (char*)(zhui("Clear history", "Effacer historique"));
+      smallmenuitems[10].text = (char*)(zhui("Clear script", "Effacer script"));
+      smallmenuitems[11].text = (char*)(zhui("Matrix editor", "Editer matrice"));
       smallmenuitems[12].text = (char*)"Parameter";
       smallmenuitems[13].text = (char*)"Config shift-SETUP";
-      smallmenuitems[14].text = (char *) (lang?"Raccourcis":"Shortcuts");
-      smallmenuitems[15].text = (char*) (lang?"A propos":"About");
+      smallmenuitems[14].text = (char *) (zhui("Shortcuts", "Raccourcis"));
+      smallmenuitems[15].text = (char*) (zhui("About", "A propos"));
       smallmenuitems[16].text = (char*) ("Quit & Reinit");
-      smallmenuitems[17].text = (char*) (lang?"Quitter":"Quit");
+      smallmenuitems[17].text = (char*) (zhui("Quit", "Quitter"));
       // smallmenuitems[2].text = (char*)(isRecording ? "Stop Recording" : "Record Script");
       while(1) {
         int sres = doMenu(&smallmenu);
@@ -2579,7 +2579,7 @@ int Console_GetKey(){
 	  if (smallmenu.selection==4){
 	    char filename[MAX_FILENAME_SIZE+1];
 	    if (fileBrowser(filename, (char*)"*.xw", (char *)"Sessions")){
-	      if (console_changed==0 || strcmp(session_filename,"session")==0 || confirm(lang?"Session courante perdue?":"Current session will be lost",lang?"F1: annul, F6: ok":"F1: cancel, F6: ok")==KEY_CTRL_F6){
+	      if (console_changed==0 || strcmp(session_filename,"session")==0 || confirm(zhui("Current session will be lost", "Session courante perdue?"),zhui("F1: cancel, F6: ok", "F1: annul, F6: ok"))==KEY_CTRL_F6){
 		giac::clear_context(contextptr); // giac::_restart(giac::gen(giac::vecteur(0),giac::_SEQ__VECT),contextptr);
 		restore_session(filename);
 		strcpy(session_filename,remove_path0(giac::remove_extension(filename)).c_str());
@@ -2599,7 +2599,7 @@ int Console_GetKey(){
 	    char filename[MAX_FILENAME_SIZE+1];
 	    drawRectangle(0, 0, LCD_WIDTH_PX, LCD_HEIGHT_PX, COLOR_WHITE);
 	    if (get_filename(filename,".xw")){
-	      if (console_changed==0 || strcmp(session_filename,"session")==0 || confirm(lang?"Session courante perdue?":"Current session will be lost",lang?"F1: annul, F6: ok":"F1: cancel, F6: ok")==KEY_CTRL_F6){
+	      if (console_changed==0 || strcmp(session_filename,"session")==0 || confirm(zhui("Current session will be lost", "Session courante perdue?"),zhui("F1: cancel, F6: ok", "F1: annul, F6: ok"))==KEY_CTRL_F6){
 		Console_Init();
 		Console_Clear_EditLine();
 		giac::_restart(giac::gen(giac::vecteur(0),giac::_SEQ__VECT),contextptr);

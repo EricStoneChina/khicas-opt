@@ -22,6 +22,12 @@ $newName = 'const char ram_filename[]="\\\\fls0\\khicaszh.8c2";'
 if (-not $src.Contains($oldName)) { throw "ram_filename line not found in catalogen.cpp" }
 $src = $src.Replace($oldName, $newName)
 
+# --- 1b. enable the Chinese UI strings for this build ---
+$oldFlag = 'int zh_ui_enabled=0; /* Chinese UI strings off for the English build */'
+$newFlag = 'int zh_ui_enabled=1; /* Chinese UI strings on (see zhui.cc) */'
+if (-not $src.Contains($oldFlag)) { throw "zh_ui_enabled line not found in catalogen.cpp" }
+$src = $src.Replace($oldFlag, $newFlag)
+
 # --- 2. Chinese apropos_string ---
 # NOTE: the Chinese lines live in a separate UTF-8 file. PowerShell 5.1 reads
 # .ps1 files as ANSI, so Chinese literals inside this script would be mangled
@@ -118,5 +124,27 @@ $out2 = foreach ($l in $lines) {
 }
 $src = $out2 -join "`n"
 
+# --- 4. Chinese catalog category names ---
+$catPath = 'D:\GitHub\khicas-opt\tools\ui-cat-zh.txt'
+$catText = [System.IO.File]::ReadAllText($catPath, [System.Text.Encoding]::UTF8)
+$catMap = @{}
+foreach ($ln in ($catText -split "`r?`n")) {
+    if ($ln -eq '') { continue }
+    $kv = $ln -split '=', 2
+    if ($kv.Count -eq 2) { $catMap[$kv[0].Trim()] = $kv[1] }
+}
+$catRe = New-Object System.Text.RegularExpressions.Regex('^(?<head>\s*menuitems\[(?<cat>CAT_CATEGORY_\w+)\]\.text\s*=\s*).*$')
+$lines = $src -split "`n"
+$catPatched = 0
+$out3 = foreach ($l in $lines) {
+    $m = $catRe.Match($l)
+    if (-not $m.Success) { $l; continue }
+    $cat = $m.Groups['cat'].Value
+    if (-not $catMap.ContainsKey($cat)) { $l; continue }
+    $catPatched++
+    $m.Groups['head'].Value + '(char*)' + (To-MarkedGB18030 $catMap[$cat]) + ';'
+}
+$src = $out3 -join "`n"
+
 [System.IO.File]::WriteAllText($outPath, $src, $latin1)
-Write-Host "catalogzh.cpp regenerated: $($src.Length) chars, $patched catalog entries translated"
+Write-Host "catalogzh.cpp regenerated: $($src.Length) chars, $patched catalog entries translated, $catPatched categories translated"

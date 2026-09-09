@@ -48,7 +48,7 @@ int check_parse(const ustl::vector<textElement> & v,int python){
     }
     else {
       process_freeze();
-      sprintf(status,"%s",(lang==1)?"Syntaxe correcte":"Parse OK");
+      sprintf(status,"%s",zhui("Parse OK", "Syntaxe correcte"));
     }
     DefineStatusMessage(status,1,0,0);
     return parser_errorline;
@@ -96,7 +96,7 @@ int check_parse(const ustl::vector<textElement> & v,int python){
     }
     else {
       lineerr=v.size();
-      tok=lang?"la fin":"end";
+      tok=zhui("end", "la fin");
       pos=0;
     }
     if (pos>=0)
@@ -113,7 +113,7 @@ int check_parse(const ustl::vector<textElement> & v,int python){
     ctrl_c=false;
     giac::kbd_interrupted=interrupted=false;
     check_do_graph(g,gs,7,0); // define the function
-    DefineStatusMessage((char *)(lang?"Syntaxe correcte":"Parse OK"),1,0,0);
+    DefineStatusMessage((char *)(zhui("Parse OK", "Syntaxe correcte")),1,0,0);
   }
   DisplayStatusArea();    
   return lineerr;
@@ -374,7 +374,7 @@ bool isalphanum(char c){
 }
 
 void search_msg(){
-  DefineStatusMessage((char *)(lang?"EXE: suivant, AC: annuler":"EXE: next, AC: cancel"),1,0,0);
+  DefineStatusMessage((char *)(zhui("EXE: next, AC: cancel", "EXE: suivant, AC: annuler")),1,0,0);
   DisplayStatusArea();    	    
 }  
 
@@ -412,7 +412,7 @@ void show_status(textArea * text,const ustl::string & search,const ustl::string 
 
 bool chk_replace(textArea * text,const ustl::string & search,const ustl::string & replace){
   if (replace.size())
-    DefineStatusMessage((char *)(lang?"Remplacer? EXE: Oui, 8 ou N: Non":"Replace? EXE: Yes, 8 or N: No"),1,0,0);
+    DefineStatusMessage((char *)(zhui("Replace? EXE: Yes, 8 or N: No", "Remplacer? EXE: Oui, 8 ou N: Non")),1,0,0);
   else
     search_msg();
   DisplayStatusArea();
@@ -446,14 +446,14 @@ int check_leave(textArea * text){
       ustl::string tmp=text->filename;
       tmp=tmp.substr(7,tmp.size()-7);
       if (strcmp(tmp.c_str(),"temp.py")==0){
-	if (confirm(lang?"Les modifications seront perdues":"Changes will be lost",lang?"F1: annuler,       F6: tant pis":"F1: cancel,       F6: confirm")==KEY_CTRL_F1)
+	if (confirm(zhui("Changes will be lost", "Les modifications seront perdues"),zhui("F1: cancel,       F6: confirm", "F1: annuler,       F6: tant pis"))==KEY_CTRL_F1)
 	  return 2;
 	else {
 	  return 0;
 	}
       }
-      tmp += lang?" a ete modifie!":" was modified!";
-      if (confirm(tmp.c_str(),lang?"F1: sauvegarder,       F6: tant pis":"F1: save,       F6: discard changes")==KEY_CTRL_F1){
+      tmp += zhui(" was modified!", " a ete modifie!");
+      if (confirm(tmp.c_str(),zhui("F1: save,       F6: discard changes", "F1: sauvegarder,       F6: tant pis"))==KEY_CTRL_F1){
 	save_script(text->filename.c_str(),merge_area(text->elements));
 	text->changed=false;
 	return 1;
@@ -1480,17 +1480,17 @@ int doTextArea(textArea* text) {
 	smallmenu.height=8;
 	smallmenu.scrollbar=0;
 	//smallmenu.title = "KhiCAS";
-	smallmenuitems[0].text = (char*)lang?"Tester syntaxe":"Check syntax";
-	smallmenuitems[1].text = (char*)lang?"Sauvegarder":"Save";
-	smallmenuitems[2].text = (char*)lang?"Sauvegarder comme":"Save as";
-	smallmenuitems[3].text = (char*)lang?"Inserer":"Insert";
-	smallmenuitems[4].text = (char*)lang?"Effacer":"Clear";
-	smallmenuitems[5].text = (char*)lang?"Chercher,remplacer":"Search, replace";
-	smallmenuitems[6].text = (char*)lang?"Aller a la ligne":"Goto line";
+	smallmenuitems[0].text = (char*)zhui("Check syntax", "Tester syntaxe");
+	smallmenuitems[1].text = (char*)zhui("Save", "Sauvegarder");
+	smallmenuitems[2].text = (char*)zhui("Save as", "Sauvegarder comme");
+	smallmenuitems[3].text = (char*)zhui("Insert", "Inserer");
+	smallmenuitems[4].text = (char*)zhui("Clear", "Effacer");
+	smallmenuitems[5].text = (char*)zhui("Search, replace", "Chercher,remplacer");
+	smallmenuitems[6].text = (char*)zhui("Goto line", "Aller a la ligne");
 	smallmenuitems[7].type = MENUITEM_CHECKBOX;
 	smallmenuitems[7].text = (char*)"Python";
 	smallmenuitems[7].value = text->python;
-	smallmenuitems[8].text = (char*)lang?"Quitter":"Quit";
+	smallmenuitems[8].text = (char*)zhui("Quit", "Quitter");
 	smallmenuitems[9].text = (char *)aide_khicas_string;
 	smallmenuitems[10].text = "A propos";
         int sres = doMenu(&smallmenu);
@@ -1524,7 +1524,7 @@ int doTextArea(textArea* text) {
               save_script(text->filename.c_str(),merge_area(v));
               text->changed=false;
               char status[256];
-              sprintf(status,lang?"%s sauvegarde":"%s saved",text->filename.c_str()+7);
+              sprintf(status,zhui("%s saved", "%s sauvegarde"),text->filename.c_str()+7);
               DefineStatusMessage(status, 1, 0, 0);
               DisplayStatusArea();
             }
@@ -1564,7 +1564,7 @@ int doTextArea(textArea* text) {
 	  }
 	  if (sres==7){
 	    display(text,isFirstDraw,totalTextY,scroll,textY);
-	    int l=get_line_number(lang?"Negatif: en partant de la fin":"Negative: counted from the end",lang?"Numero de ligne:":"Line number:");
+	    int l=get_line_number(zhui("Negative: counted from the end", "Negatif: en partant de la fin"),zhui("Line number:", "Numero de ligne:"));
 	    if (l>0)
 	      text->line=l-1;
 	    if (l<0)

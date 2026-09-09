@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "khicas_gb18030.h"
 #include "graphicsProvider.hpp"
 
 color_t* VRAM_base;
@@ -502,8 +503,13 @@ void mPrintXY(int x, int y, char*msg, int mode, int color) {
   nmsg[0] = 0x20;
   nmsg[1] = 0x20;
   nmsg[2] = '\0';
-  strncat(nmsg, msg, 48);
+  // GB18030 (Chinese) strings carry a leading 0x01 marker: strip it and switch
+  // the OS charset around the draw call (see khicas_gb18030.h).
+  const char * txt; int gb=khicas_gb_strip(msg,&txt);
+  strncat(nmsg, txt, 48);
+  if (gb) khicas_enable_gb18030();
   PrintXY(x, y, nmsg, mode, color );
+  if (gb) khicas_disable_gb18030();
 }
 
 void drawScreenTitle(char* title, char* subtitle) {

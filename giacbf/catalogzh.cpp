@@ -67,6 +67,7 @@ void reset_alpha(){
 }
 
 int lang=0;
+int zh_ui_enabled=1; /* Chinese UI strings on (see zhui.cc) */
 const char ram_filename[]="\\\\fls0\\khicaszh.8c2";
 const catalogFunc completeCat[] = { // list of all functions (including some not in any category)
   {" loop for", "for ", "Defined loop.", "#\nfor ", 0, CAT_CATEGORY_PROG},
@@ -175,9 +176,9 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"abs(x)", 0, "\x01""\xbe""""\xf8""""\xb6""""\xd4""""\xd6""""\xb5"" / ""\xb8""""\xb4""""\xca""""\xfd""""\xb5""""\xc4""""\xc4""""\xa3"" / ""\xcf""""\xf2""""\xc1""""\xbf""""\xb7""""\xb6""""\xca""""\xfd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":abs(x)", "#abs(-3)", "#abs(3+4i)", CAT_CATEGORY_COMPLEXNUM | (CAT_CATEGORY_REAL<<8)},
   {"altitude(A,B,C)", 0, "Altitude in triangle ABC from A", "1,i,2+i", 0,CAT_CATEGORY_2D},
   {"append", 0, "Adds an element at the end of a list","#l.append(x)", 0, CAT_CATEGORY_LIST},
-  {"approx(x)", 0, "Approx. value x. Shortcut S-D", "pi", 0, CAT_CATEGORY_REAL},
+  {"approx(x)", 0, "\x01""\xca""""\xfd""""\xd6""""\xb5""""\xbd""""\xfc""""\xcb""""\xc6""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":approx(expr) ""\xbb""""\xf2"" approx(expr,n)", "#approx(pi)", "#approx(sqrt(2),20)", CAT_CATEGORY_REAL},
   {"area(objet)", 0, "Algebric area", "circle(0,1)", "triangle(-1,1+i,3)", CAT_CATEGORY_2D  },
-  {"arg(z)", 0, "Angle of complex z.", "1+i", 0, CAT_CATEGORY_COMPLEXNUM},
+  {"arg(z)", 0, "\x01""\xb8""""\xb4""""\xca""""\xfd""""\xb5""""\xc4""""\xb7""""\xf8""""\xbd""""\xc7""(""\xbb""""\xa1""""\xb6""""\xc8"")""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":arg(z)", "#arg(1+i)", "#arg(-1)", CAT_CATEGORY_COMPLEXNUM},
   {"asc(string)", 0, "List of ASCII codes os a string", "\"Hello\"", 0, CAT_CATEGORY_ARIT},
   {"assume(hyp)", 0, "Assumption on variable.", "x>1", "x>-1 and x<1", CAT_CATEGORY_PROGCMD|(CAT_CATEGORY_SOFUS<<8)},
   {"avance(n)", "avance ", "Turtle forward n steps, default n=10", "#avance 30", 0, CAT_CATEGORY_LOGO},
@@ -185,7 +186,7 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"baisse_crayon ", "baisse_crayon ", "Turtle moves with the pen writing.", 0, 0, CAT_CATEGORY_LOGO},
   {"barplot(list)", 0, "Bar plot of 1-d statistic series data in list.", "[3/2,2,1,1/2,3,2,3/2]", 0, CAT_CATEGORY_STATS},
   {"barycenter([pnt,coeff],...)", 0, "Barycenter of a sequence of [point,coefficient]. Run isobarycenter if all coefficients are equal", "[1,1],[i,1],[2,3]", 0, CAT_CATEGORY_2D | (CAT_CATEGORY_3D << 8) },
-  {"binomial(n,p,k)", 0, "binomial(n,p,k) probability to get k success with n trials where p is the probability of success of 1 trial. binomial_cdf(n,p,k) is the probability to get at most k successes. binomial_icdf(n,p,t) returns the smallest k such that binomial_cdf(n,p,k)>=t", "10,.5,4", 0, CAT_CATEGORY_PROBA},
+  {"binomial(n,p,k)", 0, "\x01""\xb6""""\xfe""""\xcf""""\xee""""\xca""""\xbd""""\xcf""""\xb5""""\xca""""\xfd"" C(n,k)""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":binomial(n,k)", "#binomial(10,3)", "#binomial(n,2)", CAT_CATEGORY_PROBA},
     {"bisector(A,B,C)", 0, "Bisector of angle AB,AC", "1,i,2+i", 0,CAT_CATEGORY_2D},
   {"bitxor", "bitxor", "Exclusive or", "#bitxor(1,2)", 0, CAT_CATEGORY_PROGCMD},
   {"black", "black", "Display option", "#display=black", 0, CAT_CATEGORY_PROGCMD},
@@ -206,8 +207,8 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"cone(A,v,theta,[h])", 0, " cone with vertex A, direction v, and with half_angle t [and with altitudes h and -h]", "[0,0,0],[0,0,1],pi/6", "[0,0,0],[0,0,1],pi/6,4", CAT_CATEGORY_3D},
   {"conic(expression)", 0, "Conic given by a polynomial equation of degree 2 or by 5 vertices", "x^2+x*y+y^2=5", "1,i,2+i,3-i,4+2i", CAT_CATEGORY_2D},
   {"coordinates(object)", 0, "Coordonnees (cartesian))", "point(1,2)", "point(1,2,3)", CAT_CATEGORY_2D | (CAT_CATEGORY_3D << 8) },
-  {"conj(z)", 0, "Complex conjugate of z.", "1+i", 0, CAT_CATEGORY_COMPLEXNUM},
-  {"correlation(l1,l2)", 0, "Correlation of lists l1 and l2", "[1,2,3,4,5],[0,1,3,4,4]", 0, CAT_CATEGORY_STATS},
+  {"conj(z)", 0, "\x01""\xb9""""\xb2""""\xe9""""\xee""""\xb8""""\xb4""""\xca""""\xfd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":conj(z)", "#conj(3+4i)", "#conj(1-i)", CAT_CATEGORY_COMPLEXNUM},
+  {"correlation(l1,l2)", 0, "\x01""\xcf""""\xe0""""\xb9""""\xd8""""\xcf""""\xb5""""\xca""""\xfd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":correlation(L1,L2)", "#correlation([1,2,3],[2,4,6])", "#correlation([1,2,3],[3,1,2])", CAT_CATEGORY_STATS},
   {"covariance(l1,l2)", 0, "Covariance of lists l1 and l2", "[1,2,3,4,5],[0,1,3,4,4]", 0, CAT_CATEGORY_STATS},
   {"cpartfrac(p,x)", 0, "Partial fraction decomposition over C.", "1/(x^4-1)", 0, CAT_CATEGORY_ALGEBRA | (CAT_CATEGORY_COMPLEXNUM << 8)},
   {"crayon ", "crayon ", "Turtle drawing color", "#crayon red", 0, CAT_CATEGORY_LOGO},
@@ -264,7 +265,7 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"fourier_bn(f,x,T,n,a)", 0, "Sine Fourier coefficients of f", "x^2,x,2*pi,n,-pi", 0, CAT_CATEGORY_CALCULUS},
   {"fourier_cn(f,x,T,n,a)", 0, "Exponential Fourier coefficients of f", "x^2,x,2*pi,n,-pi", 0, CAT_CATEGORY_CALCULUS},
   {"from math/... import *", "from math import *", "Access to math or to random functions ([random]) or turtle with English commandnames [turtle]. Math import is not required in KhiCAS", "#from random import *", "#from turtle import *", CAT_CATEGORY_PROG},
-  {"fsolve(equation,x=a..b)", 0, "Approx equation solving in interval a..b.","cos(x)=x,x=0..1", "cos(x)-x,x=0.0", CAT_CATEGORY_SOLVE},
+  {"fsolve(equation,x=a..b)", 0, "\x01""\xca""""\xfd""""\xd6""""\xb5""""\xbd""""\xe2""""\xb7""""\xbd""""\xb3""""\xcc""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":fsolve(""\xb7""""\xbd""""\xb3""""\xcc"",x=""\xb3""""\xf5""""\xd6""""\xb5"")", "#fsolve(cos(x)=x,x=1)", "#fsolve(x^2-2=0,x=1)", CAT_CATEGORY_SOLVE},
   // {"function f(x):...", "function f(x) local y;   ffunction:;", "Function definition.", "#function f(x) local y; y:=x^2; return y; ffunction:;", 0, CAT_CATEGORY_PROG},
   {"gauss(q)", 0, "Quadratic form reduction", "x^2+x*y+x*z+y^2+z^2,[x,y,z]", 0, CAT_CATEGORY_LINALG},
   {"gcd(a,b,...)", 0, "\x01""\xd7""""\xee""""\xb4""""\xf3""""\xb9""""\xab""""\xd2""""\xf2""""\xca""""\xfd"" / ""\xb6""""\xe0""""\xcf""""\xee""""\xca""""\xbd""""\xd7""""\xee""""\xb4""""\xf3""""\xb9""""\xab""""\xd2""""\xf2""""\xca""""\xbd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":gcd(a,b,...)", "#gcd(23,13)", "#gcd(x^2-1,x^3-1)", CAT_CATEGORY_ARIT | (CAT_CATEGORY_POLYNOMIAL << 8)},
@@ -286,7 +287,7 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"iegcd(a,b)", 0, "Find integers u,v,d such that a*u+b*v=d=gcd(a,b)","23,13", 0, CAT_CATEGORY_ARIT},
   {"ifactor(n)", 0, "\x01""\xd5""""\xfb""""\xca""""\xfd""""\xd6""""\xca""""\xd2""""\xf2""""\xca""""\xfd""""\xb7""""\xd6""""\xbd""""\xe2""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":ifactor(n)", "#ifactor(1234)", "#ifactor(2^32+1)", CAT_CATEGORY_ARIT},
   {"ilaplace(f,s,x)", 0, "Inverse Laplace transform of f", "s/(s^2+1),s,x", 0, CAT_CATEGORY_CALCULUS},
-  {"im(z)", 0, "Imaginary part.", "1+i", 0, CAT_CATEGORY_COMPLEXNUM},
+  {"im(z)", 0, "\x01""\xb8""""\xb4""""\xca""""\xfd""""\xb5""""\xc4""""\xd0""""\xe9""""\xb2""""\xbf""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":im(z)", "#im(3+4i)", "#im(2-5i)", CAT_CATEGORY_COMPLEXNUM},
   {"incircle(A,B,C)", 0, "Incircle", "-1,2+i,3", 0, CAT_CATEGORY_PROGCMD | (CAT_CATEGORY_2D << 8) | XCAS_ONLY},
   {"inf", "inf", "Plus infinity. -inf for minus infinity and infinity for unsigned/complex infinity. Shortcut shift INS.", "oo", 0, CAT_CATEGORY_CALCULUS},
   {"input()", "input()", "Read a string from keyboard", 0, 0, CAT_CATEGORY_PROG},
@@ -318,12 +319,12 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"linear_regression(Xlist,Ylist)", 0, "Linear regression.", "[1,2,3,4,5],[0,1,3,4,4]", 0, CAT_CATEGORY_STATS},
   {"linear_regression_plot(Xlist,Ylist)", 0, "Linear regression plot.", "#X,Y:=[1,2,3,4,5],[0,1,3,4,4];linear_regression_plot(X,Y);scatterplot(X,Y)", 0, CAT_CATEGORY_STATS},
   {"linetan(expr,x,x0)", 0, "Tangent to the graph at x=x0.", "sin(x),x,pi/2", 0, CAT_CATEGORY_PLOT},
-  {"linsolve([eq1,eq2,..],[x,y,..])", 0, "Linear system solving. May use the output of lu for O(n^2) solving (see example 2).","[x+y=1,x-y=2],[x,y]", "#p,l,u:=lu([[1,2],[3,4]]); linsolve(p,l,u,[5,6])", CAT_CATEGORY_SOLVE | (CAT_CATEGORY_LINALG <<8) | (CAT_CATEGORY_MATRIX << 16)},
+  {"linsolve([eq1,eq2,..],[x,y,..])", 0, "\x01""\xbd""""\xe2""""\xcf""""\xdf""""\xd0""""\xd4""""\xb7""""\xbd""""\xb3""""\xcc""""\xd7""""\xe9""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":linsolve([eq1,eq2],[x,y]) ""\xbb""""\xf2"" linsolve(A,b)", "#linsolve([x+y=3,x-y=1],[x,y])", "#linsolve([[1,2],[3,4]],[5,6])", CAT_CATEGORY_SOLVE | (CAT_CATEGORY_LINALG <<8) | (CAT_CATEGORY_MATRIX << 16)},
   {"logarithmic_regression(Xlist,Ylist)", 0, "Logarithmic egression.", "[1,2,3,4,5],[0,1,3,4,4]", 0, CAT_CATEGORY_STATS},
   {"logarithmic_regression_plot(Xlist,Ylist)", 0, "Logarithmic regression plot.", "#X,Y:=[1,2,3,4,5],[0,1,3,4,4];logarithmic_regression_plot(X,Y);scatterplot(X,Y)", 0, CAT_CATEGORY_STATS},
   {"lu(A)", 0, "LU decomposition LU of matrix A, P*A=L*U", "[[1,2],[3,4]]", 0, CAT_CATEGORY_MATRIX},
   {"magenta", "magenta", "Display option", "#display=magenta", 0, CAT_CATEGORY_PROGCMD},
-  {"map(f,l)", 0, "Maps f on element of list l.","lambda x:x*x,[1,2,3]", 0, CAT_CATEGORY_LIST},
+  {"map(f,l)", 0, "\x01""\xb6""""\xd4""""\xc1""""\xd0""""\xb1""""\xed""""\xc3""""\xbf""""\xb8""""\xf6""""\xd4""""\xaa""""\xcb""""\xd8""""\xd3""""\xa6""""\xd3""""\xc3""""\xba""""\xaf""""\xca""""\xfd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":map(L,f)", "#map([1,2,3],x->x^2)", "#map([1,2,3],sin)", CAT_CATEGORY_LIST},
   {"matpow(A,n)", 0, "Returns matrix A^n", "[[1,2],[3,4]],n","#assume(n>=1);matpow([[0,2],[0,4]],n)",  CAT_CATEGORY_MATRIX},
   {"matrix(r,c,func)", 0, "Matrix from a defining function.", "2,3,(j,k)->j^k", 0, CAT_CATEGORY_MATRIX},
   {"mean(l)", 0, "\x01""\xcb""""\xe3""""\xca""""\xf5""""\xc6""""\xbd""""\xbe""""\xf9""""\xd6""""\xb5""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":mean(L)", "#mean([3/2,2,1,1/2,3,2,3/2])", "#mean([1,2,3,4,5])", CAT_CATEGORY_STATS},
@@ -350,10 +351,10 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
 #endif
   {"plotcontour(expr,[x=xm..xM,y=ym..yM],levels)", 0, "Levels of expr.", "x^2+2y^2,[x=-2..2,y=-2..2],[1,2]", 0, CAT_CATEGORY_PLOT},
   {"plotfield(f(t,y),[t=tmin..tmax,y=ymin..ymax])", 0, "Plot field of differential equation y'=f(t,y), an optionally one solution by adding plotode=[t0,y0]", "sin(t*y),[t=-3..3,y=-3..3],plotode=[0,1]", 0, CAT_CATEGORY_PLOT},
-  {"plotfunc(expr,[x,y])", 0, "Xcas: graph of a 3d function", "x^2-y^2,[x,y]","x^2-y^2,[x=-2..2,y=-2..2],nstep=700", CAT_CATEGORY_PLOT | (CAT_CATEGORY_3D << 8) | XCAS_ONLY },
+  {"plotfunc(expr,[x,y])", 0, "\x01""\xbb""""\xe6""""\xd6""""\xc6""""\xba""""\xaf""""\xca""""\xfd""""\xcd""""\xbc""""\xcf""""\xf1""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":plotfunc(f,x)", "#plotfunc(sin(x),x)", "#plotfunc(x^2,x=-2..2)", CAT_CATEGORY_PLOT | (CAT_CATEGORY_3D << 8) | XCAS_ONLY },
   {"plotlist(list)", 0, "Plot a list", "[3/2,2,1,1/2,3,2,3/2]", 0, CAT_CATEGORY_PLOT},
   {"plotode(f(t,y),[t=tmin..tmax,y],[t0,y0])", 0, "Plot solution of differential equation y'=f(t,y), y(t0)=y0.", "sin(t*y),[t=-3..3,y],[0,1]", 0, CAT_CATEGORY_PLOT},
-  {"plotparam([x,y],t)", 0, "Parametric plot. For example plotparam([sin(3t),cos(2t)],t,0,pi) or plotparam(exp(i*t),t,0,pi)", "[sin(3t),cos(2t)],t,0,pi", "[t^2,t^3],t=-1..1,tstep=0.1", CAT_CATEGORY_PLOT},
+  {"plotparam([x,y],t)", 0, "\x01""\xbb""""\xe6""""\xd6""""\xc6""""\xb2""""\xce""""\xca""""\xfd""""\xc7""""\xfa""""\xcf""""\xdf""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":plotparam([x(t),y(t)],t)", "#plotparam([cos(t),sin(t)],t)", "#plotparam([t,t^2],t=-2..2)", CAT_CATEGORY_PLOT},
   {"plotpolar(r,theta)", 0, "Polar plot.","cos(3*x),x,0,pi", "1/(1+cos(x)),x=0..pi,tstep=0.05", CAT_CATEGORY_PLOT},
   {"plotseq(f(x),x=[u0,m,M],n)", 0, "Plot f(x) on [m,M] and n terms of the sequence defined by u_{n+1}=f(u_n) and u0.","sqrt(2+x),x=[6,0,7],5", 0, CAT_CATEGORY_PLOT},
   {"plus_point", "plus_point", "Display option", "#display=blue+plus_point", 0, CAT_CATEGORY_PROGCMD},
@@ -369,7 +370,7 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"powmod(a,n,p)", 0, "Returns a^n mod p.","123,456,789", 0, CAT_CATEGORY_ARIT},
   {"print(expr)", 0, "Print expr in console", 0, 0, CAT_CATEGORY_PROG},
   {"projection(obj1,obj2)", 0, "Projection on obj1 of obj2", "line(y=x),point(2,3)", 0, CAT_CATEGORY_2D },
-  {"proot(p)", 0, "Returns real and complex roots, of polynomial p. Exemple proot([1,2.1,3,4.2]) or proot(x^3+2.1*x^2+3x+4.2)", "x^3+2.1*x^2+3x+4.2", 0, CAT_CATEGORY_POLYNOMIAL},
+  {"proot(p)", 0, "\x01""\xb6""""\xe0""""\xcf""""\xee""""\xca""""\xbd""""\xca""""\xfd""""\xd6""""\xb5""""\xc7""""\xf3""""\xb8""""\xf9""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":proot(P)", "#proot(x^3-1)", "#proot([1,0,0,-1])", CAT_CATEGORY_POLYNOMIAL},
   {"purge(x)", 0, "Clear assigned variable x. Shortcut SHIFT-FORMAT", 0, 0, CAT_CATEGORY_PROGCMD|(CAT_CATEGORY_SOFUS<<8)},
   {"python(f)", 0, "Displays f in Python syntax.", 0, 0, CAT_CATEGORY_PROGCMD},
   {"python_compat(0|1|2)", 0, "python_compat(0) Xcas syntax, python_compat(1) Python syntax with ^ interpreted as power, python_compat(2) ^ as bit xor", "0", "1", CAT_CATEGORY_PROG},
@@ -381,12 +382,12 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"quo(p,q,x)", 0, "\x01""\xb6""""\xe0""""\xcf""""\xee""""\xca""""\xbd""""\xd5""""\xfb""""\xb3""""\xfd""""\xb5""""\xc4""""\xc9""""\xcc""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":quo(p,q,x);""\xd5""""\xfb""""\xca""""\xfd""""\xb5""""\xc4""""\xc9""""\xcc""""\xd3""""\xc3"" iquo(a,b)", "#quo(x^3-1,x-1,x)", "#iquo(23,13)", CAT_CATEGORY_POLYNOMIAL},
   {"quote(x)", 0, "Returns expression x unevaluated.", 0, 0, CAT_CATEGORY_ALGEBRA},
   {"radius(objet)", 0, "Radius of a circle or sphere", "circle(0,1)", "sphere([0,0,0],[1,1,1])", CAT_CATEGORY_2D | (CAT_CATEGORY_3D << 8) },
-  {"rand()", "rand()", "Random real between 0 and 1", 0, 0, CAT_CATEGORY_PROBA},
+  {"rand()", "rand()", "\x01""\xc9""""\xfa""""\xb3""""\xc9"" 0 ""\xb5""""\xbd"" 1 ""\xd6""""\xae""""\xbc""""\xe4""""\xb5""""\xc4""""\xcb""""\xe6""""\xbb""""\xfa""""\xca""""\xfd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":rand()", "#rand()", "#1+100*rand()", CAT_CATEGORY_PROBA},
   {"randint(a,b)", 0, "Random integer between a and b. With 1 argument in Xcas, random integer between 1 and n.", "5,25", "6", CAT_CATEGORY_PROBA},
   {"ranm(n,m,[loi,parametres])", 0, "Random matrix with integer coefficients or according to a probability law (ranv for a vector). Examples ranm(2,3), ranm(3,2,binomial,20,.3), ranm(4,2,normald,0,1)", "3,3","4,2,normald,0,1",  CAT_CATEGORY_MATRIX},
   {"ranv(n,[loi,parametres])", 0, "Random vector.", "10","4,normald,0,1", CAT_CATEGORY_LINALG},
   {"ratnormal(x)", 0, "Puts everything over a common denominator.", 0, 0, CAT_CATEGORY_ALGEBRA},
-  {"re(z)", 0, "Real part.", "1+i", 0, CAT_CATEGORY_COMPLEXNUM},
+  {"re(z)", 0, "\x01""\xb8""""\xb4""""\xca""""\xfd""""\xb5""""\xc4""""\xca""""\xb5""""\xb2""""\xbf""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":re(z)", "#re(3+4i)", "#re(2-5i)", CAT_CATEGORY_COMPLEXNUM},
   {"read(\"filename\")", "read(\"", "Read a file.", 0, 0, CAT_CATEGORY_PROGCMD},
   {"rectangle_plein a,b", "rectangle_plein ", "Direct filled rectangle from turtle position, if b is omitted b==a", "#rectangle_plein 30","#rectangle_plein 20,40", CAT_CATEGORY_LOGO},
   {"recule n", "recule ", "Turtle backward n steps, n=10 by default", "#recule 30", 0, CAT_CATEGORY_LOGO},
@@ -402,14 +403,14 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"rhombus_point", "rhombus_point", "Display option", "#display=magenta+rhombus_point", 0, CAT_CATEGORY_PROGCMD},
   {"rond n", "rond ", "Circle tangent to the turtle, radius n. Run rond n,theta for an arc of circle of theta degrees", 0, 0, CAT_CATEGORY_LOGO},
   {"rotation(center,angle,objcet)", 0, "Image of object by rotation", "2-i,pi/2,circle(0,1)", "sphere([0,0,0],[1,1,1])", CAT_CATEGORY_2D | (CAT_CATEGORY_3D << 8) },
-  {"rref(A)", 0, "Pivot de Gauss", "[[1,2,3],[4,5,6]]", 0, CAT_CATEGORY_MATRIX|  (CAT_CATEGORY_LINALG<<8)},
+  {"rref(A)", 0, "\x01""\xbe""""\xd8""""\xd5""""\xf3""""\xb5""""\xc4""""\xd0""""\xd0""""\xbc""""\xf2""""\xbb""""\xaf""""\xbd""""\xd7""""\xcc""""\xdd""""\xd0""""\xce""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":rref(A)", "#rref([[1,2],[3,4]])", "#rref([[1,2,3],[4,5,6]])", CAT_CATEGORY_MATRIX|  (CAT_CATEGORY_LINALG<<8)},
   {"rsolve(equation,u(n),[init])", 0, "Solve a recurrence relation.","u(n+1)=2*u(n)+3,u(n),u(0)=1", "([u(n+1)=3*v(n)+u(n),v(n+1)=v(n)+u(n)],[u(n),v(n)],[u(0)=1,v(0)=2]", CAT_CATEGORY_SOLVE},
   {"saute n", "saute ", "Turtle jumps n steps, by default n=10", "#saute 30", 0, CAT_CATEGORY_LOGO},
   {"scatterplot(Xlist,Ylist)", 0, "Draws points", "[1,2,3,4,5],[0,1,3,4,4]", 0, CAT_CATEGORY_STATS},
   {"segment(A,B)", 0, "Segment", "1,2+i", "[1,2,1],[-1,3,2]", CAT_CATEGORY_PROGCMD | (CAT_CATEGORY_2D << 8) | XCAS_ONLY},
   {"seq(expr,var,a,b)", 0, "\x01""\xc9""""\xfa""""\xb3""""\xc9""""\xc1""""\xd0""""\xb1""""\xed""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":seq(f,k,a,b) ""\xbb""""\xf2"" seq(f,k,a,b,""\xb2""""\xbd""""\xb3""""\xa4"")", "#seq(j^2,j,1,5)", "#seq(j^2,j,1,10,2)", CAT_CATEGORY_PROGCMD},
   //{"si", "si  alors  sinon  fsi;", "Test.", "#f(x):=si x>0 alors x; sinon -x; fsi;// valeur absolue", 0, CAT_CATEGORY_PROG},
-  {"sign(x)", 0, "Returns -1 if x is negative, 0 if x is zero and 1 if x is positive.", 0, 0, CAT_CATEGORY_REAL|XCAS_ONLY},
+  {"sign(x)", 0, "\x01""\xb7""""\xfb""""\xba""""\xc5""""\xba""""\xaf""""\xca""""\xfd"":""\xd5""""\xfd""""\xca""""\xfd""""\xb7""""\xb5""""\xbb""""\xd8"" 1,""\xb8""""\xba""""\xca""""\xfd""""\xb7""""\xb5""""\xbb""""\xd8"" -1,0 ""\xb7""""\xb5""""\xbb""""\xd8"" 0""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":sign(x)", "#sign(-3)", "#sign(2)", CAT_CATEGORY_REAL|XCAS_ONLY},
   {"similarity(center,ratio,angle,object)", 0, "Image of object by similarity", "0,2,pi/2,circle(1,1)", 0, CAT_CATEGORY_2D },
   {"simplify(expr)", 0, "\x01""\xbb""""\xaf""""\xbc""""\xf2""""\xb1""""\xed""""\xb4""""\xef""""\xca""""\xbd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":simplify(expr)", "#simplify(sin(3x)/sin(x))", "#simplify((x^2-1)/(x-1))", CAT_CATEGORY_ALGEBRA},
   {"single_inter(A,B)", 0, "First intersection. Run inter for a list of intersections.", "line(y=x),line(x+y=3)", 0, CAT_CATEGORY_3D | (CAT_CATEGORY_2D << 8) | XCAS_ONLY},
@@ -433,7 +434,7 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"tlin(expr)", 0, "Trigonometric linearization of expr.","sin(x)^3", 0, CAT_CATEGORY_TRIG},
   {"tourne_droite n", "tourne_droite ", "Turtle turns right n degrees, n=90 by default", 0, 0, CAT_CATEGORY_LOGO},
   {"tourne_gauche n", "tourne_gauche ", "Turtle turns left n degrees, n=90 by default", 0, 0, CAT_CATEGORY_LOGO},
-  {"trace(A)", 0, "Trace of the matrix A.", "[[1,2],[3,4]]", 0, CAT_CATEGORY_MATRIX},
+  {"trace(A)", 0, "\x01""\xbe""""\xd8""""\xd5""""\xf3""""\xb5""""\xc4""""\xbc""""\xa3""(""\xd6""""\xf7""""\xb6""""\xd4""""\xbd""""\xc7""""\xcf""""\xdf""""\xd4""""\xaa""""\xcb""""\xd8""""\xd6""""\xae""""\xba""""\xcd"")""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":trace(A)", "#trace([[1,2],[3,4]])", "#trace(idn(3))", CAT_CATEGORY_MATRIX},
   {"transpose(A)", 0, "\x01""\xbe""""\xd8""""\xd5""""\xf3""""\xd7""""\xaa""""\xd6""""\xc3""(""\xb9""""\xb2""""\xe9""""\xee""""\xd7""""\xaa""""\xd6""""\xc3""""\xd3""""\xc3"" trn(A))""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":transpose(A)", "#transpose([[1,2],[3,4]])", "#transpose([[1,2,3]])", CAT_CATEGORY_MATRIX |  (CAT_CATEGORY_LINALG<<8)},
   {"translation(vect,obj)", 0, "Translate by vect obj", "[1,2],cercle(0,1)", 0, CAT_CATEGORY_2D },
   {"triangle(A,B,C)", 0, "Triangle given by 3 vertices", "1+i,1-i,-1", "A,B,C", CAT_CATEGORY_2D},
@@ -477,30 +478,30 @@ ustl::string insert_string(int index){
 int showCatalog(char* insertText,int preselect,int menupos) {
   // returns 0 on failure (user exit) and 1 on success (user chose a option)
   MenuItem menuitems[CAT_CATEGORY_LOGO+1];
-    menuitems[CAT_CATEGORY_ALL].text = (char*)((lang==1)?"Tout":"All");
-    menuitems[CAT_CATEGORY_ALGEBRA].text = (char*)((lang==1)?"Algebre":"Algebra");
-    menuitems[CAT_CATEGORY_LINALG].text = (char*)((lang==1)?"Algebre lineaire":"Linear algebra");
-    menuitems[CAT_CATEGORY_CALCULUS].text = (char*)((lang==1)?"Analyse":"Calculus");
-    menuitems[CAT_CATEGORY_ARIT].text = (char*)"Arithmetic, crypto";
-    menuitems[CAT_CATEGORY_COMPLEXNUM].text = (char*)"Complexes";
-    menuitems[CAT_CATEGORY_PLOT].text = (char*)((lang==1)?"Courbes":"Curves");
-    menuitems[CAT_CATEGORY_POLYNOMIAL].text = (char*)((lang==1)?"Polynomes":"Polynomials");
-    menuitems[CAT_CATEGORY_PROBA].text = (char*)((lang==1)?"Probabilites":"Probabilities");
-    menuitems[CAT_CATEGORY_PROGCMD].text = (char*)((lang==1)?"Programmes cmds (0)":"Program cmds (0)");
-    menuitems[CAT_CATEGORY_REAL].text = (char*)((lang==1)?"Reels (x,theta,t)":"Reals");
-    menuitems[CAT_CATEGORY_SOLVE].text = (char*)((lang==1)?"Resoudre (log)":"Solve (log)");
-    menuitems[CAT_CATEGORY_STATS].text = (char*)((lang==1)?"Statistiques (ln)":"Statistics (ln)");
-    menuitems[CAT_CATEGORY_TRIG].text = (char*)((lang==1)?"Trigonometrie (sin)":"Trigonometry (sin)");
-    menuitems[CAT_CATEGORY_OPTIONS].text = (char*)"Options (cos)";
-    menuitems[CAT_CATEGORY_LIST].text = (char*)((lang==1)?"Listes (tan)":"Lists (tan)");
-    menuitems[CAT_CATEGORY_MATRIX].text = (char*)"Matrices ";
-    menuitems[CAT_CATEGORY_PROG].text = (char*)((lang==1)?"Programmes (S<>D)":"Programs (S<>D)");
-    menuitems[CAT_CATEGORY_SOFUS].text = (char*)((lang==1)?"Modifier variables (()":"Change variables (()");
-    menuitems[CAT_CATEGORY_PHYS].text = (char*)((lang==1)?"Constantes physique ())":"Physics constants ())");
-    menuitems[CAT_CATEGORY_UNIT].text = (char*)((lang==1)?"Unites physiques (,)":"Units (,)");
-    menuitems[CAT_CATEGORY_2D].text = (char*)((lang==1)?"Geometrie (->)":"Geometry (->)");
-    menuitems[CAT_CATEGORY_3D].text = (char*)((lang==1)?"3D (*)":"3D (*)");
-    menuitems[CAT_CATEGORY_LOGO].text = (char*)((lang==1)?"Tortue (/)":"Turtle (/)");
+    menuitems[CAT_CATEGORY_ALL].text = (char*)"\x01""\xc8""""\xab""""\xb2""""\xbf""";
+    menuitems[CAT_CATEGORY_ALGEBRA].text = (char*)"\x01""\xb4""""\xfa""""\xca""""\xfd""";
+    menuitems[CAT_CATEGORY_LINALG].text = (char*)"\x01""\xcf""""\xdf""""\xd0""""\xd4""""\xb4""""\xfa""""\xca""""\xfd""";
+    menuitems[CAT_CATEGORY_CALCULUS].text = (char*)"\x01""\xce""""\xa2""""\xbb""""\xfd""""\xb7""""\xd6""";
+    menuitems[CAT_CATEGORY_ARIT].text = (char*)"\x01""\xcb""""\xe3""""\xca""""\xf5""/""\xc3""""\xdc""""\xc2""""\xeb""";
+    menuitems[CAT_CATEGORY_COMPLEXNUM].text = (char*)"\x01""\xb8""""\xb4""""\xca""""\xfd""";
+    menuitems[CAT_CATEGORY_PLOT].text = (char*)"\x01""\xc7""""\xfa""""\xcf""""\xdf""";
+    menuitems[CAT_CATEGORY_POLYNOMIAL].text = (char*)"\x01""\xb6""""\xe0""""\xcf""""\xee""""\xca""""\xbd""";
+    menuitems[CAT_CATEGORY_PROBA].text = (char*)"\x01""\xb8""""\xc5""""\xc2""""\xca""";
+    menuitems[CAT_CATEGORY_PROGCMD].text = (char*)"\x01""\xb3""""\xcc""""\xd0""""\xf2""""\xc3""""\xfc""""\xc1""""\xee"" (0)";
+    menuitems[CAT_CATEGORY_REAL].text = (char*)"\x01""\xca""""\xb5""""\xca""""\xfd"" (x,""\xa6""""\xc8"",t)";
+    menuitems[CAT_CATEGORY_SOLVE].text = (char*)"\x01""\xbd""""\xe2""""\xb7""""\xbd""""\xb3""""\xcc"" (log)";
+    menuitems[CAT_CATEGORY_STATS].text = (char*)"\x01""\xcd""""\xb3""""\xbc""""\xc6"" (ln)";
+    menuitems[CAT_CATEGORY_TRIG].text = (char*)"\x01""\xc8""""\xfd""""\xbd""""\xc7"" (sin)";
+    menuitems[CAT_CATEGORY_OPTIONS].text = (char*)"\x01""\xd1""""\xa1""""\xcf""""\xee"" (cos)";
+    menuitems[CAT_CATEGORY_LIST].text = (char*)"\x01""\xc1""""\xd0""""\xb1""""\xed"" (tan)";
+    menuitems[CAT_CATEGORY_MATRIX].text = (char*)"\x01""\xbe""""\xd8""""\xd5""""\xf3""";
+    menuitems[CAT_CATEGORY_PROG].text = (char*)"\x01""\xb3""""\xcc""""\xd0""""\xf2"" (S<>D)";
+    menuitems[CAT_CATEGORY_SOFUS].text = (char*)"\x01""\xd0""""\xde""""\xb8""""\xc4""""\xb1""""\xe4""""\xc1""""\xbf"" ((";
+    menuitems[CAT_CATEGORY_PHYS].text = (char*)"\x01""\xce""""\xef""""\xc0""""\xed""""\xb3""""\xa3""""\xc1""""\xbf"" ())";
+    menuitems[CAT_CATEGORY_UNIT].text = (char*)"\x01""\xce""""\xef""""\xc0""""\xed""""\xb5""""\xa5""""\xce""""\xbb"" (,)";
+    menuitems[CAT_CATEGORY_2D].text = (char*)"\x01""\xbc""""\xb8""""\xba""""\xce"" (->)";
+    menuitems[CAT_CATEGORY_3D].text = (char*)"\x013D (*)";
+    menuitems[CAT_CATEGORY_LOGO].text = (char*)"\x01""\xba""""\xa3""""\xb9""""\xea""""\xbb""""\xe6""""\xcd""""\xbc"" (/)";
   
   Menu menu;
   menu.items=menuitems;

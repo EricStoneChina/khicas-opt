@@ -684,9 +684,9 @@ const char * gettext(const char * s) {
       giac::freeze=false;
       for (;;){
 #ifdef NSPIRE_NEWLIB
-	DefineStatusMessage((char*)((lang==1)?"Ecran fige. Taper esc":"Screen frozen. Press esc."), 1, 0, 0);
+	DefineStatusMessage((char*)(zhui("Screen frozen. Press esc.", "Ecran fige. Taper esc")), 1, 0, 0);
 #else
-	DefineStatusMessage((char*)((lang==1)?"Ecran fige. Taper EXIT":"Screen frozen. Press EXIT."), 1, 0, 0);
+	DefineStatusMessage((char*)(zhui("Screen frozen. Press EXIT.", "Ecran fige. Taper EXIT")), 1, 0, 0);
 #endif
 	DisplayStatusArea();
 	int key;
@@ -1638,7 +1638,7 @@ giac::gen eqw(const giac::gen & ge,bool editable){
   for (;;){
 #if 1
     if (firstrun==2){
-      DefineStatusMessage((char*)(lang?"EXE: quitte, resultat dans last":"EXE: quit, result stored in last"), 1, 0, 0);
+      DefineStatusMessage((char*)(zhui("EXE: quit, result stored in last", "EXE: quitte, resultat dans last")), 1, 0, 0);
       //EnableStatusArea(2);
       DisplayStatusArea();
       firstrun=1;
@@ -1788,7 +1788,7 @@ giac::gen eqw(const giac::gen & ge,bool editable){
       int keyflag = GetSetupSetting( (unsigned int)0x14);
       if (keyflag==0)
 	handle_f5();
-      if (inputline(lang?"Stocker selection dans":"Save selection in",lang?"Nom de variable: ":"Variable name: ",varname,false) && !varname.empty() && isalpha(varname[0])){
+      if (inputline(zhui("Save selection in", "Stocker selection dans"),lang?"Nom de variable: ":"Variable name: ",varname,false) && !varname.empty() && isalpha(varname[0])){
 	giac::gen g(varname,contextptr);
 	giac::gen ge(eval(g,1,contextptr));
 	if (g.type!=_IDNT){
@@ -1935,7 +1935,7 @@ giac::gen eqw(const giac::gen & ge,bool editable){
     if (key==KEY_CTRL_EXE){
       if (xcas::do_select(eq.data,true,value) && value.type==_EQW){
 	//cout << "ok " << value._EQWptr->g << endl;
-	//DefineStatusMessage((char*)lang?"resultat stocke dans last":"result stored in last", 1, 0, 0);
+	//DefineStatusMessage((char*)zhui("result stored in last", "resultat stocke dans last"), 1, 0, 0);
 	//DisplayStatusArea();
 	giac::sto(value._EQWptr->g,giac::gen("last",contextptr),contextptr);
 	return value._EQWptr->g;
@@ -2022,7 +2022,7 @@ giac::gen eqw(const giac::gen & ge,bool editable){
     if (key==KEY_CTRL_EXIT || key==KEY_CTRL_AC){
       if (!edited)
 	return geq;
-      if (confirm(lang?"Vraiment abandonner?":"Really leave",lang?"F1: retour editeur,  F6: confirmer":"F1: back to editor,  F6: confirm")==KEY_CTRL_F6)
+      if (confirm(zhui("Really leave", "Vraiment abandonner?"),zhui("F1: back to editor,  F6: confirm", "F1: retour editeur,  F6: confirmer"))==KEY_CTRL_F6)
 	return undef;
     }
     bool doit=eqdata.dx>=LCD_WIDTH_PX;
@@ -2409,7 +2409,7 @@ void do_run(const char * s,gen & g,gen & ge){
     turtle_stack().erase(turtle_stack().begin()+1,turtle_stack().end());// =vector<logo_turtle>(1,logo_turtle());
 #endif
     history_plot(contextptr).clear();
-    while (confirm((lang?"Memoire remplie!":"Memory full"),"Purge variable",true)==-1)
+    while (confirm((zhui("Memory full", "Memoire remplie!")),"Purge variable",true)==-1)
       ;
     gen g=select_var();
     if (g.type==_IDNT)
@@ -2419,7 +2419,7 @@ void do_run(const char * s,gen & g,gen & ge){
     if (cpu_speed>0)
       clock_set_speed(cpu_speed);
     SetQuitHandler(0);
-    confirm(lang?"Sauvegarde automatique désactivée":"Auto-save disabled",lang?"":"");
+    confirm(zhui("Auto-save disabled", "Sauvegarde automatique désactivée"),lang?"":"");
   }
   //Console_Output("Done"); return ;
   esc_flag=0;
@@ -2685,8 +2685,8 @@ void save(const char * fname){
 void save_session(){
   if (strcmp(session_filename,"session") && console_changed){
     ustl::string tmp(session_filename);
-    tmp += lang?" a ete modifie!":" was modified!";
-    if (confirm(tmp.c_str(),lang?"F1: sauvegarder, F6: tant pis":"F1: save, F6: discard changes")==KEY_CTRL_F1){
+    tmp += zhui(" was modified!", " a ete modifie!");
+    if (confirm(tmp.c_str(),zhui("F1: save, F6: discard changes", "F1: sauvegarder, F6: tant pis"))==KEY_CTRL_F1){
       save(session_filename);
       console_changed=0;
     }    
@@ -2742,7 +2742,7 @@ int select_script_and_run() {
 void erase_script(){
   char filename[MAX_FILENAME_SIZE+1];
   int res=fileBrowser(filename, (char*)"*.py", "Scripts");
-  if (res && do_confirm(lang?"Vraiment effacer":"Really erase?")){
+  if (res && do_confirm(zhui("Really erase?", "Vraiment effacer"))){
     unsigned short pFile[MAX_FILENAME_SIZE+1];
     // create file in data folder (assumes data folder already exists)
     Bfile_StrToName_ncpy(pFile, (const unsigned char *)filename, strlen(filename)+1);
@@ -2785,7 +2785,7 @@ void edit_script(char * fname){
     string s;
     load_script(filename,s);
     if (s.empty()){
-      s=python_compat(contextptr)?(lang?"Prog. Python, sinon taper":"Python prog., for Xcas"):(lang?"Prog. Xcas, sinon taper":"Xcas prog., for Python");
+      s=python_compat(contextptr)?(zhui("Python prog., for Xcas", "Prog. Python, sinon taper")):(lang?"Prog. Xcas, sinon taper":"Xcas prog., for Python");
       s += " AC F6 12";
       int k=confirm(s.c_str(),"F1: Tortue, F6: Prog",true);
       if (k==-1)
@@ -2947,11 +2947,11 @@ void run(const char * s,int do_logo_graph_eqw){
     if (edptr)
       edptr->python=p>0?p&3:0;
 #ifdef MICROPY_LIB
-    if (p==4 && ((int) python_heap)>1 && do_confirm((lang==1)?"Effacer le tas MicroPython?":"Clear MicroPython heap?"))
+    if (p==4 && ((int) python_heap)>1 && do_confirm(zhui("Clear MicroPython heap?", "Effacer le tas MicroPython?")))
       python_free();
 #endif
 #ifdef QUICKJS
-    if (0 && p==-1 && do_confirm((lang==1)?"Effacer le tas QuickJS?":"Clear QuickJS heap?"))
+    if (0 && p==-1 && do_confirm(zhui("Clear QuickJS heap?", "Effacer le tas QuickJS?")))
       js_end(global_js_context);
 #endif
     *logptr(contextptr) << "Xcas interpreter\n";

@@ -67,6 +67,7 @@ void reset_alpha(){
 }
 
 int lang=0;
+int zh_ui_enabled=0; /* Chinese UI strings off for the English build */
 const char ram_filename[]="\\\\fls0\\khicas50.8c2";
 const catalogFunc completeCat[] = { // list of all functions (including some not in any category)
   {" loop for", "for ", "Defined loop.", "#\nfor ", 0, CAT_CATEGORY_PROG},
