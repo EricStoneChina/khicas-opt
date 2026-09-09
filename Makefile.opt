@@ -175,8 +175,11 @@ khicas50.g3a: khicasen.bin
 
 # --- 中文版(khicaszh):帮助为中文,界面仍为英文(阶段一) ---------------------
 # 与 khicas50 结构相同,只把帮助对象换成 khelpzh.o(static_helpzh.h)。
-khicaszh.elf: $(CAS_OBJS) $(GUI_OBJS) khelpzh.o catalogen.o helpen.o prizm.ld
-	$(CXX) $(LDFLAGS) -Wl,-Map=khicaszh.map catalogen.o helpen.o $(CAS_OBJS) khelpzh.o $(GUI_OBJS) $(LIBS) -o $@
+# 必须用 catalogzh.o(而非 catalogen.o):ram_filename 是硬编码在 catalogXX.cpp 里的
+# 第二段文件名(main.cc chk_ram2M 只把扩展名 .8c2 改成 .ac2/.882),
+# catalogen.o 会去找 khicas50.ac2,与 khicaszh.g3a 版本不匹配会直接崩溃。
+khicaszh.elf: $(CAS_OBJS) $(GUI_OBJS) khelpzh.o catalogzh.o helpen.o prizm.ld
+	$(CXX) $(LDFLAGS) -Wl,-Map=khicaszh.map catalogzh.o helpen.o $(CAS_OBJS) khelpzh.o $(GUI_OBJS) $(LIBS) -o $@
 	sh3eb-elf-objdump -C -t khicaszh.elf | sort > dump_t
 
 khicaszh.bin: khicaszh.elf prizm.ld
