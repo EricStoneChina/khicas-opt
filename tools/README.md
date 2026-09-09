@@ -1,33 +1,33 @@
 # KhiCAS 工具集
 
-## 图标(2048 风格)
+## 图标(fx-CG50 官方主菜单风格)
 
-图标规范(用户认可的 2048 插件风格,非 WikiPrizm 旧黑底规范):
+与 OS 自带应用图标(Run-Matrix / Statistics / Graph …)同一套视觉语言 —— 依据用户真机主菜单截图确定:
 - 92x64,24bpp RGB(无 alpha,供 mkg3a)
-- **未选中**:白底 + 高对比橙红主体 + 浅灰阴影(偏移 2,2)
-- **选中**:蓝渐变底(上浅下深)+ 白色主体 + 顶部高光
-- 主体居中、四周留边 >=3px、**底部留白 >=12px(避开 OS 文字区)**、不超限位
+- **满幅饱和色渐变磁贴**(直角,**不留白边、不加投影**)
+- **白色图形**,大号、居中(本图标为 χ)
+- **右上角深色圆角小徽标 + 白色文字**(本图标为 "CAS")
+- 未选中 = 深蓝渐变;选中 = 亮蓝渐变(更亮,体现高亮)
 
 ### 生成
 
 ```powershell
-pwsh icon-generate.ps1        # Windows 本机(无 bun/node 依赖,推荐)
+pwsh icon-generate.ps1        # Windows 本机(无需 bun/node)
 ```
-或 Linux/bun:
-```bash
-bun generate-icons.ts [输出目录]
-```
-两者输出一致(几何/配色等价)。
+输出:`out/khicasio.png`(未选中)、`out/khicasio1.png`(选中)、`out/compare_x4.png`(4 倍对比预览)
 
 ### 分析验证
 
 ```powershell
 pwsh icon-analyze2.ps1        # 精确测主体边界框/留边/主色(排除背景)
 ```
-或用 bun 版 `bun analyze-icons.ts [目录]`(通用分析,含风格评估)。
 
 ### 模板
 `fxcg50-icon-template.zip` — Lephe 官方风格模板(GIMP .xcf,手工精细调整用)。
+
+> ⚠️ `generate-icons.ts` / `analyze-icons.ts`(bun 版)为早期"白底 + 彩色主体"方案,
+> 已**被 icon-generate.ps1 取代**(风格不同),保留仅作参考。
+
 
 ## 帮助/其他工具
 
