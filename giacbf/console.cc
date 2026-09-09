@@ -21,7 +21,7 @@ extern "C" {
 #include "input_lexer.h"
 #include "console.h"
 #include "catalogGUI.hpp"
-#include "zhui.h" // Chinese UI strings (zhui() lookup)
+#include "khicas_zhui.h" // Chinese UI strings (zhui() lookup)
 //#include "aboutGUI.hpp"
 #include "menuGUI.hpp"
 #include "inputGUI.hpp"
