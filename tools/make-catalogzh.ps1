@@ -54,5 +54,69 @@ $out = foreach ($l in $lines) {
 if (-not $found) { throw "apropos_string line not found in catalogen.cpp" }
 $src = $out -join "`n"
 
+# --- 3. patch completeCat entries that have a Chinese translation ---
+# Entry layout: {"name", insert|0, "desc"|0, "example"|0, "example2"|0, CATEGORY},
+#   desc     -> Chinese howto (0x01 marker + GB18030 bytes)
+#   example  -> "#<ex1>"  (the '#' makes the help box show/insert it verbatim
+#               instead of wrapping it as name+example+")")
+#   example2 -> "#<ex2>"  (or 0)
+$zhHelpPath = 'D:\GitHub\khicas-opt\tools\help-zh.json'
+$zhHelp = [System.IO.File]::ReadAllText($zhHelpPath, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
+
+function To-HashCString([string]$text) {
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('"#')
+    foreach ($ch in $text.ToCharArray()) {
+        if ($ch -eq '"') { [void]$sb.Append('\"') }
+        elseif ($ch -eq [char]0x5C) { [void]$sb.Append('\\') }
+        else { [void]$sb.Append($ch) }
+    }
+    [void]$sb.Append('"')
+    return $sb.ToString()
+}
+
+function To-MarkedGB18030([string]$text) {
+    $enc = [System.Text.Encoding]::GetEncoding('GB18030')
+    $sb = New-Object System.Text.StringBuilder
+    [void]$sb.Append('"')
+    [void]$sb.Append('\x01')
+    foreach ($ch in $text.ToCharArray()) {
+        $cb = $enc.GetBytes([string]$ch)
+        if ($cb.Length -gt 2) { $cb = @([byte][char]'?') }
+        foreach ($b in $cb) {
+            if ($b -ge 0x80) {
+                [void]$sb.Append('""'); [void]$sb.Append('\x'); [void]$sb.Append($b.ToString('x2')); [void]$sb.Append('""')
+            } elseif ($b -eq 0x22) { [void]$sb.Append('\"')
+            } elseif ($b -eq 0x5C) { [void]$sb.Append('\\')
+            } else { [void]$sb.Append([char]$b) }
+        }
+    }
+    [void]$sb.Append('"')
+    return $sb.ToString()
+}
+
+$catRe = New-Object System.Text.RegularExpressions.Regex('^(?<indent>\s*)\{(?<name>"(?:[^"\\]|\\.)*")\s*,\s*(?<insert>0|"(?:[^"\\]|\\.)*")\s*,\s*(?<desc>0|"(?:[^"\\]|\\.)*")\s*,\s*(?<ex1>0|"(?:[^"\\]|\\.)*")\s*,\s*(?<ex2>0|"(?:[^"\\]|\\.)*")\s*,\s*(?<cat>[^}]*)\}\s*,\s*$')
+$lines = $src -split "`n"
+$patched = 0
+$out2 = foreach ($l in $lines) {
+    $m = $catRe.Match($l)
+    if (-not $m.Success) { $l; continue }
+    $nm = $m.Groups['name'].Value.Trim('"')
+    $base = $nm
+    $pi = $base.IndexOf('(')
+    if ($pi -gt 0) { $base = $base.Substring(0, $pi) }
+    $prop = $zhHelp.PSObject.Properties[$nm]
+    if ($prop -eq $null) { $prop = $zhHelp.PSObject.Properties[$base] }
+    if ($prop -eq $null -or $prop.Value -is [string]) { $l; continue }
+    $val = $prop.Value
+    if (-not $val.howto -or -not $val.ex1) { $l; continue }
+    $descLit = To-MarkedGB18030 $val.howto
+    $ex1Lit = To-HashCString $val.ex1
+    $ex2Lit = if ($val.ex2) { To-HashCString $val.ex2 } else { '0' }
+    $patched++
+    '{0}{{{1}, {2}, {3}, {4}, {5}, {6}}},' -f $m.Groups['indent'].Value, $m.Groups['name'].Value, $m.Groups['insert'].Value, $descLit, $ex1Lit, $ex2Lit, $m.Groups['cat'].Value
+}
+$src = $out2 -join "`n"
+
 [System.IO.File]::WriteAllText($outPath, $src, $latin1)
-Write-Host "catalogzh.cpp regenerated: $($src.Length) chars"
+Write-Host "catalogzh.cpp regenerated: $($src.Length) chars, $patched catalog entries translated"
