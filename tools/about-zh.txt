@@ -1,0 +1,8 @@
+Khicas 1.8.0 中文版 (c) 2024 B. Parisse et al.
+由 EricStoneChina 构建 (2026)
+www-fourier.univ-grenoble-alpes.fr/~parisse
+License GPL version 2.
+Interface adapted from Eigenmath for Casio, by G. Maia, http://gbl08ma.com, Mike Smith, Nemhardy, LePhenixNoir
+Special thanks to LePhenixNoir, planet-casio and tiplanet
+
+Do not use if CAS calculators are forbidden!

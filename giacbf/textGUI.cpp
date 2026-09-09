@@ -465,8 +465,14 @@ int check_leave(textArea * text){
   return 0;
 }
 
+// Set while display() renders a text element whose string starts with the 0x01
+// GB18030 marker: makes EVERY word of that element render in GB18030 mode
+// (the marker alone would only cover the first word after tokenisation).
+static bool g_textarea_gb = false;
+
 void print(int &X,int&Y,const char * buf,int color,bool revert,bool fake,bool minimini){
   const char * txt; int gb=khicas_gb_strip(buf,&txt);
+  if (!gb && g_textarea_gb) { gb=1; txt=buf; }
   if (gb) khicas_enable_gb18030();
   if(minimini) 
     PrintMiniMini( &X, &Y, (unsigned char *)txt, revert?4:0, color, fake?1:0 );
@@ -742,6 +748,10 @@ void display(textArea * text,int & isFirstDraw,int & totalTextY,int & scroll,int
   //char bufpos[512];  sprintf(bufpos,"%i,%i:%i,%i       ",line1,pos1,line2,pos2);  puts(bufpos);
   for (int cur=0;cur < v.size();++cur) {
     const char* src = v[cur].s.c_str();
+    // Element-level GB18030 (Chinese) flag: a leading 0x01 marker applies to the
+    // whole element, so every word (not just the first) is drawn in GB18030.
+    g_textarea_gb = (src[0]==1);
+    if (g_textarea_gb) ++src;
     if (cur==0){
       int l=v[cur].s.size();
       if (l>=1 && src[0]=='#')
@@ -900,7 +910,7 @@ void display(textArea * text,int & isFirstDraw,int & totalTextY,int & scroll,int
       // character with explicit wrapping instead. The 0x01 marker is copied into
       // each per-character buffer so print() switches to GB18030 for it.
       const char * gbword;
-      if (khicas_gb_strip(singleword,&gbword) && *gbword) {
+      if ((khicas_gb_strip(singleword,&gbword) || g_textarea_gb) && *gbword) {
         const char * p=gbword;
         while (*p){
           int clen=1;

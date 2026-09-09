@@ -457,7 +457,7 @@ const char aide_khicas_string[]="Khicas Help";
 const char main_string1[]="Clear variables?";
 const char main_string2[]="F1: cancel,  F6: confirm";
 const char shortcuts_string[]="To set the system clock, run hh,mm=>, for example 13,45=>,\nKeyboard shortcuts (shell and editor)\nF1-F3: according to the legends\nF4: catalog\nF5: lowercase lock or switch lowercase/uppercase\nF6: file menu\n(-): _\nshift-OPTN: programming commands including pixelised graphs\nshift-PRGM: programming characters\nshift-FRAC: plot commands\nOPTN: options\nshift-QUIT: turtle\nshift-Lst: list editor or commands\nshift-Mtr: matrix editor or commands\nVARS: list of variables (shell) or turtle picture (editor)\nshift-FORMAT: purge\n=>+: partfrac\n=>*: factor\n=>sin/cos/tan\n=>=>: solve\n\n*** Shell ***:\ndownkey: completion/help, shift-SETUP: configuration\nF3: 2-d expression editor or graphic view or text editor\nalpha-F3: text editor\n\n*** Expression editor ***\npad: move selection inside expression tree\nshift-left/right exchange selection with right or left argument\nALPHA-left/right inside a sum or product: increase selection adding left or right argument\nF3: Edit selection, shift-F3: increase fontsize, ALPHA-F3: decrease fontsize\nF4: catalog\nF5: lower/uppercase\nF6: Eval selection, shift-F6: approx value, ALPHA-F6: regroup command\nDEL: suppress root operator in selection\n\n*** Script editor: ***\nfraction key (G): indent, shift-fraction: help/completion, shift-CLIP: begins selection, move cursor to the end then DEL to remove or shift-CLIP to copy to clipboard. shift-PASTE to paste.\nF6-6 Search only: enter word then EXE then EXIT. Type EXE for next occurence, AC to cancel.\nF6-6: Replace: enter word then EXE then replacement then EXE. Type EXE or EXIT to replace or skip replacement and go to the next occurence, AC to cancel.\nshift-Ans: check syntax\n\n*** Graphs: ***\n+ - zoom\n(-): zoomout along y\n*: autoscale\n/: orthonormalize\nOPTN: axes on/off";
-const char apropos_string[]="Khicas 1.7.0, (c) 2022 B. Parisse et al. www-fourier.univ-grenoble-alpes.fr/~parisse\nLicense GPL version 2.\nInterface adapted from Eigenmath for Casio, by G. Maia, http://gbl08ma.com, Mike Smith, Nemhardy, LePhenixNoir\nSpecial thanks to LePhenixNoir, planet-casio and tiplanet\n\nDo not use if CAS calculators are forbidden!";
+const char apropos_string[]="Khicas 1.8.0, (c) 2024 B. Parisse et al. www-fourier.univ-grenoble-alpes.fr/~parisse\nLicense GPL version 2.\nInterface adapted from Eigenmath for Casio, by G. Maia, http://gbl08ma.com, Mike Smith, Nemhardy, LePhenixNoir\nSpecial thanks to LePhenixNoir, planet-casio and tiplanet\nBuild: EricStoneChina (2026)\n\nDo not use if CAS calculators are forbidden!";
 
 int CAT_COMPLETE_COUNT=sizeof(completeCat)/sizeof(catalogFunc);
 
@@ -703,8 +703,13 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
       elem[1].newLine = 1;
       elem[1].lineSpacing = 3;
       ustl::string autoexample;
-      if (index<allcmds)
+      if (index<allcmds){
 	elem[1].s = completeCat[index].desc;
+	// Chinese build: the translated static help carries a 0x01 GB18030 marker,
+	// prefer it over the built-in (English) catalog description.
+	if (stathelp && fhowto && (unsigned char)fhowto[0]==1)
+	  elem[1].s = fhowto;
+      }
       else {
 	int token=menuitems[menu.selection-1].token;
 	elem[1].s="Sorry, no help available...";
