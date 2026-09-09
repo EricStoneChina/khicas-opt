@@ -506,7 +506,17 @@ void mPrintXY(int x, int y, char*msg, int mode, int color) {
   // GB18030 (Chinese) strings carry a leading 0x01 marker: strip it and switch
   // the OS charset around the draw call (see khicas_gb18030.h).
   const char * txt; int gb=khicas_gb_strip(msg,&txt);
-  strncat(nmsg, txt, 48);
+  // Leave room for both leading spaces and the terminator. Chinese labels
+  // must be truncated at a character boundary, never between GB18030 bytes.
+  size_t used=2;
+  while (*txt) {
+    size_t count=(gb && (unsigned char)txt[0]>=0x81 && txt[1]) ? 2 : 1;
+    if (used+count>=sizeof(nmsg)) break;
+    memcpy(nmsg+used,txt,count);
+    used+=count;
+    txt+=count;
+  }
+  nmsg[used]=0;
   if (gb) khicas_enable_gb18030();
   PrintXY(x, y, nmsg, mode, color );
   if (gb) khicas_disable_gb18030();

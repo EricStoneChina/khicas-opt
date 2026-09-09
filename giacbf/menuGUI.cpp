@@ -67,12 +67,21 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) { // returns code telling what u
 	      menuitem[3]=0;
 	    }
 	  }
-          strncat(menuitem, menu->items[curitem].text, 68);
+          const char * itemtext;
+          int gb=khicas_gb_strip(menu->items[curitem].text,&itemtext);
+          // The charset marker belongs before the row number, not after it.
+          if (gb) {
+            memmove(menuitem+1,menuitem,strlen(menuitem)+1);
+            menuitem[0]=0x01;
+          }
+          strncat(menuitem, itemtext, sizeof(menuitem)-strlen(menuitem)-1);
           if(menu->items[curitem].type != MENUITEM_SEPARATOR) {
             //make sure we have a string big enough to have background when item is selected:          
             // MB_ElementCount is used instead of strlen because multibyte chars count as two with strlen, while graphically they are just one char, making fillerRequired become wrong
-            int fillerRequired = menu->width - MB_ElementCount(menu->items[curitem].text) - (menu->type == MENUTYPE_MULTISELECT ? 2 : 3);
-            for(int i = 0; i < fillerRequired; i++) strcat(menuitem, " ");
+            if (gb) khicas_enable_gb18030();
+            int fillerRequired = menu->width - MB_ElementCount((char*)itemtext) - (menu->type == MENUTYPE_MULTISELECT ? 2 : 3);
+            if (gb) khicas_disable_gb18030();
+            for(int i = 0; i < fillerRequired && strlen(menuitem)<sizeof(menuitem)-1; i++) strcat(menuitem, " ");
             mPrintXY(menu->startX,curitem+itemsStartY-menu->scroll,(char*)menuitem, (menu->selection == curitem+1 ? TEXT_MODE_INVERT : TEXT_MODE_TRANSPARENT_BACKGROUND), menu->items[curitem].color);
           } else {
             /*int textX = (menu->startX-1) * 18;
