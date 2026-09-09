@@ -21,6 +21,7 @@ extern "C" {
   int RTC_GetTicks();
 }
 #include "kdisplay.h"
+#include "khicas_gb18030.h" // GB18030 (Chinese) text marker support
 #include "catalogGUI.hpp" // for lang
 #include "menuGUI.hpp"
 #include "console.h"
@@ -75,7 +76,10 @@ int os_get_pixel(int x,int y){
 
 int os_draw_string(int X,int Y,int color,int bg,const char * buf,bool fake){
   Y-=24;
-  PrintMini(&X, &Y, (unsigned char *)buf, 0, 0xFFFFFFFF, 0, 0, color, bg, fake?0:1, 0);
+  const char * txt; int gb=khicas_gb_strip(buf,&txt);
+  if (gb) khicas_enable_gb18030();
+  PrintMini(&X, &Y, (unsigned char *)txt, 0, 0xFFFFFFFF, 0, 0, color, bg, fake?0:1, 0);
+  if (gb) khicas_disable_gb18030();
   return X;
 }
 
@@ -116,23 +120,26 @@ int color8(int color){
 }
 
 int os_draw_string_small(int X,int Y,int color,int bg,const char * buf,bool fake){
+  const char * txt; int gb=khicas_gb_strip(buf,&txt);
+  if (gb) khicas_enable_gb18030();
   // Y-=24; // commented since mode=1<<6
 #if 0
   // fake print will find the width of the background rectangle
   int fakeX=X;
-  PrintMiniMini( &fakeX, &Y, (unsigned char *)buf, 0, 0, 1 );
+  PrintMiniMini( &fakeX, &Y, (unsigned char *)txt, 0, 0, 1 );
   drawRectangle(X,Y,fakeX-X+1,10 /* minimini font height*/,bg);
   // print without +24 (bit 6) and without clearing rectangle (bit 7), done before
-  PrintMiniMini( &X, &Y, (unsigned char *)buf, (1<<6) | (1<<7), color8(color), fake?1:0 );
+  PrintMiniMini( &X, &Y, (unsigned char *)txt, (1<<6) | (1<<7), color8(color), fake?1:0 );
 #else
   if (0 && color==0xffff){  // FIXME
     int r=bg>>11,g=(bg>>5)&0x3f,b=bg&0x1f;
     int minic=(r<8?1:0)*4+(g<16?1:0)*2+(b<8?1:0);
-    PrintMiniMini(&X,&Y,(unsigned char *)buf,4+(1<<6),minic,fake?1:0);
+    PrintMiniMini(&X,&Y,(unsigned char *)txt,4+(1<<6),minic,fake?1:0);
   }
   else
-    PrintMiniMini( &X, &Y, (unsigned char *)buf, (1<<6), color8(color), fake?1:0 );
+    PrintMiniMini( &X, &Y, (unsigned char *)txt, (1<<6), color8(color), fake?1:0 );
 #endif
+  if (gb) khicas_disable_gb18030();
   return X;
 }
 void statuslinemsg(const char * msg){
@@ -650,19 +657,24 @@ string print_tableur(const tableur & t,GIAC_CONTEXT){
     }
     if (fontsize>=16 && ss==2 && s[0]==char(0xe5) && (s[1]==char(0xea) || s[1]==char(0xeb))) // special handling for increasing and decreasing in tabvar output
       fontsize=18;
+    // GB18030 (Chinese) strings carry a leading 0x01 marker: switch the OS
+    // character set around the draw call and draw the text after the marker.
+    const char * txt; int gb=khicas_gb_strip(s,&txt);
+    if (gb) khicas_enable_gb18030();
     if (fontsize>=18){
       y -= 40;//36; // status area shift
-      PrintMini(&x,&y,(unsigned char *)s,mode,0xffffffff,0,0,c,bg,1,0);
-      return;
+      PrintMini(&x,&y,(unsigned char *)txt,mode,0xffffffff,0,0,c,bg,1,0);
     }
-    if (fontsize<16){
+    else if (fontsize<16){
       y -= 36;//32;
-      PrintMiniMini( &x, &y, (unsigned char *)s, mode,c, 0 );
-      return;
+      PrintMiniMini( &x, &y, (unsigned char *)txt, mode,c, 0 );
     }
-    y -= 38;//34;
-    //PrintCXY(x,y,s,TEXT_MODE_NORMAL,-1,COLOR_BLACK,COLOR_WHITE,1,0);
-    Bdisp_MMPrint(x,y,s,mode,0xffffffff,0,0,c,bg,1,0);
+    else {
+      y -= 38;//34;
+      //PrintCXY(x,y,s,TEXT_MODE_NORMAL,-1,COLOR_BLACK,COLOR_WHITE,1,0);
+      Bdisp_MMPrint(x,y,txt,mode,0xffffffff,0,0,c,bg,1,0);
+    }
+    if (gb) khicas_disable_gb18030();
   }
 
   

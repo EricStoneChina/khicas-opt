@@ -53,3 +53,7 @@ docs/            # 优化分析与决策记录
 - [x] ✅ 构建成功!产物 khicas50.g3a(1.9MB)+ khicas50.ac2(2.4MB)
       可下载:GitHub Actions → 最新 run → Artifacts → khicas50-optimized
       或运行 CI 时 build 步骤自动上传
+- [x] 图标重绘为 2048 风格(未选中:白底+橙红 χ;选中:蓝渐变+白 χ;留边充足、不超限位)
+- [x] 中文帮助阶段一:数据管道(help-zh-gen.ps1)+ GB18030 渲染接入 + `khicaszh` 构建目标
+      产物:CI Artifacts → `khicaszh-chinese`(khicaszh.g3a + khicaszh.ac2)
+      说明见 docs/中文翻译方案.md 第 12 节(含待真机验证清单)

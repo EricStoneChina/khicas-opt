@@ -41,12 +41,18 @@ jobs:
 
       - name: Report sizes
         run: |
-          echo "=== 主段 .g3a ==="
+          echo "=== khicas50 主段 .g3a ==="
           ls -la giacbf/khicas50.g3a
-          echo "=== 第二段 .ac2 ==="
+          echo "=== khicas50 第二段 .ac2 ==="
           ls -la giacbf/khicas50.ac2
-          echo "=== 内存占用 ==="
+          echo "=== khicaszh 中文版 .g3a ==="
+          ls -la giacbf/khicaszh.g3a
+          echo "=== khicaszh 中文版 .ac2 ==="
+          ls -la giacbf/khicaszh.ac2
+          echo "=== 内存占用(khicas50)==="
           grep -A4 "Memory region" giacbf/khicas.map 2>/dev/null || true
+          echo "=== 内存占用(khicaszh)==="
+          grep -A4 "Memory region" giacbf/khicaszh.map 2>/dev/null || true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -55,4 +61,13 @@ jobs:
           path: |
             giacbf/khicas50.g3a
             giacbf/khicas50.ac2
+          if-no-files-found: error
+
+      - name: Upload Chinese artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: khicaszh-chinese
+          path: |
+            giacbf/khicaszh.g3a
+            giacbf/khicaszh.ac2
           if-no-files-found: error

@@ -27,8 +27,19 @@ void output(ostream & of,const char * s){
   if (!s) return;
   int l=strlen(s);
   for (int i=0;i<l;++i){
-    if (s[i]=='"'){
+    unsigned char c=(unsigned char)s[i];
+    if (c=='"'){
       of << "\\\"";
+      continue;
+    }
+    if (c>=0x80){
+      // 非 ASCII 字节转义为独立字符串段。内容层输出 ""\xNN"",
+      // 调用方的包裹引号使其成为 "ascii" "\xNN" "ascii" 相邻字面量
+      // (C 自动拼接),既保持纯 ASCII 源,又避免 \x 转义吞掉后续
+      // 十六进制字符(如 "\xE9a" 会把 'a' 也当作转义)。
+      of << "\"\"\\x";
+      of << hex << int(c);
+      of << "\"\"";
       continue;
     }
     of << s[i];

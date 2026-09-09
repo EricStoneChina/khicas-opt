@@ -156,13 +156,13 @@ if ! grep -q "Makefile.opt 优化构建" Makefile 2>/dev/null; then
     cp "$REPO_DIR/Makefile.opt" Makefile
 fi
 
-info "开始构建(khicas50.g3a + khicas50.ac2, 优化配置)..."
-info "  计算模块: -O3 -finline-functions | GUI/IO: -Os | 函数分段: 开"
-make CASIOLOCAL="$CASIOLOCAL" -j"$JOBS" khicas50.g3a khicas50.ac2
+info "开始构建(khicas50 英文版 + khicaszh 中文版, 优化配置)..."
+info "  计算模块: -O2 -finline-functions | GUI/IO: -Os | 函数分段: 开"
+make CASIOLOCAL="$CASIOLOCAL" -j"$JOBS" khicas50.g3a khicas50.ac2 khicaszh.g3a khicaszh.ac2
 
 echo
 ok "构建完成!产物:"
-ls -la khicas50.g3a khicas50.ac2 2>/dev/null
+ls -la khicas50.g3a khicas50.ac2 khicaszh.g3a khicaszh.ac2 2>/dev/null
 echo
 info "下一步:"
 info "  1. 用 fx-CG Manager 模拟器测试(或复制到计算器)"

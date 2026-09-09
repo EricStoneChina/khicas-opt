@@ -1,76 +1,80 @@
-// KhiCAS 图标分析工具
-// 用法: bun analyze-icons.ts [目录]
-// 输出:每个图标的尺寸、主色调、透明占比、风格评估(对照 CASIO 官方风格)
+// KhiCAS 图标分析工具(适配 2048 白底风格规范)
+// 用法: bun analyze-icons.ts [目录]  (默认 giacbf/)
+// 输出:尺寸、背景色、主体边界框与留边、主色、风格评估
 import { PNG } from "pngjs";
 import * as fs from "fs";
 import * as path from "path";
 
 const dir = process.argv[2] ?? path.join(import.meta.dir, "..", "giacbf");
 
-// 官方风格特征(来自 Cemetech Prizm Icon Design Guidelines)
-// 1. 92x64 尺寸
-// 2. 彩色(非灰度)、接近 3D(有渐变/多色调)
-// 3. 有阴影(黑色低透明度像素簇)
-// 4. 未选中:纯黑背景;选中:非黑背景
-// 5. 主对象不占满全图(留边)
 function quantize(v: number): number {
   return Math.round(v / 24) * 24;
 }
 
 function analyze(file: string) {
-  const buf = fs.readFileSync(file);
-  const png = PNG.sync.read(buf);
+  const png = PNG.sync.read(fs.readFileSync(file));
   const { width: w, height: h, data } = png;
 
-  const colorCount = new Map<string, number>();
-  let transparent = 0;
-  let black = 0;
-  let nonBlack = 0;
-  let shadowPx = 0; // 半透明黑(阴影特征)
-  let edgeMarginMin = Infinity; // 主对象距边缘的最小像素
+  // 背景 = 四角平均
+  function px(x: number, y: number): [number, number, number, number] {
+    const i = (y * w + x) * 4;
+    return [data[i], data[i + 1], data[i + 2], data[i + 3]];
+  }
+  const corners = [px(0, 0), px(w - 1, 0), px(0, h - 1), px(w - 1, h - 1)];
+  const bg = [
+    corners.reduce((s, c) => s + c[0], 0) / 4,
+    corners.reduce((s, c) => s + c[1], 0) / 4,
+    corners.reduce((s, c) => s + c[2], 0) / 4,
+  ];
 
-  // 扫描非透明像素的边界
-  let minX = w, maxX = 0, minY = h, maxY = 0;
+  const colorCount = new Map<string, number>();
+  let minX = w, maxX = -1, minY = h, maxY = -1;
+  let subject = 0;
+  let shadowPx = 0; // 距背景远且偏灰/偏暗的像素(阴影特征)
 
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const i = (y * w + x) * 4;
-      const [r, g, b, a] = [data[i], data[i + 1], data[i + 2], data[i + 3]];
-      if (a < 32) { transparent++; continue; }
-      const key = `${quantize(r)},${quantize(g)},${quantize(b)}`;
-      colorCount.set(key, (colorCount.get(key) ?? 0) + 1);
-      if (r < 40 && g < 40 && b < 40) black++;
-      else {
-        nonBlack++;
+      const [r, g, b, a] = px(x, y);
+      if (a < 32) continue;
+      const dist = Math.abs(r - bg[0]) + Math.abs(g - bg[1]) + Math.abs(b - bg[2]);
+      if (dist > 60) {
+        subject++;
         minX = Math.min(minX, x); maxX = Math.max(maxX, x);
         minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+        const key = `${quantize(r)},${quantize(g)},${quantize(b)}`;
+        colorCount.set(key, (colorCount.get(key) ?? 0) + 1);
+        // 阴影:比背景暗、低饱和
+        if (r + g + b < bg[0] + bg[1] + bg[2] && Math.max(r, g, b) - Math.min(r, g, b) < 70) shadowPx++;
       }
-      if (a < 200 && r < 60 && g < 60 && b < 60) shadowPx++;
     }
   }
 
-  // 主色排序
-  const top = [...colorCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
-  const total = w * h;
-  const colorful = colorCount.size; // 量化后颜色数(多样=彩色)
-  const margin = Math.min(minX, minY, w - 1 - maxX, h - 1 - maxY);
+  const top = [...colorCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const mL = minX, mT = minY, mR = w - 1 - maxX, mB = h - 1 - maxY;
+  const minMargin = Math.min(mL, mT, mR, mB);
+  const isWhiteBg = bg[0] > 200 && bg[1] > 200 && bg[2] > 200;
+  const isBlueBg = bg[2] > bg[0] + 30 && bg[2] > 120;
+  const isBlackBg = bg[0] < 40 && bg[1] < 40 && bg[2] < 40;
 
   console.log(`\n=== ${path.basename(file)} ===`);
-  console.log(`  尺寸: ${w}x${h}  (官方: 92x64)`);
-  console.log(`  透明: ${(transparent / total * 100).toFixed(1)}%`);
-  console.log(`  纯黑像素: ${black} (${(black / total * 100).toFixed(1)}%)  非黑像素: ${nonBlack}`);
-  console.log(`  主色数量: ${colorful}`);
-  console.log(`  阴影像素(半透明黑): ${shadowPx}`);
-  console.log(`  主体边距: ${margin}px (官方建议留边,主对象不占满)`);
-  console.log(`  主色调(量化RGB): ${top.map(([k, v]) => `rgb(${k})×${v}`).join("  ")}`);
+  console.log(`  尺寸: ${w}x${h} (规范 92x64)`);
+  console.log(`  背景(四角均): RGB(${bg.map(v => Math.round(v)).join(",")})`);
+  if (subject === 0) { console.log("  主体: 未检出"); return; }
+  console.log(`  主体边界框: x[${minX}..${maxX}] y[${minY}..${maxY}]`);
+  console.log(`  留边: L${mL} T${mT} R${mR} B${mB} -> 最小 ${minMargin}px (要求 >=3px)`);
+  console.log(`  主体主色: ${top.map(([k, v]) => `rgb(${k})x${v}`).join("  ")}`);
+  console.log(`  阴影像素: ${shadowPx}`);
 
-  const styleNotes: string[] = [];
-  if (w !== 92 || h !== 64) styleNotes.push("尺寸不符");
-  if (colorful < 4) styleNotes.push("颜色单一,官方风格多彩");
-  if (shadowPx < 10) styleNotes.push("缺少阴影(官方风格有阴影)");
-  if (black / total > 0.9 && nonBlack < 500) styleNotes.push("接近纯黑背景(未选中风格)");
-  if (margin < 3) styleNotes.push("主体顶到边缘,建议留边");
-  console.log(`  风格评估: ${styleNotes.length ? styleNotes.join("; ") : "基本符合官方风格"}`);
+  const notes: string[] = [];
+  if (w !== 92 || h !== 64) notes.push("尺寸不符");
+  if (minMargin < 3) notes.push("主体顶到边缘(超限位)");
+  if (mB < 10) notes.push("底部留白不足(OS 文字区)");
+  if (shadowPx < 10) notes.push("缺少阴影");
+  if (isWhiteBg) notes.push("白底(2048 未选中风格)");
+  else if (isBlueBg) notes.push("蓝底(选中风格)");
+  else if (isBlackBg) notes.push("黑底(旧官方未选中风格)");
+  else notes.push("背景异常(非白/非蓝/非黑)");
+  console.log(`  风格: ${notes.join("; ")}`);
 }
 
 const files = fs.readdirSync(dir).filter(f => f.endsWith(".png"));

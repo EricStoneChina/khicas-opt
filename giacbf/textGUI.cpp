@@ -15,6 +15,7 @@
 #include <ctype.h>
 
 #include "textGUI.hpp"
+#include "khicas_gb18030.h" // GB18030 (Chinese) text marker support
 #include "stringsProvider.hpp"
 #include "graphicsProvider.hpp"
 #include "catalogGUI.hpp"
@@ -465,10 +466,13 @@ int check_leave(textArea * text){
 }
 
 void print(int &X,int&Y,const char * buf,int color,bool revert,bool fake,bool minimini){
+  const char * txt; int gb=khicas_gb_strip(buf,&txt);
+  if (gb) khicas_enable_gb18030();
   if(minimini) 
-    PrintMiniMini( &X, &Y, (unsigned char *)buf, revert?4:0, color, fake?1:0 );
+    PrintMiniMini( &X, &Y, (unsigned char *)txt, revert?4:0, color, fake?1:0 );
   else 
-    PrintMini(&X, &Y, (unsigned char *)buf, revert?4:0, 0xFFFFFFFF, 0, 0, color, COLOR_WHITE, fake?0:1, 0);
+    PrintMini(&X, &Y, (unsigned char *)txt, revert?4:0, 0xFFFFFFFF, 0, 0, color, COLOR_WHITE, fake?0:1, 0);
+  if (gb) khicas_disable_gb18030();
 }
 
 void match_print(char * singleword,int delta,int X,int Y,bool match,bool minimini){
@@ -890,6 +894,43 @@ void display(textArea * text,int & isFirstDraw,int & totalTextY,int & scroll,int
       //check if printing this word would go off the screen, with fake PrintMini drawing:
       int temptextX = 0,temptextY=0;
       print(temptextX,temptextY,singleword,couleur,false,/*fake*/true,minimini);
+      // GB18030 (Chinese) help text contains no spaces, so a whole paragraph
+      // arrives here as a single "word": the word-based wrapping below cannot
+      // break it and it would run off the screen. Draw such words character by
+      // character with explicit wrapping instead. The 0x01 marker is copied into
+      // each per-character buffer so print() switches to GB18030 for it.
+      const char * gbword;
+      if (khicas_gb_strip(singleword,&gbword) && *gbword) {
+        const char * p=gbword;
+        while (*p){
+          int clen=1;
+          if ((unsigned char)*p>=0x81 && (unsigned char)*(p+1)>=0x40 && (unsigned char)*(p+1)!=0x7f)
+            clen=2; // GB18030 two-byte character
+          char cbuf[4];
+          cbuf[0]=1; cbuf[1]=p[0];
+          if (clen==2) cbuf[2]=p[1];
+          cbuf[1+clen]=0;
+          int cw=0,chh=0;
+          print(cw,chh,cbuf,couleur,false,/*fake*/true,minimini);
+          if (textX+cw > text->width-6){
+            textX=text->x+deltax;
+            textY=textY+text->lineHeight+v[cur].lineSpacing;
+            ++nlines;
+          }
+          if (textY>=-24 && textY<LCD_HEIGHT_PX)
+            print(textX,textY,cbuf,couleur,invert,/*fake*/false,minimini);
+          else
+            textX += cw;
+          p+=clen;
+        }
+        // mirror the normal path's word spacing
+        if (*src==' ') ++src;
+        if (textY>=-24 && textY<LCD_HEIGHT_PX)
+          print(textX,textY," ",COLOR_BLACK,invert,false,minimini);
+        else
+          textX += 7;
+        continue;
+      }
       if(temptextX<text->width && temptextX + textX > text->width-6) {
 	if (editable) PrintMini(&textX, &textY, (unsigned char*)"\xe6\x9b", 0x02, 0xFFFFFFFF, 0, 0, COLOR_MAGENTA, COLOR_WHITE, 1, 0);	  
 	//time for a new line

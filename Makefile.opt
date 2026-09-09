@@ -61,7 +61,7 @@ CAS_OBJS = ysym2poly.o kgausspol.o kthreaded.o zcsturm.o zmaple.o zrpn.o zmoyal.
 	zvecteur.o kglobal.o zifactor.o yalg_ext.o zgauss.o zti89.o zplot.o zplot3d.o \
 	zprog.o yunary.o zusual.o yidentificateur.o kgen.o zrisch.o input_lexer.o \
 	first.o zdesolve.o ztex.o zisom.o zquater.o zadd.o overclock.o qrcodegen.o \
-	cutils.o libbf.o
+	cutils.o libbf.o khicas_gb18030.o
 
 # GUI/IO → 主段(2MB 预算)
 GUI_OBJS = fileGUI.o menuGUI.o textGUI.o fileProvider.o graphicsProvider.o \
@@ -80,7 +80,7 @@ LIBS = -L. -L$(CASIOLOCAL)/lib -Wl,--start-group -lsupc++ -lmicropy -ltommath \
 .PRECIOUS: libcas.a libgui.a
 
 all: khicas90.g3a khicas90.ac2 emucas90.g3a khicas90.882 khicas50.g3a \
-	khicas50.ac2 emucas50.g3a khicas50.882
+	khicas50.ac2 emucas50.g3a khicas50.882 khicaszh.g3a khicaszh.ac2
 
 # --- 混合优化规则:计算模块 -O3,其余 -Os ------------------------------------
 $(FAST_CXX_OBJS): %.o: %.cc
@@ -121,6 +121,12 @@ khelpfr.o: khelpfr.cc static_help.h mkhelp
 khelpen.o: khelpen.cc static_help.h mkhelp
 	./mkhelp
 	$(CXX) $(CXXFLAGS) -c khelpen.cc -o khelpen.o
+
+# 中文版帮助对象:static_helpzh.h 由 tools/help-zh-gen.ps1 从母本生成
+# (中文 howto 编码为 GB18030 字节并加 0x01 标记;未翻译条目保留英文原文),
+# 不依赖 mkhelp,重新生成后直接 make 即可。
+khelpzh.o: khelpzh.cc static_helpzh.h
+	$(CXX) $(CXXFLAGS) -c khelpzh.cc -o khelpzh.o
 
 # --- 链接与打包(与上游一致) -------------------------------------------------
 khicas.elf: $(CAS_OBJS) $(GUI_OBJS) khelpfr.o catalogfr.o helpfr.o prizm.ld
@@ -166,6 +172,21 @@ khicas50.ac2: khicasen.elf prizm.ld
 
 khicas50.g3a: khicasen.bin
 	mkg3a -n basic:Khicas50 -n internal:KHICAS50 -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
+
+# --- 中文版(khicaszh):帮助为中文,界面仍为英文(阶段一) ---------------------
+# 与 khicas50 结构相同,只把帮助对象换成 khelpzh.o(static_helpzh.h)。
+khicaszh.elf: $(CAS_OBJS) $(GUI_OBJS) khelpzh.o catalogen.o helpen.o prizm.ld
+	$(CXX) $(LDFLAGS) -Wl,-Map=khicaszh.map catalogen.o helpen.o $(CAS_OBJS) khelpzh.o $(GUI_OBJS) $(LIBS) -o $@
+	sh3eb-elf-objdump -C -t khicaszh.elf | sort > dump_t
+
+khicaszh.bin: khicaszh.elf prizm.ld
+	$(OBJCOPY) $(OBJFLAGS) -R .rominram khicaszh.elf khicaszh.bin
+
+khicaszh.ac2: khicaszh.elf prizm.ld
+	$(OBJCOPY)  $(OBJFLAGS) -j .rominram khicaszh.elf khicaszh.ac2
+
+khicaszh.g3a: khicaszh.bin
+	mkg3a -n basic:KhicasZH -n internal:KHICASZH -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
 
 emucasen.bin: khicasenm.elf prizmemu.ld
 	$(OBJCOPY) $(OBJFLAGS) -R .rominram khicasenm.elf emucasen.bin
