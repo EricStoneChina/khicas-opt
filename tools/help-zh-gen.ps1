@@ -24,6 +24,26 @@ $master = [System.IO.File]::ReadAllText($masterPath, $latin1)
 $jsonText = [System.IO.File]::ReadAllText($jsonPath, [System.Text.Encoding]::UTF8)
 $translations = $jsonText | ConvertFrom-Json
 
+# PowerShell property lookup is case-insensitive. Command names are not:
+# LU/lu and QR/qr have different signatures, so resolve translation keys with
+# an ordinal, case-sensitive comparison.
+function Get-ExactProperty($object, [string]$name) {
+    foreach ($property in $object.PSObject.Properties) {
+        if ([string]::Equals($property.Name, $name, [StringComparison]::Ordinal)) {
+            return $property
+        }
+    }
+    return $null
+}
+
+function Get-TranslationProperty($name) {
+    $property = Get-ExactProperty $translations $name
+    if ($property -eq $null -and $translations.caseSensitive -ne $null) {
+        $property = Get-ExactProperty $translations.caseSensitive $name
+    }
+    return $property
+}
+
 # resolve a C string literal into raw bytes (escape-resolved); $null for '0'
 function Decode-CStringBytes([string]$lit) {
     if ($lit -eq '0') { return $null }
@@ -121,7 +141,7 @@ foreach ($line in $master -split "`n") {
 
     $zhHowto = $null; $zhEx1 = $null; $zhEx2 = $null
     if ($cmd -ne '') {
-        $prop = $translations.PSObject.Properties[$cmd]
+        $prop = Get-TranslationProperty $cmd
         if ($prop -ne $null) {
             $val = $prop.Value
             if ($val -is [string]) { $zhHowto = $val }

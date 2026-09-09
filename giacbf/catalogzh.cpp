@@ -375,7 +375,7 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"python(f)", 0, "Displays f in Python syntax.", 0, 0, CAT_CATEGORY_PROGCMD},
   {"python_compat(0|1|2)", 0, "python_compat(0) Xcas syntax, python_compat(1) Python syntax with ^ interpreted as power, python_compat(2) ^ as bit xor", "0", "1", CAT_CATEGORY_PROG},
   {"q2a(expr,vars)", 0, "Matrix of a quadratic form", "x^2+3*x*y","x^2+3*x*y,[x,y]", CAT_CATEGORY_LINALG},
-  {"qr(A)", 0, "\x01""QR ""\xb7""""\xd6""""\xbd""""\xe2""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":qr(A)""\xa3""""\xac""""\xc7""""\xf3""""\xd5""""\xfd""""\xbd""""\xbb""""\xbe""""\xd8""""\xd5""""\xf3"" Q ""\xba""""\xcd""""\xc9""""\xcf""""\xc8""""\xfd""""\xbd""""\xc7""""\xbe""""\xd8""""\xd5""""\xf3"" R""\xa3""""\xac""""\xca""""\xb9"" A=Q*R""\xa1""""\xa3""", "#qr([[1,2],[3,4]])", "#qr([[1,0],[1,1]])", CAT_CATEGORY_MATRIX},
+  {"qr(A)", 0, "\x01""QR ""\xb7""""\xd6""""\xbd""""\xe2""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":qr(A)""\xa3""""\xac""""\xb7""""\xb5""""\xbb""""\xd8""""\xd5""""\xfd""""\xbd""""\xbb""""\xbe""""\xd8""""\xd5""""\xf3"" Q ""\xba""""\xcd""""\xc9""""\xcf""""\xc8""""\xfd""""\xbd""""\xc7""""\xbe""""\xd8""""\xd5""""\xf3"" R""\xa3""""\xac""""\xca""""\xb9"" A=Q*R""\xa1""""\xa3""", "#qr([[1,2],[3,4]])", "#qr([[1,0],[1,1]])", CAT_CATEGORY_MATRIX},
   {"quadric(equation)", 0, "Quadric given by equation (or 9 points)", "x^2-y^2+z^2", "x^2+x*y+y^2+z^2-3", CAT_CATEGORY_3D},
   {"quartile1(l)", 0, "\x01""""\xb5""""\xda""""\xd2""""\xbb""""\xcb""""\xc4""""\xb7""""\xd6""""\xce""""\xbb""""\xca""""\xfd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":quartile1(L);""\xbf""""\xc9""""\xbc""""\xd3""""\xb5""""\xda""""\xb6""""\xfe""""\xb8""""\xf6""""\xc1""""\xd0""""\xb1""""\xed""""\xd7""""\xf7""""\xce""""\xaa""""\xb8""""\xf7""""\xca""""\xfd""""\xbe""""\xdd""""\xb5""""\xc4""""\xc6""""\xb5""""\xca""""\xfd""""\xa1""""\xa3""", "#quartile1([1,2,3,4,5,6,7,8])", "#quartile1([1,2,3],[2,3,1])", CAT_CATEGORY_STATS},
   {"quartile3(l)", 0, "\x01""""\xb5""""\xda""""\xc8""""\xfd""""\xcb""""\xc4""""\xb7""""\xd6""""\xce""""\xbb""""\xca""""\xfd""""\xa1""""\xa3""""\xd3""""\xc3""""\xb7""""\xa8"":quartile3(L);""\xbf""""\xc9""""\xbc""""\xd3""""\xb5""""\xda""""\xb6""""\xfe""""\xb8""""\xf6""""\xc1""""\xd0""""\xb1""""\xed""""\xd7""""\xf7""""\xce""""\xaa""""\xb8""""\xf7""""\xca""""\xfd""""\xbe""""\xdd""""\xb5""""\xc4""""\xc6""""\xb5""""\xca""""\xfd""""\xa1""""\xa3""", "#quartile3([1,2,3,4,5,6,7,8])", "#quartile3([1,2,3],[2,3,1])", CAT_CATEGORY_STATS},
@@ -716,7 +716,13 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
 	elem[1].s="Sorry, no help available...";
 	// *logptr(contextptr) << token << endl;
 	if (stathelp){
-	  elem[1].s=remove_accents(fhowto);
+	  // Chinese static help is GB18030 with a leading 0x01 marker. It is
+	  // already encoded for the calculator and must not pass through the
+	  // UTF-8 French accent cleanup below.
+	  if (fhowto && (unsigned char)fhowto[0]==1)
+	    elem[1].s=fhowto;
+	  else
+	    elem[1].s=remove_accents(fhowto);
 	  //cout << fexamples << '\n';
 	  example=(char *)fexamples;
 	}

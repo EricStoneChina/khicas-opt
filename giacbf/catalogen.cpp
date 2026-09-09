@@ -716,7 +716,13 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
 	elem[1].s="Sorry, no help available...";
 	// *logptr(contextptr) << token << endl;
 	if (stathelp){
-	  elem[1].s=remove_accents(fhowto);
+	  // Chinese static help is GB18030 with a leading 0x01 marker. It is
+	  // already encoded for the calculator and must not pass through the
+	  // UTF-8 French accent cleanup below.
+	  if (fhowto && (unsigned char)fhowto[0]==1)
+	    elem[1].s=fhowto;
+	  else
+	    elem[1].s=remove_accents(fhowto);
 	  //cout << fexamples << '\n';
 	  example=(char *)fexamples;
 	}

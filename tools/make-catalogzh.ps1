@@ -16,6 +16,24 @@ $outPath = 'D:\GitHub\khicas-opt\giacbf\catalogzh.cpp'
 $latin1 = [System.Text.Encoding]::GetEncoding(28591)
 $src = [System.IO.File]::ReadAllText($srcPath, $latin1)
 
+# PowerShell property lookup is case-insensitive; catalog commands are not.
+function Get-ExactProperty($object, [string]$name) {
+    foreach ($property in $object.PSObject.Properties) {
+        if ([string]::Equals($property.Name, $name, [StringComparison]::Ordinal)) {
+            return $property
+        }
+    }
+    return $null
+}
+
+function Get-TranslationProperty($name) {
+    $property = Get-ExactProperty $zhHelp $name
+    if ($property -eq $null -and $zhHelp.caseSensitive -ne $null) {
+        $property = Get-ExactProperty $zhHelp.caseSensitive $name
+    }
+    return $property
+}
+
 # --- 1. ram_filename ---
 $oldName = 'const char ram_filename[]="\\\\fls0\\khicas50.8c2";'
 $newName = 'const char ram_filename[]="\\\\fls0\\khicaszh.8c2";'
@@ -113,8 +131,8 @@ $out2 = foreach ($l in $lines) {
     $base = $nm
     $pi = $base.IndexOf('(')
     if ($pi -gt 0) { $base = $base.Substring(0, $pi) }
-    $prop = $zhHelp.PSObject.Properties[$nm]
-    if ($prop -eq $null) { $prop = $zhHelp.PSObject.Properties[$base] }
+    $prop = Get-TranslationProperty $nm
+    if ($prop -eq $null) { $prop = Get-TranslationProperty $base }
     if ($prop -eq $null -or $prop.Value -is [string]) { $l; continue }
     $val = $prop.Value
     if (-not $val.howto -or -not $val.ex1) { $l; continue }
