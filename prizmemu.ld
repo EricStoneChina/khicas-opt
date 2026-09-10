@@ -19,6 +19,14 @@ SECTIONS
 	.rominram : {
 		/* Bounded integration helpers use spare AC2 code space.
 		   Keep hot general integration and the CAS heap layout unchanged. */
+    yintg.o(.text.*integrate_atan_square*)
+    yintg.o(.text.*integrate_log_zeta*)
+    yintg.o(.text.*integrate_hyperbolic_log*)
+    yintg.o(.text.*integrate_atan_log_moment*)
+    yintg.o(.text.*integration_beta_psi*)
+    yintg.o(.text.*integration_beta_partitions*)
+    yintg.o(.text.*integration_beta_terms*)
+    yintg.o(.text.*integration_beta_moment*)
 		yintg.o(.text.*integrate_mellin_log*)
 		yintg.o(.text.*integration_beta_weight*)
 		yintg.o(.text.*integrate_beta_log*)

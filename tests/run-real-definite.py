@@ -15,10 +15,16 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(',
             '  static bool integrate_quartic_trig(', '  static bool integrate_compact_primitive(',
             '  static bool integrate_sine_dirichlet(', '  static bool integrate_logistic_moment(',
             '  static bool integrate_weighted_reflection(', '  static bool integrate_decay_transform(',
+            '  static bool integration_square_root(', '  static bool integrate_atan_square(',
             '  static bool integrate_log_trig(', '  static bool integrate_thermal_moment(',
+            '  static gen integration_beta_psi(', '  static void integration_beta_partitions(',
+            '  static unsigned integration_beta_terms(', '  static gen integration_beta_moment(',
+            '  static bool integration_outer_power(', '  static bool integration_mellin_monomial(',
             '  static bool integrate_mellin_log(', '  static bool integration_beta_weight(',
             '  static bool integrate_beta_log(', '  static bool integrate_laplace_difference(',
-            '  static bool integrate_inverse_gaussian(', '  static bool integrate_compact_definite(',
+            '  static bool integrate_inverse_gaussian(',
+            '  static bool integrate_log_zeta(', '  static bool integrate_hyperbolic_log(',
+            '  static bool integrate_atan_log_moment(', '  static bool integrate_compact_definite(',
             '  static bool integrate_real_root(', '  static bool integrate_residue_kernel(',
             '  static bool integrate_real_definite('):
     text+=function(s,sig).replace('  static ', '  ',1)
@@ -27,6 +33,7 @@ with tempfile.TemporaryDirectory(prefix='khicas-real-definite-') as tmp:
     p=Path(tmp);(p/'rules.cc').write_text(text)
     flags=[os.environ.get('CXX','c++'),'-std=c++11','-O2','-DHAVE_CONFIG_H','-DGIAC_GENERIC_CONSTANTS','-Wno-deprecated-declarations','-I',os.environ.get('GIAC_INCLUDE','/usr/include/giac')]+shlex.split(os.environ.get('CXXFLAGS',''))
     libs=shlex.split(os.environ.get('LDFLAGS',''))+['-lgiac']
-    for test in ('real_definite.cc','compact_integrals.cc','cycle1_integrals.cc','cycle2_integrals.cc'):
+    for test in ('real_definite.cc','compact_integrals.cc','cycle1_integrals.cc','cycle2_integrals.cc','user_extra_integrals.cc',
+                 'cycle3_laplace_integrals.cc'):
         subprocess.run(flags+[str(p/'rules.cc'),str(ROOT/'tests'/test)]+libs+['-o',str(p/'test')],check=True)
         subprocess.run([str(p/'test')],check=True,timeout=60)

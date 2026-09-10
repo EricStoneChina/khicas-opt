@@ -2563,7 +2563,7 @@ void check_do_graph(giac::gen & ge,const giac::gen & gs,int do_logo_graph_eqw,GI
 }
 
 char * c_load_script(const char * filename){
-  if (inexammode)
+  if (inexammode || !filename || strlen(filename)>MAX_FILENAME_SIZE-16)
     return 0;
   if (filename && filename[0]!='\\'){
     // print_msg12("Adding \\\\fls0\\",filename);int key; ck_getkey(&key);
@@ -2587,9 +2587,11 @@ char * c_load_script(const char * filename){
     return 0; //file too big, return
   }
   unsigned char* asrc = (unsigned char*)malloc(size*sizeof(unsigned char)+5); // 5 more bytes to make sure it fits...
+  if (!asrc){Bfile_CloseFile_OS(hFile);return 0;}
   memset(asrc, 0, size+5); //alloca does not clear the allocated space. Make sure the string is null-terminated this way.
   int rsize = Bfile_ReadFile_OS(hFile, asrc, size, 0);
   Bfile_CloseFile_OS(hFile); //we got file contents, close it
+  if (rsize!=size){free(asrc);return 0;}
   asrc[rsize]='\0';
   return (char *) asrc;
 }
@@ -3062,4 +3064,3 @@ void run(const char * s,int do_logo_graph_eqw){
   Console_Output((const unsigned char*)s_.c_str());
   //return ge; 
 }
-

@@ -20,7 +20,30 @@ def function(s, signature):
         end += 1
     return s[start:end] + '\n'
 
-def build(directory, ref='current'):
+def compiler_options():
+    flags = [os.environ.get('CXX', 'c++'), '-std=c++11', '-O1', '-g',
+             '-DHAVE_CONFIG_H', '-DGIAC_GENERIC_CONSTANTS', '-Wno-deprecated-declarations',
+             '-I', os.environ.get('GIAC_INCLUDE', '/usr/include/giac')]
+    flags += shlex.split(os.environ.get('CXXFLAGS', ''))
+    libs = shlex.split(os.environ.get('LDFLAGS', '')) + ['-lgiac']
+    libs += shlex.split(os.environ.get('GIAC_NUMERIC_LIBS', '-lgmp -lmpfr'))
+    return flags, libs
+
+def build_validation_probe(directory):
+    """Validate a printed result using only host Giac mathematical routines.
+
+    The instrumentation source is shared, but no repository integration,
+    normalization, or FXCG simplification implementation is linked here.
+    Callers pass the computed result, never the original integration request.
+    """
+    directory.mkdir(parents=True, exist_ok=True)
+    flags, libs = compiler_options()
+    exe = directory / 'host-validator'
+    subprocess.run(flags + [str(ROOT / 'tests/integration_probe.cc')] + libs
+                   + ['-pthread', '-o', str(exe)], check=True, timeout=60)
+    return exe
+
+def build(directory, ref='current', target_simplify=False):
     directory.mkdir(parents=True, exist_ok=True)
     text = source(ref, 'yintg.cc').replace(
         '  // Left redimension p to degree n, i.e. size n+1',
@@ -37,14 +60,25 @@ def build(directory, ref='current'):
                 '  gen recursive_ratnormal(const gen & e,GIAC_CONTEXT)'):
         normalized += function(syms, sig)
     (directory / 'normalize.cc').write_text(normalized + '}\n')
-    flags = [os.environ.get('CXX', 'c++'), '-std=c++11', '-O1', '-g',
-             '-DHAVE_CONFIG_H', '-DGIAC_GENERIC_CONSTANTS', '-Wno-deprecated-declarations',
-             '-I', os.environ.get('GIAC_INCLUDE', '/usr/include/giac')]
-    flags += shlex.split(os.environ.get('CXXFLAGS', ''))
-    libs = shlex.split(os.environ.get('LDFLAGS', '')) + ['-lgiac']
-    libs += shlex.split(os.environ.get('GIAC_NUMERIC_LIBS', '-lgmp -lmpfr'))
+    extra=[]
+    if target_simplify:
+        # Exercise the real FXCG-only simplification branch without changing
+        # the host ABI headers. Other helper/library dependencies remain host.
+        s=source(ref, 'ksubst.cc')
+        simplified='#include "giacPCH.h"\n#define FXCG\n#define NO_STDEXCEPT\nnamespace giac {\n'
+        simplified+='gen ataninv2atan(const gen &,GIAC_CONTEXT);\ngen cklin(const gen &,GIAC_CONTEXT);\n'
+        simplified+=function(source(ref, 'zprog.cc'), '  gen symb_prog3(')
+        if '  static unsigned simplify_special_terms(' in s:
+            simplified+=function(s, '  static unsigned simplify_special_terms(')
+            simplified+=function(s, '  static gen simplify_special_core(')
+        for sig in ('  gen tsimplify_noexpln(',
+                    '  gen simplify(const gen & e_orig,GIAC_CONTEXT)', '  gen _simplify('):
+            simplified+=function(s, sig)
+        (directory / 'simplify.cc').write_text(simplified+'}\n')
+        extra=[str(directory / 'simplify.cc')]
+    flags, libs = compiler_options()
     exe = directory / 'probe'
     subprocess.run(flags + ['-DKHICAS_TEST_INTEGRATION_LIMITS', str(directory / 'yintg.cc'),
         str(directory / 'zintgab.cc'), str(directory / 'normalize.cc'), str(ROOT / 'tests/integration_probe.cc')]
-        + libs + ['-o', str(exe)], check=True, timeout=180)
+        + extra + libs + ['-pthread', '-o', str(exe)], check=True, timeout=180)
     return exe

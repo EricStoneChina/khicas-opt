@@ -431,7 +431,7 @@ namespace giac {
       return symbolic((intg==0?at_sum:at_integrate),gen(v,_SEQ__VECT));
     }
     v=subst(v,i,newi,quotesubst,contextptr);
-    if (intg && s>=3 && v[2]==v[3]){
+    if (intg && s>=4 && v[2]==v[3]){
       // *logptr(contextptr) << "Warning, assuming that " << v[0] << " is regular at " << v[2] << endl;
       return 0; 
     }
@@ -2038,7 +2038,9 @@ namespace giac {
     if (s1>1 && angle_radian(contextptr)){
 #ifdef FXCG
       vecteur v1(loptab(e,sincostan_tab));
-      if (!v1[0].is_symb_of_sommet(at_tan) || !v1[1].is_symb_of_sommet(at_tan))
+      // Quoted integrals/powers may have removed some of the trig nodes
+      // counted by the caller. Check this expression's actual vector size.
+      if (v1.size()>1 && (!v1[0].is_symb_of_sommet(at_tan) || !v1[1].is_symb_of_sommet(at_tan)))
 #endif
 	g=subst(e,sincostan_tab,trig2exp_tab,false,contextptr,false); // g=trig2exp(e,contextptr);
     }
@@ -2304,10 +2306,101 @@ namespace giac {
     return res;
   }
 
-  gen simplify(const gen & e_orig,GIAC_CONTEXT){
+  // Saturating upper bound for expanded arithmetic terms. Special functions
+  // are atoms: their arguments are inspected only to find nested Psi nodes.
+  // This bounds the check itself and avoids allocating an expanded expression.
+  static unsigned simplify_special_terms(const gen &g,bool &psi,unsigned &budget,unsigned depth){
+    if(!budget || depth>32){budget=0;return 65;}
+    --budget;
+    if(g.is_symb_of_sommet(at_Psi)){psi=true;return 1;}
+    if(g.type==_FRAC){
+      unsigned a=simplify_special_terms(g._FRACptr->num,psi,budget,depth+1);
+      unsigned b=simplify_special_terms(g._FRACptr->den,psi,budget,depth+1);
+      return a>b?a:b;
+    }
+    if(g.type==_VECT){
+      unsigned count=1;const vecteur &v=*g._VECTptr;
+      for(unsigned i=0;i<v.size() && budget;++i){
+        unsigned next=simplify_special_terms(v[i],psi,budget,depth+1);
+        if(next>count)count=next;
+      }
+      return !budget?65:count;
+    }
+    if(g.type!=_SYMB)return 1;
+    const gen &f=g._SYMBptr->feuille;
+    if(f.type!=_VECT){
+      unsigned n=simplify_special_terms(f,psi,budget,depth+1);
+      return n;
+    }
+    const vecteur &v=*f._VECTptr;
+    if(g.is_symb_of_sommet(at_pow) && v.size()==2 && v[1].type==_INT_ && v[1].val>=0){
+      unsigned base=simplify_special_terms(v[0],psi,budget,depth+1),count=1;
+      if(base<=1)return base;
+      for(int k=0;k<v[1].val;++k){count*=base;if(count>=65)return 65;}
+      return count;
+    }
+    bool product=g.is_symb_of_sommet(at_prod),sum=g.is_symb_of_sommet(at_plus);
+    unsigned count=product?1:0;
+    for(unsigned i=0;i<v.size() && budget;++i){
+      unsigned next=simplify_special_terms(v[i],psi,budget,depth+1);
+      if(product)count=count*next;else if(sum)count+=next;else if(next>count)count=next;
+      if(count>65)count=65;
+    }
+    return !budget?65:count;
+  }
+  static gen simplify_special_core(const gen & e_orig,GIAC_CONTEXT){
+    // An unresolved integral is an opaque atom, as in simplifier(). Avoid
+    // expanding its integrand and restarting a failed integration search.
+    if (e_orig.is_symb_of_sommet(at_integrate))
+      return e_orig;
     if (e_orig.type<=_POLY || is_inf(e_orig) || has_num_coeff(e_orig))
       return e_orig;
     gen e=simplifier(e_orig,contextptr);
+    // An algebraic extension for (a+x^(1/q))^(1/p) may have degree p*q.
+    // Keep these powers as atoms while simplifying their rational coefficient
+    // expressions. Normalizing them first can turn a short primitive into a
+    // large rootof before the later power-protection stage is reached.
+    vecteur nested,opaque;
+    vecteur powers=lvar(e);
+    for (unsigned j=0;j<powers.size();++j){
+      if (!powers[j].is_symb_of_sommet(at_pow)) continue;
+      const gen &f=powers[j]._SYMBptr->feuille;
+      if (f.type!=_VECT || f._VECTptr->size()!=2 || f._VECTptr->back().type!=_FRAC) continue;
+      const gen &base=f._VECTptr->front();
+      // A large base is also kept opaque; do not allocate a second unbounded
+      // traversal merely to decide whether optional normalization is useful.
+      bool deep=taille(base,129)>=129;
+      if (!deep){
+        vecteur inner=lop(base,at_pow);
+        for (unsigned k=0;k<inner.size();++k){
+          const gen &p=inner[k]._SYMBptr->feuille;
+          if (p.type==_VECT && p._VECTptr->size()==2 && p._VECTptr->back().type==_FRAC){deep=true;break;}
+        }
+      }
+      if (deep){
+        if (nested.size()==32) return e;
+        nested.push_back(powers[j]);
+      }
+    }
+    if (!nested.empty()){
+      for (unsigned j=0,k=0;j<nested.size();++j){
+        gen name;
+        do {
+          if(k>=128)return e;
+          name=identificateur(" nested_power_"+print_INT_(int(k++)));
+        } while(contains(e,name) || eval(name,1,contextptr)!=name);
+        opaque.push_back(name);
+      }
+      gen masked=quotesubst(e,nested,opaque,contextptr);
+      gen reduced=simplify(masked,contextptr);
+      reduced=quotesubst(reduced,opaque,nested,contextptr);
+      // Reconstruct integer powers after restoring atoms, e.g. (u^(1/3))^3,
+      // and merge sqrt/power spellings. These passes use rational algebra,
+      // never the common algebraic-extension construction in normal().
+      reduced=recursive_ratnormal(reduced,contextptr);
+      return ratnormal(simplifier(reduced,contextptr),contextptr);
+    }
+
     if (e.type==_FRAC)
       return _evalc(e_orig,contextptr);
     vecteur vsign=lop(e,at_sign);
@@ -2530,6 +2623,10 @@ namespace giac {
       }
     }
 #endif	
+    // Counts taken before quotesubst include functions hidden inside the
+    // protected atoms. Do not expand or index those now-absent functions.
+    s1=int(loptab(e,sincostan_tab).size());
+    s2=int(loptab(e,asinacosatan_tab).size());
     gen g=tsimplify_noexpln(e,s1,s2,contextptr); 
     gen glin=cklin(g,contextptr);
     bool glinb=glin!=g;
@@ -2581,6 +2678,30 @@ namespace giac {
     g=gen(normal(trigcos(reg,contextptr),contextptr),normal(trigcos(img,contextptr),contextptr));
     g=quotesubst(g,vabs2,vabs,contextptr);
     return g;
+  }
+
+  gen simplify(const gen & e_orig,GIAC_CONTEXT){
+    bool psi=false;unsigned budget=2048;
+    unsigned terms=simplify_special_terms(e_orig,psi,budget,0);
+    if(!budget)return e_orig;
+    if(!psi)return simplify_special_core(e_orig,contextptr);
+    // Bell-polynomial output is exact in its factored form. Retain it when
+    // normalization would distribute more than 64 terms or exceed the scan.
+    if(terms>64 || !budget)return e_orig;
+    vecteur special=lop(e_orig,at_Psi),replacement;
+    if(special.size()>64)return e_orig;
+    unsigned candidate=0;
+    for(unsigned i=0;i<special.size();++i){
+      gen atom;
+      do {
+        if(candidate>=128)return e_orig;
+        atom=identificateur(" simplify_Psi_"+print_INT_(int(candidate++)));
+      } while(contains(e_orig,atom) || eval(atom,1,contextptr)!=atom);
+      replacement.push_back(atom);
+    }
+    gen masked=quotesubst(e_orig,special,replacement,contextptr);
+    gen result=simplify_special_core(masked,contextptr);
+    return quotesubst(result,replacement,special,contextptr);
   }
   static const char _expln2trig_s []="expln2trig";
   static define_unary_function_eval (__expln2trig,&expln2trig,_expln2trig_s);

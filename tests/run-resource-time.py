@@ -10,6 +10,9 @@ source = r'''
 #include "giacPCH.h"
 #include <cassert>
 #include <iostream>
+#include <fstream>
+#include <cstring>
+#include <cstdlib>
 static unsigned ticks=100, snapshots=0;
 static bool available=true;
 int RTC_GetTicks(){unsigned t=ticks;ticks+=32;return t;}
@@ -20,10 +23,22 @@ bool get_cas_memory_stats(unsigned *s){
   for (unsigned i=0;i<5;++i) s[i]=v[i];
   return true;
 }
+extern "C" char *c_load_script(const char *filename){
+  std::string source;
+  if (std::string(filename)=="side-effect") source="n:=n+1";
+  else if (std::string(filename)=="oversized") source=std::string(6144,'x');
+  else {
+    std::ifstream file(filename);if(!file)return 0;
+    source.assign(std::istreambuf_iterator<char>(file),std::istreambuf_iterator<char>());
+  }
+  char *data=static_cast<char*>(malloc(source.size()+1));
+  if(data)std::memcpy(data,source.c_str(),source.size()+1);return data;
+}
 namespace giac {
 static int clock_h=-1,clock_m=-1;
 void set_time(int h,int m){clock_h=h;clock_m=m;}
 '''
+source += '#define FXCG\n'+function((ROOT/'zprog.cc').read_text(), '  gen _read(')+'#undef FXCG\n'
 source += function((ROOT/'zmaple.cc').read_text(), '  gen _time(')
 source += r'''
 }
@@ -51,11 +66,18 @@ int main(int argc,char **argv){
   assert(_time(gen(vecteur(),_SEQ__VECT),contextptr).type==_INT_);
   assert(_time(expression,contextptr)==gen(0.25));
   assert(gen("n",contextptr).eval(1,contextptr)==2);
+  assert(_read(string2gen("side-effect",false),contextptr)==3);
+  assert(gen("n",contextptr).eval(1,contextptr)==3);
+  assert(is_undef(_read(string2gen("/missing-khicas-script",false),contextptr)));
+  for(gen arg:makevecteur(17,string2gen("",false),string2gen("oversized",false))){
+    bool rejected=false;try{rejected=is_undef(_read(arg,contextptr));}catch(...){rejected=true;}
+    assert(rejected);
+  }
   gen benchmark=_read(string2gen(argv[1],false),contextptr);
   assert(!is_undef(benchmark));
   gen bresult=gen("cgtest(0)",contextptr).eval(1,contextptr);
   assert(bresult==string2gen("Choose a case from 1 to 15",false));
-  std::cout<<"PASS: benchmark parsing, single evaluation, resource fields, unavailable stats, legacy time modes\n";
+  std::cout<<"PASS: target read branch and benchmark parsing, single evaluation, resource fields, unavailable stats, legacy time modes\n";
 }
 '''
 with tempfile.TemporaryDirectory(prefix='khicas-resource-time-') as tmp:

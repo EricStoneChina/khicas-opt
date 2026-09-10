@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Compare real old/new integral modules; Linux host libgiac-dev required."""
-import argparse,json,re,resource,statistics,subprocess,tempfile
+import argparse,json,re,os,statistics,subprocess,tempfile
 from pathlib import Path
 from integration_build import build
 parser=argparse.ArgumentParser()
@@ -38,13 +38,12 @@ with tempfile.TemporaryDirectory(prefix='khicas-integrate-') as tmp:
             r=subprocess.run([str(exe),CASES[0]],capture_output=True,text=True,check=True,timeout=30)
             timings.append(float(re.search(r'SECONDS ([\d.e+-]+)',r.stderr)[1]))
             calls.append(int(re.search(r'PARSER_CALLS (\d+)',r.stderr)[1]))
-        def limited_stack():
-            resource.setrlimit(resource.RLIMIT_STACK,(args.stack_kb*1024,)*2)
-            resource.setrlimit(resource.RLIMIT_CORE,(0,0))
-        r=subprocess.run([str(exe),CASES[0]],preexec_fn=limited_stack,capture_output=True,text=True,timeout=30)
+        r=subprocess.run([str(exe),CASES[0]],env=dict(os.environ,KHICAS_TEST_STACK_KIB=str(args.stack_kb)),
+                         capture_output=True,text=True,timeout=30)
         if ref=='current':assert r.returncode==0,(args.stack_kb,r.stderr)
         report[ref]={'median_host_seconds':statistics.median(timings),'parser_calls':calls,
-          'stack_kb':args.stack_kb,'limited_stack_exit':r.returncode,'cases':len(results)}
+          'stack_kb':args.stack_kb,'stack_scope':'guarded pthread computation stack',
+          'limited_stack_exit':r.returncode,'cases':len(results)}
         if ref=='current':
             shortcuts=[
               ('integrate(x^2024*(1-x^2025)^2025,x,1,0)','-1/(2025*2026)','definite'),

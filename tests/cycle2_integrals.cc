@@ -10,6 +10,8 @@ int main(){
  context c;const context *ctx=&c;angle_radian(true,ctx);gen x(identificateur("x")),res;
  struct Case {const char *f,*lo,*hi,*answer;};
  const Case yes[]={
+ {"ln(x)^3/(1+x^2)","0","+infinity","0"},
+ {"ln(x)^3/sqrt(x*(1-x))","0","1","-pi*(8*ln(2)^3+2*pi^2*ln(2)+12*Zeta(3))"},
  {"x^(1/2-1)*ln(x)^1/(1+x^2)","0","+infinity","-pi^2/(2*sqrt(2))"},
  {"x^(1-1)*ln(x)^2/(1+x^4)","0","+infinity","3*sqrt(2)*pi^3/64"},
  {"ln(x)/(4+x^2)","0","+infinity","pi*ln(2)/4"},
@@ -41,11 +43,9 @@ int main(){
  {"ln(x)/(x^2-1)","0","+infinity",0},
  {"ln(x)/x/(1+x^2)","0","+infinity",0},
  {"x*ln(x)/(1+x^2)","0","+infinity",0},
- {"ln(x)^3/(1+x^2)","0","+infinity",0},
  {"ln(x)/(1+x^2)","-infinity","+infinity",0},
  {"ln(x)/sqrt(x*(x-1))","0","1",0},
  {"ln(x)/(x*(1-x))","0","1",0},
- {"ln(x)^3/sqrt(x*(1-x))","0","1",0},
  {"ln(x)/sqrt(x*(1-x))","0","2",0},
  {"exp(x)*(cos(2*x)-1)/x","0","+infinity",0},
  {"exp(-x)*(sin(2*x+1)-1)/x","0","+infinity",0},
@@ -67,5 +67,5 @@ int main(){
  assert(is_undef(integration_syntax(gen("0^0",ctx),ctx)));
  angle_radian(false,ctx);
  assert(!integrate_real_definite(gen("ln(x)^2/(1+x^2)",ctx),x,0,plus_inf,res,ctx));
- std::cout<<"PASS: 21 Mellin/Beta/Laplace identities, 20 rejected conditions, canonical power identities\n";
+ std::cout<<"PASS: "<<sizeof(yes)/sizeof(*yes)<<" Mellin/Beta/Laplace identities, "<<sizeof(no)/sizeof(*no)+1<<" rejected conditions, canonical power identities\n";
 }

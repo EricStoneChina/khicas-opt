@@ -4095,20 +4095,21 @@ int confirm(const char * msg1,const char * msg2,bool acexit=false);
     // Set the input string
     // export GIAC_DEBUG=-2 to renew static_lexer.h/static_extern.h
     YY_BUFFER_STATE set_lexer_string(const std::string &s_orig,yyscan_t & scanner,GIAC_CONTEXT,int maxsize){
-      char lexer_string[8192]="1";
+      const unsigned lexer_capacity=8192;
       giac_yylex_init(&scanner);
       giac_yyset_extra(contextptr,scanner);
-      currently_scanned(contextptr)=lexer_string;
+      currently_scanned(contextptr)="1";
       index_status(contextptr)=0;
       opened_quote(contextptr)=0;
       in_rpn(contextptr)=0;
       lexer_line_number(contextptr)=1;
       first_error_line(contextptr)=0;
       spread_formula(contextptr)=0;
-      if (s_orig.size()>=(maxsize?maxsize:sizeof(lexer_string)*.75)){
+      if (s_orig.size()>=(maxsize?maxsize:lexer_capacity*3/4)){
 	//giac_yyerror(scanner,s.c_str());
 	confirm("Parse_string_too_long","",true);
 	YY_BUFFER_STATE state=giac_yy_scan_string("1",scanner);
+        currently_scanned(contextptr)=state->yy_ch_buf;
 	return state;
       }
       {
@@ -4188,11 +4189,11 @@ int confirm(const char * msg1,const char * msg2,bool acexit=false);
 	  *logptr(contextptr) << "Too many ]" << endl;
 	if (np<0)
 	  *logptr(contextptr) << "Too many )" << endl;
-	while (np<0 && i>=0 && s[i-1]==')'){
+	while (np<0 && i>0 && s[i-1]==')'){
 	  --i;
 	  ++np;
 	}
-	while (nb<0 && i>=0 && s[i-1]==']'){
+	while (nb<0 && i>0 && s[i-1]==']'){
 	  --i;
 	  ++nb;
 	}
@@ -4351,12 +4352,14 @@ int confirm(const char * msg1,const char * msg2,bool acexit=false);
 	CERR << "lexer " << ss << endl;
       s.clear();
       ss += " \n ÿ";
-      if (ss.size()>=sizeof(lexer_string))
+      if (ss.size()>=lexer_capacity)
 	ss ="Parse_string_too_long";
-      strcpy(lexer_string,ss.c_str());
-      }
-      YY_BUFFER_STATE state=giac_yy_scan_string(lexer_string,scanner);
+      // Flex owns a copy until delete_lexer_string: no 8 KiB stack buffer,
+      // redundant strcpy, or dangling pointer in parser error reporting.
+      YY_BUFFER_STATE state=giac_yy_scan_string(ss.c_str(),scanner);
+      currently_scanned(contextptr)=state->yy_ch_buf;
       return state;
+      }
     }
 
     int delete_lexer_string(YY_BUFFER_STATE & state,yyscan_t & scanner){
