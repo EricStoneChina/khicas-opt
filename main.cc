@@ -1259,6 +1259,17 @@ extern char sextra, eextra;
 #endif
 
 kmalloc_arena_t static_ram = { 0 },ram3M={0};
+// Snapshot only: retain allocator accounting and its lifetime high-water mark.
+bool get_cas_memory_stats(unsigned *stats){
+  kmalloc_gint_stats_t *s=kmalloc_get_gint_stats(pythonjs_static_heap?&ram3M:&static_ram);
+  if (!s) return false;
+  stats[0]=s->free_memory;
+  stats[1]=s->used_memory;
+  stats[2]=s->peak_used_memory;
+  stats[3]=s->exhaustion_failures;
+  stats[4]=s->fragmentation_failures;
+  return true;
+}
 int get_free_memory(){
   kmalloc_gint_stats_t * s;
   if (pythonjs_static_heap)
@@ -1270,6 +1281,7 @@ int get_free_memory(){
   return res;
 }
 #else
+bool get_cas_memory_stats(unsigned *){return false;}
 int get_free_memory(){
   return freeslotmem();
 }
@@ -3050,5 +3062,4 @@ void run(const char * s,int do_logo_graph_eqw){
   Console_Output((const unsigned char*)s_.c_str());
   //return ge; 
 }
-
 

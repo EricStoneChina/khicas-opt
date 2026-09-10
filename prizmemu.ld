@@ -17,6 +17,27 @@ MEMORY
 SECTIONS
 {
 	.rominram : {
+		/* Bounded integration helpers use spare AC2 code space.
+		   Keep hot general integration and the CAS heap layout unchanged. */
+		yintg.o(.text.*integrate_mellin_log*)
+		yintg.o(.text.*integration_beta_weight*)
+		yintg.o(.text.*integrate_beta_log*)
+		yintg.o(.text.*integrate_laplace_difference*)
+		yintg.o(.text.*integrate_inverse_gaussian*)
+		yintg.o(.text.*integrate_binomial_chain*)
+		yintg.o(.text.*integrate_reciprocal_quartic*)
+		yintg.o(.text.*integrate_quartic_trig*)
+		yintg.o(.text.*integrate_compact_primitive*)
+		yintg.o(.text.*integrate_sine_dirichlet*)
+		yintg.o(.text.*integrate_logistic_moment*)
+		yintg.o(.text.*integrate_weighted_reflection*)
+		yintg.o(.text.*integrate_decay_transform*)
+		yintg.o(.text.*integrate_log_trig*)
+		yintg.o(.text.*integrate_thermal_moment*)
+		yintg.o(.text.*integrate_compact_definite*)
+		yintg.o(.text.*integrate_real_root*)
+		yintg.o(.text.*integrate_residue_kernel*)
+		yintg.o(.text.*integrate_real_definite*)
 		z*.o(.text)
 		z*.o(.text.*)
 		z*.o(.rodata)
