@@ -81,7 +81,7 @@ int main(){
     {"x^2/(exp(x)+exp(-2*x)+2)","-infinity","+infinity",0},
     {"x^2/(exp(i*x)+exp(-i*x)+2)","-infinity","+infinity",0},
     {"x^2/(exp(x)+exp(-x)+2)","0","+infinity",0},
-    {"x^10/(exp(x)+exp(-x)+2)","-infinity","+infinity",0},
+    {"x^18/(exp(x)+exp(-x)+2)","-infinity","+infinity",0},
     {"x*sin(x)/(1-cos(x)^2)","0","pi",0},{"x^2*sin(x)/(1+cos(x)^2)","0","pi",0},
     {"x*sin(x)/(1+cos(2*x)^2)","0","pi",0},{"x*sin(x)/(1+cos(x)^2)","0","2*pi",0}
   };

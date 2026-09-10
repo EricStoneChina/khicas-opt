@@ -3099,23 +3099,27 @@ namespace giac {
       if (!integration_power(v[i],den,-1) || !den.is_symb_of_sommet(at_plus) || den._SYMBptr->feuille.type!=_VECT) continue;
       const vecteur &d=*den._SYMBptr->feuille._VECTptr;
       if (d.size()!=3) continue;
-      gen sum=0,freq=0;unsigned count=0;bool valid=true;
+      gen sum=0,offset_sum=0,freq=0,offset=0;unsigned count=0;bool valid=true;
       for (unsigned j=0;j<3;++j){
         if (d[j].is_symb_of_sommet(at_exp)){
           gen a,b;
-          if (!is_linear_wrt(d[j]._SYMBptr->feuille,x,a,b,contextptr) || !integration_rational(a) || is_zero(a) || !is_zero(b)){valid=false;break;}
-          sum+=a;freq=a;++count;
+          if (!is_linear_wrt(d[j]._SYMBptr->feuille,x,a,b,contextptr) || !integration_rational(a) || is_zero(a) || !integration_rational(b)){valid=false;break;}
+          sum+=a;offset_sum+=b;freq=a;offset=b;++count;
         }
         else if (d[j]!=2){valid=false;break;}
       }
       gen c,n;
-      if (!valid || count!=2 || !is_zero(sum) || !integration_monomial(v[1-i],x,c,n,contextptr) ||
-          n.type!=_INT_ || n.val<0 || n.val>8) continue;
-      if (n.val%2){res=0;return true;}
-      gen a=abs(freq,contextptr);
-      if (is_zero(n)){res=c/a;return true;}
-      res=c*(pow(gen(2),n.val)-2)*abs(_bernoulli(n,contextptr),contextptr)*pow(cst_pi,n.val)/pow(a,n.val+1);
-      return true;
+      if (!valid || count!=2 || !is_zero(sum) || !is_zero(offset_sum) || !integration_monomial(v[1-i],x,c,n,contextptr) ||
+          n.type!=_INT_ || n.val<0 || n.val>16) continue;
+      gen a=abs(freq,contextptr),mu=-offset/freq;
+      res=0;
+      // Shifted moments from the centered even moments; at most nine terms.
+      for (int j=0;j<=n.val;j+=2){
+        if (is_zero(mu) && j!=n.val) continue;
+        gen moment=j?(pow(gen(2),j)-2)*abs(_bernoulli(j,contextptr),contextptr)*pow(cst_pi,j):gen(1);
+        res+=comb(n.val,j,contextptr)*(j==n.val?gen(1):pow(mu,n.val-j))*moment/pow(a,j+1);
+      }
+      res=c*res;return true;
     }
     return false;
   }
@@ -3147,14 +3151,115 @@ namespace giac {
       if (!integration_rational(c) || !integration_power(t,u,2) || !u.is_symb_of_sommet(at_cos) || u._SYMBptr->feuille!=arg) return false;
       B+=c;
     }
-    if (!is_strictly_positive(A,contextptr) || !is_strictly_positive(B,contextptr)) return false;
-    res=(p*(lo+hi)/2+q)*gen(2)*atan(sqrt(B/A,contextptr),contextptr)/(abs(a,contextptr)*sqrt(A*B,contextptr));return true;
+    if (!is_strictly_positive(A,contextptr) || !is_strictly_positive(A+B,contextptr) || is_zero(B)) return false;
+    gen factor=is_strictly_positive(B,contextptr)?
+      atan(sqrt(B/A,contextptr),contextptr)/sqrt(A*B,contextptr):
+      atanh(sqrt(-B/A,contextptr),contextptr)/sqrt(-A*B,contextptr);
+    res=(p*(lo+hi)/2+q)*gen(2)*factor/abs(a,contextptr);return true;
+  }
+
+  // Fourier/Laplace integrals with explicit real convergence conditions.
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_decay_transform(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if (!angle_radian(contextptr) || !e.is_symb_of_sommet(at_prod) || e._SYMBptr->feuille.type!=_VECT) return false;
+    const vecteur &v=*e._SYMBptr->feuille._VECTptr;
+    if (v.size()<2 || v.size()>3) return false;
+    gen exponent,arg,rest=1;bool exponential=false,trig=false,cosine=false;
+    for (unsigned i=0;i<v.size();++i){
+      if (v[i].is_symb_of_sommet(at_exp) && !exponential){exponent=v[i]._SYMBptr->feuille;exponential=true;}
+      else if (!trig && (v[i].is_symb_of_sommet(at_sin) || v[i].is_symb_of_sommet(at_cos))){
+        arg=v[i]._SYMBptr->feuille;cosine=v[i].is_symb_of_sommet(at_cos);trig=true;
+      }
+      else rest=rest*v[i];
+    }
+    gen b,c,a,d;
+    if (!exponential || !trig || !is_linear_wrt(arg,x,b,c,contextptr) || !integration_rational(b) || !integration_rational(c)) return false;
+    gen denominator;
+    if (is_zero(lo) && hi==plus_inf && !cosine && is_zero(c) &&
+        integration_power(rest,denominator,-1) && denominator==x &&
+        is_linear_wrt(exponent,x,a,d,contextptr) && integration_rational(a) && integration_rational(d) && is_strictly_positive(-a,contextptr)){
+      res=exp(d,contextptr)*atan(b/(-a),contextptr);return true;
+    }
+    if (lo!=minus_inf || hi!=plus_inf || !is_one(rest)) return false;
+    sparse_poly1 p;
+    if (!small_sparse_polynomial(exponent,x,p,contextptr)) return false;
+    gen q=0,l=0,k=0;
+    for (unsigned i=0;i<p.size();++i){
+      if (p[i].exponent==2) q+=p[i].coeff;
+      else if (p[i].exponent==1) l+=p[i].coeff;
+      else if (p[i].exponent==0) k+=p[i].coeff;
+      else if (!is_zero(p[i].coeff)) return false;
+    }
+    if (!is_strictly_positive(-q,contextptr)) return false;
+    gen phase=c-b*l/(2*q);
+    res=sqrt(cst_pi/(-q),contextptr)*exp(k+(b*b-l*l)/(4*q),contextptr)*
+      (cosine?cos(phase,contextptr):sin(phase,contextptr));return true;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_log_trig(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if (!angle_radian(contextptr) || is_inf(lo) || is_inf(hi) || !is_zero(im(lo,contextptr)) ||
+        !is_zero(im(hi,contextptr)) || !e.is_symb_of_sommet(at_ln)) return false;
+    gen t=e._SYMBptr->feuille;
+    bool absolute=t.is_symb_of_sommet(at_abs);
+    if (absolute) t=t._SYMBptr->feuille;
+    bool cosine=t.is_symb_of_sommet(at_cos);
+    if (!cosine && !t.is_symb_of_sommet(at_sin)) return false;
+    gen a,b;
+    if (!is_linear_wrt(t._SYMBptr->feuille,x,a,b,contextptr) || !integration_rational(a) || !integration_rational(b) || is_zero(a)) return false;
+    gen l=ratnormal((a*lo+b)/cst_pi,contextptr),r=ratnormal((a*hi+b)/cst_pi,contextptr);
+    if (is_strictly_greater(l,r,contextptr)) swapgen(l,r);
+    gen periods=ratnormal(r-l,contextptr);
+    if (absolute && (periods.type==_INT_ || periods.type==_ZINT)){
+      res=-(hi-lo)*ln(gen(2),contextptr);return true;
+    }
+    if (cosine){l+=gen(1)/2;r+=gen(1)/2;}
+    // The positive half-wave or either quarter: endpoints may be logarithmic
+    // singularities, but the integral converges. Never integrate log(negative).
+    if ((l==0 || l==gen(1)/2) && (r==gen(1)/2 || r==1) && l!=r){
+      res=-(hi-lo)*ln(gen(2),contextptr);return true;
+    }
+    return false;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_thermal_moment(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if (!is_zero(lo) || hi!=plus_inf) return false;
+    vecteur v;
+    if (e.is_symb_of_sommet(at_prod) && e._SYMBptr->feuille.type==_VECT) v=*e._SYMBptr->feuille._VECTptr;
+    else v=makevecteur(1,e);
+    if (v.size()!=2) return false;
+    for (unsigned i=0;i<2;++i){
+      gen den;
+      if (!integration_power(v[i],den,-1) || !den.is_symb_of_sommet(at_plus) || den._SYMBptr->feuille.type!=_VECT) continue;
+      const vecteur &d=*den._SYMBptr->feuille._VECTptr;
+      if (d.size()!=2) continue;
+      unsigned j=d[0].is_symb_of_sommet(at_exp)?0:1;
+      if (!d[j].is_symb_of_sommet(at_exp) || (d[1-j]!=1 && d[1-j]!=-1)) continue;
+      gen a,b,c,n;
+      if (!is_linear_wrt(d[j]._SYMBptr->feuille,x,a,b,contextptr) || !integration_rational(a) || !is_zero(b) ||
+          !is_strictly_positive(a,contextptr) || !integration_monomial(v[1-i],x,c,n,contextptr) || n.type!=_INT_ || n.val<0 || n.val>16) continue;
+      bool fermi=d[1-j]==1;
+      if (n.val==0){res=c*(fermi?ln(gen(2),contextptr)/a:plus_inf);return true;}
+      res=c*factorial(n.val)*_Zeta(n+1,contextptr)/pow(a,n.val+1);
+      if (fermi) res=res*(1-inv(pow(gen(2),n.val),contextptr));
+      return true;
+    }
+    return false;
   }
 
 #if defined(__GNUC__) && !defined(__clang__)
   __attribute__((noinline,optimize("Os")))
 #endif
   static bool integrate_compact_definite(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if (integrate_decay_transform(e,x,lo,hi,res,contextptr) || integrate_log_trig(e,x,lo,hi,res,contextptr) ||
+        integrate_thermal_moment(e,x,lo,hi,res,contextptr)) return true;
     gen primitive;
     if (!is_inf(lo) && !is_inf(hi) && integrate_binomial_chain(e,x,primitive,true,contextptr)){
       res=subst(primitive,x,hi,false,contextptr)-subst(primitive,x,lo,false,contextptr);return true;
