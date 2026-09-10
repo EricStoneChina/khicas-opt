@@ -4,7 +4,7 @@ fx-CG50 中文符号计算
 Function Catalog · Example
 代数 · 微积分 · 矩阵 · 绘图
 项目网站:
-ericstonechina.github.io/khicas-opt
+https://khicas.kcisec.site/
 GitHub:
 github.com/EricStoneChina/khicas-opt
 由 EricStoneChina 构建 (2026)
