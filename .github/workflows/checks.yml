@@ -32,9 +32,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Materialize official snapshot ref
+        run: git fetch origin upstream/khicas-2026-07-31:refs/heads/upstream/khicas-2026-07-31
+
       - name: Check official snapshot registration
         run: python tests/check-registration.py
 
       - name: Run native arithmetic checks
         run: python tests/run-native.py
-
