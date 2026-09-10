@@ -13,6 +13,28 @@
 没有启用 fast-math、改变时钟或调整算法精度。测试范围和容量见
 [docs/PERFORMANCE.md](docs/PERFORMANCE.md)。
 
+## 方程转换 checkpoint
+
+`checkpoint/equations` 在性能 checkpoint 之上增加普通方程、参数方程、极坐标方程的
+六向转换。代码位于根目录 `kconvert.cc`；英文和法文命令目录含调用示例。
+使用方法、分支与定义域限制见 [docs/CONVERSIONS.md](docs/CONVERSIONS.md)。
+
+```xcas
+cart2param(y=x^2,[x,y],t)
+param2cart([cos(t),sin(t)],t,[x,y])
+cart2polar(x^2+y^2=4,[x,y],[r,theta])
+polar2cart(r=2,[r,theta],[x,y])
+polar2param(r=1+cos(theta),[r,theta],t)
+param2polar([cos(t),sin(t)],t,[r,theta])
+```
+
+继续开发时可从任意 checkpoint 创建分支：
+
+```bash
+git switch -c my-performance-work checkpoint/performance
+git switch -c my-equation-work checkpoint/equations
+```
+
 ## 构建
 
 需要 Linux、Python 3.12+、make、主机 C++ 编译器和作者提供的 SH4 工具链。
@@ -33,7 +55,7 @@ TOOLS_DIR=/tmp/khicas-toolchain python3 tools/build.py official
 构建脚本在独立目录复制源码，参数化上游 Makefile 中的路径并移除作者本机的复制操作，
 不改写根目录源码或原始 Makefile。`official` 模式从官方基线 Git 引用提取源码并逐文件
 校验 SHA-256；`optimized` 模式使用当前根目录源码，输入变化时重新构建。
-原始 Makefile 留在根目录供比对，日常请使用上述脚本。
+根目录 Makefile 只增添了方程模块的对象文件，官方原版可从基线 Git 引用取得，日常请使用上述脚本。
 
 首次安装依赖的官方说明：
 https://www-fourier.univ-grenoble-alpes.fr/~parisse/casio/khicasioen.html
@@ -44,6 +66,7 @@ https://www-fourier.univ-grenoble-alpes.fr/~parisse/casio/khicasioen.html
 
 ```bash
 python3 tests/run-native.py
+python3 tests/check-registration.py
 # Debian/Ubuntu 主机安装 libgiac-dev 后：
 python3 tests/run-cas.py
 ```

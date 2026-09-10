@@ -69,6 +69,12 @@ void reset_alpha(){
 int lang=0;
 const char ram_filename[]="\\\\fls0\\khicas50.8c2";
 const catalogFunc completeCat[] = { // list of all functions (including some not in any category)
+  {"cart2param(eq,[x,y],t)", 0, "Cartesian to parametric branches; retain real parameter domains.", "y=x^2,[x,y],t", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
+  {"cart2polar(eq,[x,y],[r,theta])", 0, "Cartesian to polar equation (radians).", "x^2+y^2=4,[x,y],[r,theta]", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
+  {"param2cart([X,Y],t,[x,y])", 0, "Eliminate parameter; algebraic closure, retain domain exclusions.", "[cos(t),sin(t)],t,[x,y]", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
+  {"param2polar([X,Y],t,[r,theta])", 0, "Polar equation; omit [r,theta] for a polar pair. Retain domains.", "[cos(t),sin(t)],t,[r,theta]", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
+  {"polar2cart(eq,[r,theta],[x,y])", 0, "Canonical polar chart: r>=0, principal angle; check origin separately.", "r=2,[r,theta],[x,y]", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
+  {"polar2param(eq,[r,theta],t)", 0, "Polar to Cartesian parametric branches (radians).", "r=1+cos(theta),[r,theta],t", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
   {" loop for", "for ", "Defined loop.", "#\nfor ", 0, CAT_CATEGORY_PROG},
   {" loop in list", "for in", "Loop on all elements of a list.", "#\nfor in", 0, CAT_CATEGORY_PROG},
   {" loop while", "while ", "Undefined loop.", "#\nwhile ", 0, CAT_CATEGORY_PROG},

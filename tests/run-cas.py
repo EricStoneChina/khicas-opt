@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check actual transpose code against a host libgiac-dev installation."""
+"""Check transpose, integration and conversions using host libgiac-dev."""
 import os
 from pathlib import Path
 import shlex
@@ -40,3 +40,10 @@ with tempfile.TemporaryDirectory(prefix="khicas-cas-") as tmp:
                    ["-o", str(output)], check=True)
     subprocess.run([str(output), str(ROOT / "bench/bench.xws"),
                     str(ROOT / "bench/integration.xws")], check=True)
+    output = work / "conversions"
+    # Resolve quoted headers against host Giac, not the calculator-only headers.
+    conversion = work / "kconvert.cc"
+    conversion.write_bytes((ROOT / "kconvert.cc").read_bytes())
+    subprocess.run(flags + [str(conversion),
+        str(ROOT / "tests/equation_conversions.cc")] + libs + ["-o", str(output)], check=True)
+    subprocess.run([str(output), str(ROOT / "bench/conversions.xws")], check=True)
