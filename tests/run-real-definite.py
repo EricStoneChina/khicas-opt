@@ -58,9 +58,9 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(',
             '  static bool integration_scaled_chain_terms(',
             '  static bool integrate_monomial_gaussian_erf(',
             '  static bool integrate_atan_cauchy_power(',
-            '  static bool integrate_exponential_beta(', '  static bool integrate_compact_definite(',
+            '  static bool integrate_exponential_beta(', '  static bool integrate_complementary_ratio(', '  static bool integrate_cauchy_fourier(', '  static bool integrate_compact_definite(',
             '  static bool integrate_real_root(', '  static bool integrate_residue_kernel(',
-            '  static bool integration_finite_poly_add(',
+            '  bool integration_rational_tail(', '  static bool integration_finite_poly_add(',
             '  static bool integration_finite_poly_product(',
             '  static bool integration_finite_poly_terms(',
             '  static bool integrate_finite_polynomial(',
@@ -74,6 +74,6 @@ with tempfile.TemporaryDirectory(prefix='khicas-real-definite-') as tmp:
     flags=[os.environ.get('CXX','c++'),'-std=c++11','-O2','-DHAVE_CONFIG_H','-DGIAC_GENERIC_CONSTANTS','-Wno-deprecated-declarations','-I',os.environ.get('GIAC_INCLUDE','/usr/include/giac')]+shlex.split(os.environ.get('CXXFLAGS',''))
     libs=shlex.split(os.environ.get('LDFLAGS',''))+['-lgiac']+shlex.split(os.environ.get('GIAC_NUMERIC_LIBS','-lgmp -lmpfr'))
     for test in ('real_definite.cc','compact_integrals.cc','cycle1_integrals.cc','cycle2_integrals.cc','user_extra_integrals.cc',
-                 'cycle3_laplace_integrals.cc'):
-        subprocess.run(flags+[str(p/'rules.cc'),str(ROOT/'tests'/test)]+libs+['-o',str(p/'test')],check=True)
+                 'cycle3_laplace_integrals.cc','user_matrix_rules.cc'):
+        subprocess.run(flags+[str(p/'rules.cc'),str(ROOT/'tests'/test)]+libs+['-pthread','-o',str(p/'test')],check=True)
         subprocess.run([str(p/'test')],check=True,timeout=60)
