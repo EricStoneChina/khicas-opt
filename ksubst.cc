@@ -2710,6 +2710,78 @@ namespace giac {
     bool psi=false;unsigned budget=2048;
     unsigned terms=simplify_special_terms(e_orig,psi,budget,0);
     if(!budget)return e_orig;
+    // Keep large closed trig constants out of algebraic-extension/trig
+    // rewriting. Only explicit rational multiples of pi are masked: these
+    // sin/cos values are real, even when other constants in the expression
+    // are complex. Small identities and expressions with variables retain
+    // the ordinary simplifier; other special-function guards keep priority.
+    if(!psi && e_orig.type==_SYMB && budget<1920){
+      unsigned constant_size=taille(e_orig,513);
+      if(constant_size>128 && constant_size<513){
+      vecteur ids=lidnt(e_orig);bool pure=true;
+      for(unsigned j=0;j<ids.size();++j)if(ids[j]!=cst_pi){pure=false;break;}
+      vecteur atoms=pure?lvar(e_orig):vecteur(0),closed,names;
+      for(unsigned j=0;j<atoms.size();++j){
+        const gen &atom=atoms[j];
+        if(!(atom.is_symb_of_sommet(at_sin) || atom.is_symb_of_sommet(at_cos)))continue;
+        gen argument=atom._SYMBptr->feuille;
+        if(taille(argument,17)>16)continue;
+        // Read a small scalar*pi product without normalizing its argument.
+        // In particular a short syntax tree containing an enormous power
+        // is not permission to evaluate that power during this guard.
+        vecteur factors;
+        if(argument.is_symb_of_sommet(at_division) && argument._SYMBptr->feuille.type==_VECT){
+          const vecteur &v=*argument._SYMBptr->feuille._VECTptr;
+          if(v.size()!=2)continue;
+          factors.push_back(symbolic(at_inv,v[1]));argument=gen(v[0]);
+        }
+        if(argument.is_symb_of_sommet(at_neg)){
+          factors.push_back(-1);argument=gen(argument._SYMBptr->feuille);
+        }
+        if(argument.is_symb_of_sommet(at_prod) && argument._SYMBptr->feuille.type==_VECT){
+          const vecteur &v=*argument._SYMBptr->feuille._VECTptr;
+          if(v.size()>4)continue;
+          for(unsigned k=0;k<v.size();++k)factors.push_back(v[k]);
+        }
+        else factors.push_back(argument);
+        gen q=1;unsigned pi_count=0;bool valid=true;
+        for(unsigned k=0;k<factors.size();++k){
+          gen factor=factors[k];
+          if(factor==cst_pi){++pi_count;continue;}
+          bool inverse=factor.is_symb_of_sommet(at_inv);
+          if(inverse)factor=gen(factor._SYMBptr->feuille);
+          gen numerator=factor,denominator=1;
+          if(factor.type==_FRAC){numerator=factor._FRACptr->num;denominator=factor._FRACptr->den;}
+          if(numerator.type!=_INT_ || denominator.type!=_INT_ ||
+             numerator.val < -4096 || numerator.val>4096 ||
+             denominator.val < -4096 || denominator.val>4096 || !denominator.val ||
+             (inverse && !numerator.val)){valid=false;break;}
+          q=q*rdiv(inverse?denominator:numerator,inverse?numerator:denominator,contextptr);
+        }
+        if(!valid || pi_count!=1 || q.type!=_FRAC ||
+           q._FRACptr->num.type!=_INT_ || q._FRACptr->den.type!=_INT_ ||
+           q._FRACptr->den.val<=6 || q._FRACptr->den.val>4096)continue;
+        closed.push_back(atom);
+      }
+      if(closed.size()>=2 && closed.size()<=8){
+        if(terms>64)return e_orig;
+        for(unsigned j=0,k=0;j<closed.size();++j){
+          gen name;
+          do {
+            if(k>=32)return e_orig;
+            name=identificateur(" simplify_closed_trig_"+print_INT_(int(k++)));
+          }while(contains(e_orig,name) || eval(name,1,contextptr)!=name);
+          names.push_back(name);
+        }
+        gen masked=quotesubst(e_orig,closed,names,contextptr);
+        // Rational arithmetic still performs exact cancellations, but does
+        // not rewrite trigonometric functions or grow an algebraic field.
+        gen result=ratnormal(masked,contextptr);
+        result=quotesubst(result,names,closed,contextptr);
+        return taille(result,constant_size+1)<=constant_size?result:e_orig;
+      }
+      }
+    }
     if(!psi)return simplify_special_core(e_orig,contextptr);
     // Keep real odd-root factors intact through rational/trigonometric
     // simplification. In particular sign(g) must stay defined at g=0.

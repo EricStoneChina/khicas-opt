@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definite integrals: target computation, outer simplify, independent checks."""
+"""Integrals: target computation, outer simplify, independent checks."""
 import argparse,hashlib,json,os,re,subprocess,tempfile
 from pathlib import Path
 from integration_build import ROOT,build,build_validation_probe
@@ -18,7 +18,8 @@ report={'scope':'Repository integration, normalization and FXCG simplification e
 with tempfile.TemporaryDirectory(prefix='khicas-user-challenge-') as tmp:
     d=Path(tmp);target=build(d/'target',target_simplify=True);validator=build_validation_probe(d/'validator')
     for case in cases:
-        integral='integrate('+case['f']+',x,'+','.join(case['bounds'])+')'
+        definite='bounds' in case
+        integral='integrate('+case['f']+',x'+(','+','.join(case['bounds']) if definite else '')+')'
         for outer in (False,True):
             expression='simplify('+integral+')' if outer else integral
             normal_result=None
@@ -31,8 +32,14 @@ with tempfile.TemporaryDirectory(prefix='khicas-user-challenge-') as tmp:
                     row.update(exit=result.returncode,result=result.stdout.strip(),stderr=result.stderr)
                     m=re.search(r'^SECONDS ([\d.e+-]+)',result.stderr,re.M)
                     if m:row['host_seconds']=float(m[1])
+                    for label,key in (('PARSER_CALLS','parser_calls'),('MAX_RSS_KB','host_max_rss_kb')):
+                        m=re.search(r'^'+label+r' (\d+)',result.stderr,re.M)
+                        if m:row[key]=int(m[1])
+                    row['result_characters']=len(row['result'])
                     assert result.returncode==0,row
-                    check=subprocess.run([str(validator),row['result'],case['expected'],'definite',case['f']],
+                    verification=[case['expected'],'definite' if definite else 'indefinite',case['f']]
+                    if not definite:verification+=case.get('samples',['1/3','1','2'])
+                    check=subprocess.run([str(validator),row['result']]+verification,
                                          capture_output=True,text=True,timeout=30)
                     row['validation']={'exit':check.returncode,'stderr':check.stderr}
                     assert check.returncode==0 and 'CHECK exact' in check.stderr,row

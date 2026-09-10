@@ -1,0 +1,134 @@
+{
+  "sources": {
+    "purpose": "Small finite-interval regression audit after c977aa0; independently elementary references",
+    "derivations": "Elementary antiderivatives and direct endpoint substitution; see docs/BASELINE-FINITE-INTEGRALS.md"
+  },
+  "cases": [
+    {
+      "id": "constant",
+      "f": "1",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "1"
+    },
+    {
+      "id": "linear",
+      "f": "x",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "1/2"
+    },
+    {
+      "id": "quadratic",
+      "f": "x^2",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "1/3"
+    },
+    {
+      "id": "cubic",
+      "f": "x^3",
+      "bounds": [
+        "-1",
+        "1"
+      ],
+      "expected": "0"
+    },
+    {
+      "id": "sparse-polynomial",
+      "f": "3*x^10-5*x^3+2",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "45/44"
+    },
+    {
+      "id": "reverse-polynomial",
+      "f": "x^2",
+      "bounds": [
+        "2",
+        "-1"
+      ],
+      "expected": "-3"
+    },
+    {
+      "id": "rational-bounds",
+      "f": "x^2+1",
+      "bounds": [
+        "1/2",
+        "3/2"
+      ],
+      "expected": "25/12"
+    },
+    {
+      "id": "simple-sine",
+      "f": "sin(x)",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "2"
+    },
+    {
+      "id": "simple-cosine",
+      "f": "cos(x)",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "expected": "1"
+    },
+    {
+      "id": "exponential",
+      "f": "exp(x)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "exp(1)-1"
+    },
+    {
+      "id": "positive-reciprocal",
+      "f": "1/x",
+      "bounds": [
+        "1",
+        "2"
+      ],
+      "expected": "ln(2)"
+    },
+    {
+      "id": "basic-arctan",
+      "f": "1/(1+x^2)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "pi/4"
+    },
+    {
+      "id": "basic-root",
+      "f": "sqrt(x)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "2/3"
+    },
+    {
+      "id": "basic-log",
+      "f": "ln(x)",
+      "bounds": [
+        "1",
+        "exp(1)"
+      ],
+      "expected": "1"
+    }
+  ]
+}

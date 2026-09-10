@@ -1,0 +1,140 @@
+{
+  "notes": "Generalized Gaussian-tail and positive-binomial-log variants; domains x>0, ordinary convergent integrals. Companion direct helper tests reject invalid domains.",
+  "cases": [
+    {
+      "id": "C7-tail-mellin-01",
+      "f": "erf(x)*erfc(x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(sqrt(2)-1)/sqrt(pi)"
+    },
+    {
+      "id": "C7-tail-mellin-02",
+      "f": "erf(2*x)*erfc(3*x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(sqrt(13)-3)/(6*sqrt(pi))"
+    },
+    {
+      "id": "C7-tail-mellin-03",
+      "f": "erf(-2*x)*erfc(3*x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "-(sqrt(13)-3)/(6*sqrt(pi))"
+    },
+    {
+      "id": "C7-tail-mellin-04",
+      "f": "erfc(x)^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(2-sqrt(2))/sqrt(pi)"
+    },
+    {
+      "id": "C7-tail-mellin-05",
+      "f": "erfc(2*x)*erfc(3*x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(5-sqrt(13))/(6*sqrt(pi))"
+    },
+    {
+      "id": "C7-tail-mellin-06",
+      "f": "x*erf(2*x^2)*erfc(3*x^2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(sqrt(13)-3)/(12*sqrt(pi))"
+    },
+    {
+      "id": "C7-tail-mellin-07",
+      "f": "erf(sqrt(x))*erfc(2*sqrt(x))/sqrt(x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(sqrt(5)-2)/sqrt(pi)"
+    },
+    {
+      "id": "C7-tail-mellin-08",
+      "f": "ln(1+x^2)/(1+x^2)^(3/2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "2-2*ln(2)"
+    },
+    {
+      "id": "C7-tail-mellin-09",
+      "f": "ln(1+4*x^2)/(1+4*x^2)^(3/2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "1-ln(2)"
+    },
+    {
+      "id": "C7-tail-mellin-10",
+      "f": "x*ln(1+x^2)/(1+x^2)^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "1/2"
+    },
+    {
+      "id": "C7-tail-mellin-11",
+      "f": "x*ln(1+x^2)^2/(1+x^2)^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "1"
+    },
+    {
+      "id": "C7-tail-mellin-12",
+      "f": "ln(1+x)/(1+x)^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "1"
+    },
+    {
+      "id": "C7-tail-mellin-13",
+      "f": "ln(2+2*x)/(2+2*x)^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(1+ln(2))/4"
+    },
+    {
+      "id": "C7-tail-mellin-14",
+      "f": "ln(1+x^2)^2/(1+x^2)^(3/2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(2-2*ln(2))^2+4-pi^2/3"
+    },
+    {
+      "id": "C7-tail-mellin-15",
+      "f": "x*ln(1+x^2)^4/(1+x^2)^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "12"
+    }
+  ]
+}

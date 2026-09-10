@@ -3,18 +3,21 @@
 import argparse,collections,hashlib,json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-SNAPSHOT='checkpoint/integration-cycle6-2026a'
+SNAPSHOT='checkpoint/integration-cycle7-2026a'
 GROUPS=[
- ('用户原始 8 题','user-integrals','user-eight-cycle6-2026a','user'),
- ('用户追加 2 题','user-extra-integrals','user-extra-cycle6-2026a','corpus'),
- ('用户追加 5 题','user-challenge-integrals','user-challenge-cycle6-2026a','stack'),
- ('MIT / Princeton 题库','calculus-corpus','calculus-cycle6-2026a','corpus'),
- ('独立泛化题库','generalization-corpus','generalization-cycle6-2026a','corpus'),
- ('第二轮泛化题库','generalization-cycle2','cycle2-cycle6-2026a','corpus'),
- ('第三轮泛化题库','generalization-cycle3','cycle3-cycle6-2026a','corpus'),
- ('第四轮泛化题库','generalization-cycle4','cycle4-cycle6-2026a','corpus'),
- ('第五轮泛化题库','generalization-cycle5','cycle5-cycle6-stack-2026a','stack'),
- ('第六轮泛化题库','generalization-cycle6','cycle6-stack-2026a','stack')]
+ ('用户原始 8 题','user-integrals','user-eight-cycle7-2026a','user'),
+ ('用户追加 2 题','user-extra-integrals','user-extra-cycle7-2026a','corpus'),
+ ('用户追加 5 题','user-challenge-integrals','user-challenge-cycle7-2026a','stack'),
+ ('MIT / Princeton 题库','calculus-corpus','calculus-cycle7-2026a','corpus'),
+ ('独立泛化题库','generalization-corpus','generalization-cycle7-2026a','corpus'),
+ ('第二轮泛化题库','generalization-cycle2','cycle2-cycle7-2026a','corpus'),
+ ('第三轮泛化题库','generalization-cycle3','cycle3-cycle7-2026a','corpus'),
+ ('第四轮泛化题库','generalization-cycle4','cycle4-cycle7-2026a','corpus'),
+ ('第五轮泛化题库','generalization-cycle5','cycle5-cycle7-stack-2026a','stack'),
+ ('第六轮泛化题库','generalization-cycle6','cycle6-cycle7-stack-2026a','stack'),
+ ('第七轮泛化题库','generalization-cycle7','cycle7-stack-2026a','stack'),
+ ('基础有限区间积分','basic-finite-integrals','basic-finite-cycle7-2026a','stack'),
+ ('误差函数与分母对数变体','cycle7-tail-mellin','cycle7-tail-mellin-stack-2026a','stack')]
 LABELS={'exact':'精确验证','sampled':'导数采样通过','numeric_constant':'数值常量检查通过'}
 def code(value):
  return '`'+str(value).replace('|','&#124;').replace('`','&#96;').replace('\n',' ')+'`'
@@ -58,7 +61,7 @@ def generate():
   '“核对参考结果”来自已验证题库，用于阅读和比对，并不保证与计算器实际打印的写法相同。',
   '不定积分省略积分常数；实根、对数和反三角函数须遵守原题定义域。采样检查不能代替完整符号证明。',
   '主机使用仓库积分、归一化和 FXCG 化简入口；这些通过记录不代表 CG50 实机耗时或实机全部通过。','',
-  '本表列出完整的正式积分题库；算法参数变体、拒绝非法输入、方程转换和崩溃保护回归另见 [直接测试报告](benchmarks/cycle5-direct-2026a.json)。',
+  '本表列出完整的正式积分题库；其他算法参数变体、拒绝非法输入、方程转换和崩溃保护回归另见 [第七轮报告](INTEGRATION-CYCLE7-2026a.md)。',
   '安全保留未求出的积分不计入本表。后续新题只有完成验证后才应追加。','']
  for title,cn,rn,rows in groups:
   text.extend([f'## {title}（{len(rows)} 条）','',f'[原题与定义域](../tests/{cn}.json) · [实际输出和验证记录](benchmarks/{rn}.json)','',
