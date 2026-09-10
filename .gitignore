@@ -1,0 +1,17 @@
+*.o
+*.a
+!libmicropy.a
+*.elf
+*.bin
+*.g3a
+*.ac2
+*.882
+*.map
+*.symbols
+dump_t
+dumpm_t
+mkhelp
+.build/
+dist/
+__pycache__/
+.help-generated
