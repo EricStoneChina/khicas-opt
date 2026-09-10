@@ -3,6 +3,7 @@
 #include "overclock.h"
 #include <fxcg/keyboard.h>
 #include "giacPCH.h"
+#include "khicas_version.h"
 #include <fxcg/display.h>
 #include <fxcg/file.h>
 #include <fxcg/keyboard.h>
@@ -2705,7 +2706,7 @@ int restore_session(const char * fname){
   string filename(remove_path0(remove_extension(fname)));
   if (!load_console_state_smem((string("\\\\fls0\\")+filename+string(".xw")).c_str())){
     int x=0,y=92;
-    PrintMini(&x,&y,(unsigned char*)"KhiCAS 1.8 (c) 2024 B. Parisse et al",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+    PrintMini(&x,&y,(unsigned char*)KHICAS_DISPLAY_VERSION,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     x=0; y+=18;
 #ifdef MICROPY_LIB
     PrintMini(&x,&y,(unsigned char*)"MicroPython 1.12 (c) D. George et al",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);

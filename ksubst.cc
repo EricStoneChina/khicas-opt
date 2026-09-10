@@ -2382,17 +2382,13 @@ namespace giac {
     // try to rewrite powers with less indep. vars
     vecteur bases,bases2;
     if (vabs2.size()>1){
-#ifdef NO_STDEXCEPT
-      vecteur vabs2tmp=*tsimplify_common(vabs2,contextptr)._VECTptr;
-      if (is_undef(vabs2tmp)){
-	*logptr(contextptr) << vabs2tmp << endl;
-	return e_orig;
-      }
-      // check for rootof?
-      vabs2=vabs2tmp;
-#else
-      vabs2=*tsimplify_common(vabs2,contextptr)._VECTptr;
-#endif
+      // tsimplify_common can return an error rather than a vector.
+      // Check the tagged value before accessing its payload (no exceptions on SH4).
+      gen common=tsimplify_common(vabs2,contextptr);
+      if (is_undef(common)) return common;
+      if (common.type!=_VECT || common._VECTptr->size()!=vabs2.size())
+        return gensizeerr("Invalid common-power simplification result");
+      vabs2=*common._VECTptr;
       if (1){
 	int S=int(vabs2.size());
 	vector<int> base(S),expo(S);

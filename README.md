@@ -5,6 +5,13 @@
 [UPSTREAM.md](UPSTREAM.md) 和 [UPSTREAM.json](UPSTREAM.json)。
 保留官方图标、界面、帮助和功能；没有带入原项目的汉化、网站或品牌改动。
 
+## 当前优化版：2026a / 1.8.0
+
+启动页、About 和版本号已更新。本轮重点降低积分换元的解析器与栈开销，
+改进小对象池分配，减少符号归一化和指数/三角展开的复制，并加入积分递归保护。
+增加保留高次幂结构、稀疏有理式匹配、整周期积分和绝对值分段处理。
+定位证据、测量及回归范围见 [docs/PERFORMANCE-2026a.md](docs/PERFORMANCE-2026a.md)。
+
 ## 性能 checkpoint
 
 `checkpoint/performance`：大数小整数乘加减少堆分配，矩阵转置减少复制和临时数组；
@@ -69,6 +76,10 @@ python3 tests/run-native.py
 python3 tests/check-registration.py
 # Debian/Ubuntu 主机安装 libgiac-dev 后：
 python3 tests/run-cas.py
+python3 tests/run-symbolic.py
+python3 tests/run-integration.py --report /tmp/integration-report.json
+# MIT 16 个年份 + Princeton MAT104，共 168 个正式题目输入
+python3 tests/run-calculus.py --compare --report /tmp/calculus-report.json
 ```
 
 受限运行器不支持 LeakSanitizer 时，可用
@@ -78,3 +89,9 @@ python3 tests/run-cas.py
 计算器上按顺序输入或通过程序编辑器执行 `bench/bench.xws`、`bench/integration.xws`。
 FXCG 版上游 `read()` 是空实现，不要用它加载脚本。保持相同精度、弧度模式及超频设置，
 比较官方版与优化版至少五次运行的中位数。尚未声称真机积分或整机有固定加速倍数。
+
+新算法专项真机脚本为 `bench/mit-princeton.xws`，用于 2026a 优化版。
+历史题库位于 `tests/calculus-corpus.json`，含原始来源、题号、输入、参考答案和抽查点。
+题库运行器逐题限制时间与主机地址空间，区分符号核验、数值抽查及未求出；
+`--only 2025-Q9,2018-Q13` 可选择题目，`--strict` 要求全部精确通过。
+它直接编译本仓库积分、定积分及归一化代码，其余依赖主机 Giac；主机成绩不代表真机性能。

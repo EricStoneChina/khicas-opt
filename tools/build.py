@@ -70,7 +70,7 @@ def prepare(profile, compiler):
                 shutil.copy2(path, directory / path.name, follow_symlinks=False)
     makefile = portable_makefile((directory / "Makefile").read_text())
     if profile == "optimized":
-        makefile += "\nCXXFLAGS += -ffunction-sections -fdata-sections\n"
+        makefile += "\nCXXFLAGS += -ffunction-sections -fdata-sections -fstack-usage\n"
         makefile += "CFLAGS += -ffunction-sections -fdata-sections\n"
         makefile += f"\n{FAST_OBJECTS}: CXXFLAGS := $(filter-out -Os,$(CXXFLAGS)) -O2 -finline-functions\n"
     (directory / "Makefile").write_text(makefile)
