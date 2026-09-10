@@ -1,8 +1,8 @@
 # 已通过的积分题目列表
 
-验证源码：`checkpoint/user-matrix-2026a`。
-正式题库与用户题目共 **531 条通过记录**：**526 条精确验证、5 条导数采样通过、0 条数值常量检查通过**。
-保留各题库的编号和重复项；仅去除输入空白后有 519 种输入文本，这不是数学意义的去重。
+验证源码：`checkpoint/user-matrix-next-2026a`。
+正式题库与用户题目共 **585 条通过记录**：**580 条精确验证、5 条导数采样通过、0 条数值常量检查通过**。
+保留各题库的编号和重复项；仅去除输入空白后有 564 种输入文本，这不是数学意义的去重。
 
 “核对参考结果”来自已验证题库，用于阅读和比对，并不保证与计算器实际打印的写法相同。
 不定积分省略积分常数；实根、对数和反三角函数须遵守原题定义域。采样检查不能代替完整符号证明。
@@ -13,7 +13,7 @@
 
 ## 用户原始 8 题（8 条）
 
-[原题与定义域](../tests/user-integrals.json) · [实际输出和验证记录](benchmarks/user-eight-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/user-integrals.json) · [实际输出和验证记录](benchmarks/user-eight-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -28,7 +28,7 @@
 
 ## 用户追加 2 题（2 条）
 
-[原题与定义域](../tests/user-extra-integrals.json) · [实际输出和验证记录](benchmarks/user-extra-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/user-extra-integrals.json) · [实际输出和验证记录](benchmarks/user-extra-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -37,7 +37,7 @@
 
 ## 用户追加 5 题（5 条）
 
-[原题与定义域](../tests/user-challenge-integrals.json) · [实际输出和验证记录](benchmarks/user-challenge-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/user-challenge-integrals.json) · [实际输出和验证记录](benchmarks/user-challenge-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -49,7 +49,7 @@
 
 ## MIT / Princeton 题库（168 条）
 
-[原题与定义域](../tests/calculus-corpus.json) · [实际输出和验证记录](benchmarks/calculus-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/calculus-corpus.json) · [实际输出和验证记录](benchmarks/calculus-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -224,7 +224,7 @@
 
 ## 独立泛化题库（152 条）
 
-[原题与定义域](../tests/generalization-corpus.json) · [实际输出和验证记录](benchmarks/generalization-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/generalization-corpus.json) · [实际输出和验证记录](benchmarks/generalization-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -383,7 +383,7 @@
 
 ## 第二轮泛化题库（61 条）
 
-[原题与定义域](../tests/generalization-cycle2.json) · [实际输出和验证记录](benchmarks/cycle2-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/generalization-cycle2.json) · [实际输出和验证记录](benchmarks/cycle2-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -451,7 +451,7 @@
 
 ## 第三轮泛化题库（30 条）
 
-[原题与定义域](../tests/generalization-cycle3.json) · [实际输出和验证记录](benchmarks/cycle3-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/generalization-cycle3.json) · [实际输出和验证记录](benchmarks/cycle3-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -488,7 +488,7 @@
 
 ## 第四轮泛化题库（16 条）
 
-[原题与定义域](../tests/generalization-cycle4.json) · [实际输出和验证记录](benchmarks/cycle4-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/generalization-cycle4.json) · [实际输出和验证记录](benchmarks/cycle4-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -511,7 +511,7 @@
 
 ## 第五轮泛化题库（8 条）
 
-[原题与定义域](../tests/generalization-cycle5.json) · [实际输出和验证记录](benchmarks/cycle5-cycle8-stack-matrix-2026a.json)
+[原题与定义域](../tests/generalization-cycle5.json) · [实际输出和验证记录](benchmarks/cycle5-cycle8-stack-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -526,7 +526,7 @@
 
 ## 第六轮泛化题库（8 条）
 
-[原题与定义域](../tests/generalization-cycle6.json) · [实际输出和验证记录](benchmarks/cycle6-cycle8-stack-matrix-2026a.json)
+[原题与定义域](../tests/generalization-cycle6.json) · [实际输出和验证记录](benchmarks/cycle6-cycle8-stack-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -541,7 +541,7 @@
 
 ## 第七轮泛化题库（8 条）
 
-[原题与定义域](../tests/generalization-cycle7.json) · [实际输出和验证记录](benchmarks/cycle7-cycle8-stack-matrix-2026a.json)
+[原题与定义域](../tests/generalization-cycle7.json) · [实际输出和验证记录](benchmarks/cycle7-cycle8-stack-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -556,7 +556,7 @@
 
 ## 第八轮泛化题库（8 条）
 
-[原题与定义域](../tests/generalization-cycle8.json) · [实际输出和验证记录](benchmarks/cycle8-stack-matrix-2026a.json)
+[原题与定义域](../tests/generalization-cycle8.json) · [实际输出和验证记录](benchmarks/cycle8-stack-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -571,7 +571,7 @@
 
 ## 基础有限区间积分（14 条）
 
-[原题与定义域](../tests/basic-finite-integrals.json) · [实际输出和验证记录](benchmarks/basic-finite-cycle8-matrix-2026a.json)
+[原题与定义域](../tests/basic-finite-integrals.json) · [实际输出和验证记录](benchmarks/basic-finite-cycle8-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -592,7 +592,7 @@
 
 ## 误差函数与分母对数变体（15 条）
 
-[原题与定义域](../tests/cycle7-tail-mellin.json) · [实际输出和验证记录](benchmarks/cycle7-tail-mellin-cycle8-stack-matrix-2026a.json)
+[原题与定义域](../tests/cycle7-tail-mellin.json) · [实际输出和验证记录](benchmarks/cycle7-tail-mellin-cycle8-stack-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -614,7 +614,7 @@
 
 ## Gamma 对数矩变体（15 条）
 
-[原题与定义域](../tests/cycle8-gamma-log.json) · [实际输出和验证记录](benchmarks/cycle8-gamma-log-stack-matrix-2026a.json)
+[原题与定义域](../tests/cycle8-gamma-log.json) · [实际输出和验证记录](benchmarks/cycle8-gamma-log-stack-matrix-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -634,25 +634,93 @@
 | `C8-gamma-14` | `integrate(exp(-x)*ln(x)/3,x,0,+infinity)` | `Psi(1)/3` | 精确验证 |
 | `C8-gamma-15` | `integrate(x^15*exp(-x),x,0,+infinity)` | `factorial(15)` | 精确验证 |
 
-## 用户 A1–F6 全模式通过项（13 条）
+## 用户 A1–F6 全模式通过项（29 条）
 
-[原题与定义域](../tests/user-acceptance-passed.json) · [实际输出和验证记录](benchmarks/user-acceptance-passed-2026a.json)
+[原题与定义域](../tests/user-acceptance-passed-next.json) · [实际输出和验证记录](benchmarks/user-acceptance-passed-next-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
 | `A1` | `integrate(sqrt(x^2),x)` | `x*abs(x)/2` | 精确验证 |
 | `A2` | `integrate(x/sqrt(x^2),x)` | `abs(x)` | 精确验证 |
 | `A3` | `integrate(1/(x*ln(x)),x)` | `ln(abs(ln(x)))` | 精确验证 |
+| `A4` | `integrate(sqrt((x-1/2)^2),x,-1,3)` | `17/4` | 精确验证 |
+| `A5` | `integrate(sqrt(sin(x)^2),x,0,2*pi)` | `4` | 精确验证 |
 | `A6` | `integrate(1/(x^2-1),x)` | `ln(abs((x-1)/(x+1)))/2` | 精确验证 |
 | `B1` | `integrate(sin(x)^7/(sin(x)^7+cos(x)^7),x,0,pi/2)` | `pi/4` | 精确验证 |
 | `B2` | `integrate(x^5/(x^5+(1-x)^5),x,0,1)` | `1/2` | 精确验证 |
+| `B3` | `integrate(x/(sin(x)+cos(x)),x,0,pi/2)` | `pi*ln(1+sqrt(2))/(2*sqrt(2))` | 精确验证 |
+| `B4` | `integrate(atan(x)/x,x,0,1)` | `(Psi(1/4,1)-Psi(3/4,1))/16` | 精确验证 |
+| `B5` | `integrate(ln(x)/(1+x^2),x,0,1)` | `-((Psi(1/4,1)-Psi(3/4,1))/16)` | 精确验证 |
+| `B6` | `integrate(ln(cos(x)),x,0,pi/4)` | `-pi*ln(2)/4+((Psi(1/4,1)-Psi(3/4,1))/16)/2` | 精确验证 |
+| `C1` | `[assume(a>0),assume(b>0),integrate((exp(-a*x)-exp(-b*x))/x,x,0,+infinity)][2]` | `ln(b/a)` | 精确验证 |
+| `C2` | `[assume(a>0),integrate(exp(-a*x)*sin(b*x)/x,x,0,+infinity)][1]` | `atan(b/a)` | 精确验证 |
+| `C3` | `[assume(a>0),integrate(exp(-a*x)*(1-cos(b*x))/x,x,0,+infinity)][1]` | `ln(1+b^2/a^2)/2` | 精确验证 |
 | `C4` | `integrate(sin(x)/x,x,0,+infinity)` | `pi/2` | 精确验证 |
 | `D5` | `[assume(a>0),integrate(cos(b*x)/(x^2+a^2),x,0,+infinity)][1]` | `pi*exp(-a*abs(b))/(2*a)` | 精确验证 |
+| `D6` | `[assume(a>abs(b)),integrate(1/(a+b*cos(x)),x,0,2*pi)][1]` | `2*pi/sqrt(a^2-b^2)` | 精确验证 |
+| `E1` | `[assume(r>-1 and r<1),integrate(ln(1-2*r*cos(x)+r^2),x,0,pi)][1]` | `0` | 精确验证 |
+| `E2` | `[assume(a>abs(b)),integrate(ln(a+b*cos(x)),x,0,2*pi)][1]` | `2*pi*ln((a+sqrt(a^2-b^2))/2)` | 精确验证 |
+| `E3` | `integrate(cos(3*x)/(2+cos(x)),x,0,2*pi)` | `2*pi*(sqrt(3)-2)^3/sqrt(3)` | 精确验证 |
+| `E4` | `[assume(r>-1 and r<1),integrate(1/(1-2*r*cos(x)+r^2),x,0,2*pi)][1]` | `2*pi/(1-r^2)` | 精确验证 |
+| `E5` | `[assume(r>-1 and r<1),assume(n,integer),additionally(n>=0),integrate(cos(n*x)/(1-2*r*cos(x)+r^2),x,0,2*pi)][3]` | `2*pi*r^n/(1-r^2)` | 精确验证 |
+| `E6` | `[assume(r>-1 and r<1),assume(n,integer),additionally(n>=1),integrate(ln(1-2*r*cos(x)+r^2)*cos(n*x),x,0,2*pi)][3]` | `-2*pi*r^n/n` | 精确验证 |
 | `F1` | `integrate(exp(-x^2),x)` | `sqrt(pi)*erf(x)/2` | 精确验证 |
 | `F2` | `integrate(sin(x^2),x)` | `sqrt(pi/2)*FresnelS(sqrt(2/pi)*x)` | 精确验证 |
 | `F3` | `integrate(sin(x)/x,x)` | `Si(x)` | 精确验证 |
 | `F4` | `integrate(exp(x)/x,x)` | `Ei(x)` | 精确验证 |
 | `F6` | `integrate(1/ln(x),x)` | `Ei(ln(x))` | 精确验证 |
+
+## 用户前五道未解题（5 条）
+
+[原题与定义域](../tests/user-reported-five-gaps.json) · [实际输出和验证记录](benchmarks/user-reported-five-gaps-next-2026a.json)
+
+| 编号 | 可输入的题目 | 核对参考结果 | 验证 |
+| --- | --- | --- | --- |
+| `GAP-TRIG-LOG-QUARTER` | `integrate(ln(3*cos(x)^2+sin(x)^2),x,0,pi/2)` | `pi*ln((sqrt(3)+1)/2)` | 精确验证 |
+| `GAP-SYMMETRIC-QUARTIC` | `integrate((1+x^2)/((1-x^2)*sqrt(1+x^4)),x)` | `atanh(sqrt(2)*x/sqrt(1+x^4))/sqrt(2)` | 精确验证 |
+| `GAP-ATAN-CIRCLE` | `integrate(atan(x)/(x*sqrt(1-x^2)),x,0,1)` | `pi*ln(1+sqrt(2))/2` | 精确验证 |
+| `GAP-OSCILLATORY-FRULLANI` | `integrate((exp(-x)-exp(-3*x))*cos(x)/x,x,0,+infinity)` | `ln(5)/2` | 精确验证 |
+| `GAP-TRIG-LOG-HALF` | `integrate(ln(2+cos(x)),x,0,pi)` | `pi*ln((2+sqrt(3))/2)` | 精确验证 |
+
+## 验收错题结构变体（33 条）
+
+[原题与定义域](../tests/user-matrix-next.json) · [实际输出和验证记录](benchmarks/user-matrix-next-2026a.json)
+
+| 编号 | 可输入的题目 | 核对参考结果 | 验证 |
+| --- | --- | --- | --- |
+| `NEXT-ABS-AFFINE` | `integrate(sqrt((x-1/2)^2),x,-1,3)` | `17/4` | 精确验证 |
+| `NEXT-ABS-NEGATIVE-SLOPE` | `integrate(sqrt((2-3*x)^2),x,-1,2)` | `41/6` | 精确验证 |
+| `NEXT-ABS-REVERSE` | `integrate(abs(3*x-2),x,2,-1)` | `-41/6` | 精确验证 |
+| `NEXT-ABS-SIN` | `integrate(sqrt(sin(x)^2),x,0,2*pi)` | `4` | 精确验证 |
+| `NEXT-ABS-COS-SCALED` | `integrate(-3*sqrt(cos(2*x+1)^2),x,0,3*pi)` | `-18` | 精确验证 |
+| `NEXT-LOG-COS-QUARTER` | `integrate(ln(cos(x)),x,0,pi/4)` | `-pi*ln(2)/4+((Psi(1/4,1)-Psi(3/4,1))/16)/2` | 精确验证 |
+| `NEXT-LOG-SIN-QUARTER` | `integrate(ln(sin(3*x)),x,0,pi/12)` | `-pi*ln(2)/12-((Psi(1/4,1)-Psi(3/4,1))/16)/6` | 精确验证 |
+| `NEXT-LOG-ABS-NEGATIVE-WAVE` | `integrate(ln(abs(sin(x))),x,-pi/4,pi/4)` | `-pi*ln(2)/2-((Psi(1/4,1)-Psi(3/4,1))/16)` | 精确验证 |
+| `NEXT-LOG-COS-REVERSE` | `integrate(ln(cos(2*x)),x,pi/8,0)` | `pi*ln(2)/8-((Psi(1/4,1)-Psi(3/4,1))/16)/4` | 精确验证 |
+| `NEXT-LOG-MEAN-COS` | `integrate(ln(2+cos(x)),x,0,pi)` | `pi*ln((2+sqrt(3))/2)` | 精确验证 |
+| `NEXT-LOG-MEAN-SIN` | `integrate(ln(5-3*sin(2*x)),x,0,pi)` | `pi*ln(9/2)` | 精确验证 |
+| `NEXT-LOG-MEAN-SQUARES` | `integrate(ln(3*cos(x)^2+sin(x)^2),x,0,pi/2)` | `pi*ln((sqrt(3)+1)/2)` | 精确验证 |
+| `NEXT-LOG-MEAN-SQUARES-SCALE` | `integrate(2*ln(4*cos(3*x)^2+9*sin(3*x)^2),x,0,pi/6)` | `2*pi*ln(5/2)/3` | 精确验证 |
+| `NEXT-LOG-MEAN-SINGLE-SQUARE` | `integrate(ln(1+3*cos(x)^2),x,0,pi)` | `2*pi*ln(3/2)` | 精确验证 |
+| `NEXT-FRULLANI-COS` | `integrate((exp(-x)-exp(-3*x))*cos(x)/x,x,0,+infinity)` | `ln(5)/2` | 精确验证 |
+| `NEXT-FRULLANI-COS-ENVELOPE` | `integrate(exp(-2*x)*(exp(-x)-exp(-3*x))*cos(-4*x)/x,x,0,+infinity)` | `ln(41/25)/2` | 精确验证 |
+| `NEXT-FRULLANI-COS-MULTI` | `integrate((2*exp(-x)-3*exp(-2*x)+exp(-4*x))*cos(3*x)/x,x,0,+infinity)` | `(-2*ln(10)+3*ln(13)-ln(25))/2` | 精确验证 |
+| `NEXT-QUARTIC-1` | `integrate((-1*x^2+-1)/((1*x^2-1)*sqrt(x^4+(0)*x^2+1)),x)` | `-(-1)*atanh(sqrt(2)*x/sqrt(x^4+(0)*x^2+1))/(1*sqrt(2))` | 精确验证 |
+| `NEXT-QUARTIC-4` | `integrate((3*x^2+12)/((2*x^2-8)*sqrt(x^4+(1)*x^2+16)),x)` | `-(3)*atanh(sqrt(9)*x/sqrt(x^4+(1)*x^2+16))/(2*sqrt(9))` | 精确验证 |
+| `NEXT-QUARTIC-9` | `integrate((-2*x^2+-18)/((3*x^2-27)*sqrt(x^4+(-5)*x^2+81)),x)` | `-(-2)*atanh(sqrt(13)*x/sqrt(x^4+(-5)*x^2+81))/(3*sqrt(13))` | 精确验证 |
+| `NEXT-CATALAN-ATAN-CUBIC` | `integrate(atan(8*x^3)/x,x,0,1/2)` | `((Psi(1/4,1)-Psi(3/4,1))/16)/3` | 精确验证 |
+| `NEXT-CATALAN-ATAN-NEGATIVE` | `integrate(atan(-4*x^2)/x,x,0,1/2)` | `-((Psi(1/4,1)-Psi(3/4,1))/16)/2` | 精确验证 |
+| `NEXT-CATALAN-LOG-CUBIC` | `integrate(x^2*ln(8*x^3)/(1+64*x^6),x,0,1/2)` | `-((Psi(1/4,1)-Psi(3/4,1))/16)/24` | 精确验证 |
+| `NEXT-ATAN-CIRCLE` | `integrate(atan(x)/(x*sqrt(1-x^2)),x,0,1)` | `pi*ln(1+sqrt(2))/2` | 精确验证 |
+| `NEXT-ATAN-CIRCLE-SCALE` | `integrate(atan(6*x^2)/(x*sqrt(1-16*x^4)),x,0,1/2)` | `pi*asinh(3/2)/4` | 精确验证 |
+| `NEXT-ATAN-CIRCLE-NEGATIVE` | `integrate(atan(-3*x)/(x*sqrt(1-4*x^2)),x,0,1/2)` | `-pi*asinh(3/2)/2` | 精确验证 |
+| `NEXT-WEIGHTED-SINE-COSINE` | `integrate(x/(sin(x)+cos(x)),x,0,pi/2)` | `pi*ln(1+sqrt(2))/(2*sqrt(2))` | 精确验证 |
+| `NEXT-WEIGHTED-SINE-COSINE-SCALE` | `integrate((3*x+2)/(sin(2*x)+cos(2*x)),x,0,pi/4)` | `(3*pi/8+2)*ln(1+sqrt(2))/sqrt(2)` | 精确验证 |
+| `NEXT-POISSON-MEAN` | `integrate(ln(1-2*(1/3)*cos(x)+1/9),x,0,pi)` | `0` | 精确验证 |
+| `NEXT-COSINE-HARMONIC` | `integrate(cos(3*x)/(2+cos(x)),x,0,2*pi)` | `2*pi*(sqrt(3)-2)^3/sqrt(3)` | 精确验证 |
+| `NEXT-POISSON-HARMONIC` | `integrate(cos(5*x)/(1+cos(x)+1/4),x,0,2*pi)` | `-pi/12` | 精确验证 |
+| `NEXT-LOG-POISSON-HARMONIC` | `integrate(ln(1+cos(x)+1/4)*cos(3*x),x,0,2*pi)` | `pi/12` | 精确验证 |
+| `NEXT-LOG-POISSON-SCALED` | `integrate(ln(1-2*cos(2*x)/3+1/9)*cos(8*x),x,0,pi)` | `-pi/324` | 精确验证 |
 
 ---
 

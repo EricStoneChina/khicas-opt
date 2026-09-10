@@ -38,9 +38,9 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(',
             '  static bool integrate_reciprocal_cosh(',
             '  static bool integrate_gaussian_atan_moment(',
             '  static bool integrate_exponential_log_moment(',
+            '  static int integration_quarter_sigma(',
             '  static bool integrate_log_trig_quarters(',
             '  static bool integrate_log_product_zeta(',
-            '  static int integration_quarter_sigma(',
             '  static bool integrate_log_trig_sum(',
             '  static bool integrate_atan_log_measure(',
             '  static gen integration_mixed_mellin_value(',
@@ -58,7 +58,7 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(',
             '  static bool integration_scaled_chain_terms(',
             '  static bool integrate_monomial_gaussian_erf(',
             '  static bool integrate_atan_cauchy_power(',
-            '  static bool integrate_exponential_beta(', '  static bool integrate_complementary_ratio(', '  static bool integrate_cauchy_fourier(', '  static bool integrate_compact_definite(',
+            '  static bool integrate_exponential_beta(', '  static bool integrate_complementary_ratio(', '  static bool integrate_cauchy_fourier(', '  static bool integrate_unit_log_arc(', '  static bool integrate_positive_cosine_kernel(', '  static bool integrate_compact_definite(',
             '  static bool integrate_real_root(', '  static bool integrate_residue_kernel(',
             '  bool integration_rational_tail(', '  static bool integration_finite_poly_add(',
             '  static bool integration_finite_poly_product(',
@@ -74,6 +74,6 @@ with tempfile.TemporaryDirectory(prefix='khicas-real-definite-') as tmp:
     flags=[os.environ.get('CXX','c++'),'-std=c++11','-O2','-DHAVE_CONFIG_H','-DGIAC_GENERIC_CONSTANTS','-Wno-deprecated-declarations','-I',os.environ.get('GIAC_INCLUDE','/usr/include/giac')]+shlex.split(os.environ.get('CXXFLAGS',''))
     libs=shlex.split(os.environ.get('LDFLAGS',''))+['-lgiac']+shlex.split(os.environ.get('GIAC_NUMERIC_LIBS','-lgmp -lmpfr'))
     for test in ('real_definite.cc','compact_integrals.cc','cycle1_integrals.cc','cycle2_integrals.cc','user_extra_integrals.cc',
-                 'cycle3_laplace_integrals.cc','user_matrix_rules.cc'):
+                 'cycle3_laplace_integrals.cc','user_matrix_rules.cc','user_matrix_next_rules.cc'):
         subprocess.run(flags+[str(p/'rules.cc'),str(ROOT/'tests'/test)]+libs+['-pthread','-o',str(p/'test')],check=True)
         subprocess.run([str(p/'test')],check=True,timeout=60)

@@ -3,24 +3,26 @@
 import argparse,collections,hashlib,json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-SNAPSHOT='checkpoint/user-matrix-2026a'
+SNAPSHOT='checkpoint/user-matrix-next-2026a'
 GROUPS=[
- ('用户原始 8 题','user-integrals','user-eight-cycle8-matrix-2026a','user'),
- ('用户追加 2 题','user-extra-integrals','user-extra-cycle8-matrix-2026a','corpus'),
- ('用户追加 5 题','user-challenge-integrals','user-challenge-cycle8-matrix-2026a','stack'),
- ('MIT / Princeton 题库','calculus-corpus','calculus-cycle8-matrix-2026a','corpus'),
- ('独立泛化题库','generalization-corpus','generalization-cycle8-matrix-2026a','corpus'),
- ('第二轮泛化题库','generalization-cycle2','cycle2-cycle8-matrix-2026a','corpus'),
- ('第三轮泛化题库','generalization-cycle3','cycle3-cycle8-matrix-2026a','corpus'),
- ('第四轮泛化题库','generalization-cycle4','cycle4-cycle8-matrix-2026a','corpus'),
- ('第五轮泛化题库','generalization-cycle5','cycle5-cycle8-stack-matrix-2026a','stack'),
- ('第六轮泛化题库','generalization-cycle6','cycle6-cycle8-stack-matrix-2026a','stack'),
- ('第七轮泛化题库','generalization-cycle7','cycle7-cycle8-stack-matrix-2026a','stack'),
- ('第八轮泛化题库','generalization-cycle8','cycle8-stack-matrix-2026a','stack'),
- ('基础有限区间积分','basic-finite-integrals','basic-finite-cycle8-matrix-2026a','stack'),
- ('误差函数与分母对数变体','cycle7-tail-mellin','cycle7-tail-mellin-cycle8-stack-matrix-2026a','stack'),
- ('Gamma 对数矩变体','cycle8-gamma-log','cycle8-gamma-log-stack-matrix-2026a','stack'),
- ('用户 A1–F6 全模式通过项','user-acceptance-passed','user-acceptance-passed-2026a','stack')]
+ ('用户原始 8 题','user-integrals','user-eight-cycle8-matrix-next-2026a','user'),
+ ('用户追加 2 题','user-extra-integrals','user-extra-cycle8-matrix-next-2026a','corpus'),
+ ('用户追加 5 题','user-challenge-integrals','user-challenge-cycle8-matrix-next-2026a','stack'),
+ ('MIT / Princeton 题库','calculus-corpus','calculus-cycle8-matrix-next-2026a','corpus'),
+ ('独立泛化题库','generalization-corpus','generalization-cycle8-matrix-next-2026a','corpus'),
+ ('第二轮泛化题库','generalization-cycle2','cycle2-cycle8-matrix-next-2026a','corpus'),
+ ('第三轮泛化题库','generalization-cycle3','cycle3-cycle8-matrix-next-2026a','corpus'),
+ ('第四轮泛化题库','generalization-cycle4','cycle4-cycle8-matrix-next-2026a','corpus'),
+ ('第五轮泛化题库','generalization-cycle5','cycle5-cycle8-stack-matrix-next-2026a','stack'),
+ ('第六轮泛化题库','generalization-cycle6','cycle6-cycle8-stack-matrix-next-2026a','stack'),
+ ('第七轮泛化题库','generalization-cycle7','cycle7-cycle8-stack-matrix-next-2026a','stack'),
+ ('第八轮泛化题库','generalization-cycle8','cycle8-stack-matrix-next-2026a','stack'),
+ ('基础有限区间积分','basic-finite-integrals','basic-finite-cycle8-matrix-next-2026a','stack'),
+ ('误差函数与分母对数变体','cycle7-tail-mellin','cycle7-tail-mellin-cycle8-stack-matrix-next-2026a','stack'),
+ ('Gamma 对数矩变体','cycle8-gamma-log','cycle8-gamma-log-stack-matrix-next-2026a','stack'),
+ ('用户 A1–F6 全模式通过项','user-acceptance-passed-next','user-acceptance-passed-next-2026a','stack'),
+ ('用户前五道未解题','user-reported-five-gaps','user-reported-five-gaps-next-2026a','stack'),
+ ('验收错题结构变体','user-matrix-next','user-matrix-next-2026a','stack')]
 
 LABELS={'exact':'精确验证','sampled':'导数采样通过','numeric_constant':'数值常量检查通过'}
 def code(value):

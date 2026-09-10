@@ -2422,6 +2422,27 @@ namespace giac {
       return e_orig;
     if (e_orig.type<=_POLY || is_inf(e_orig) || has_num_coeff(e_orig))
       return e_orig;
+    // A single logarithm of a multivariate radical already is a compact
+    // atom. Rational arithmetic outside it can cancel coefficients without
+    // constructing the multivariate algebraic extension or expanding logs.
+    // In particular this retains branches and avoids deep cold-call stacks.
+    if(e_orig.is_symb_of_sommet(at_prod) && taille(e_orig,97)<=96){
+      vecteur logs=lop(e_orig,at_ln);
+      if(logs.size()==1){
+        const gen &arg=logs[0]._SYMBptr->feuille;
+        vecteur ids=lidnt(arg);unsigned variables=0;
+        for(unsigned i=0;i<ids.size();++i)if(ids[i]!=cst_pi)++variables;
+        bool radical=contains(arg,*at_sqrt);
+        if(!radical){
+          vecteur powers=lop(arg,at_pow);
+          for(unsigned i=0;i<powers.size();++i){
+            const gen &f=powers[i]._SYMBptr->feuille;
+            if(f.type==_VECT && f._VECTptr->size()==2 && f._VECTptr->back().type==_FRAC){radical=true;break;}
+          }
+        }
+        if(variables>1 && radical)return ratnormal(e_orig,contextptr);
+      }
+    }
     gen e=simplifier(e_orig,contextptr);
     // An algebraic extension for (a+x^(1/q))^(1/p) may have degree p*q.
     // Keep these powers as atoms while simplifying their rational coefficient

@@ -88,7 +88,7 @@ int main(){
   for(const definite &t:bad)assert(!integrate_real_definite(gen(t.f,ctx),x,gen(t.lo,ctx).eval(1,ctx),gen(t.hi,ctx).eval(1,ctx),res,ctx));
   const char *badprimitive[]={"x^4*(1-x^3)^50","x^26*(1-x^3)^50","x^5*(1-x^3)^(-1)","x^5*(a-x^3)^50",
     "(x^2+1)/((x^2+1)*sqrt(x^4+1))","(x^2-1)/((x^2+1)*sqrt(x^4-2*x^2+1))",
-    "(x^2+1)/((x^2-1)*sqrt(x^4+1))","1/(sin(x)^4-cos(x)^4)","1/(sin(x)^4+cos(2*x)^4)"};
+    "(x^2+1)/((x^2-1)*sqrt(x^4-3*x^2+1))","1/(sin(x)^4-cos(x)^4)","1/(sin(x)^4+cos(2*x)^4)"};
   for(const char *s:badprimitive)assert(!integrate_compact_primitive(gen(s,ctx).eval(1,ctx),x,res,ctx));
   angle_radian(false,ctx);
   assert(!integrate_compact_primitive(gen("1/(sin(x)^4+cos(x)^4)",ctx),x,res,ctx));
