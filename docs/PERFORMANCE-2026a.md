@@ -1,5 +1,7 @@
 # 2026a：积分栈占用与计算热点优化
 
+本文记录 `e2409f2` 阶段。后续剩余 8 题的完成情况见 [积分覆盖报告](INTEGRATION-COVERAGE-2026a.md)。
+
 基线为 `checkpoint/equations`（`8b8fde1`）。原有性能、方程转换两个 checkpoint 保留。
 此轮启动界面与 About 统一显示 `KhiCAS 2026a / 1.8.0`；`version()` 同步为 1.8.0。
 2026a 是本地优化版标记，不是上游新发布版本。
