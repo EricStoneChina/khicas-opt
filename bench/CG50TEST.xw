@@ -1,0 +1,21 @@
+// Run one case at a time: cgtest(1) through cgtest(15).
+// [answer, seconds, free_before, free_after, lifetime_heap_peak, OOM_delta, fragmentation_delta]
+cgtest(n):={
+ local x;
+ if (n==1) return time(integrate(x^5*(1-x^3)^50, x, 0, 1),"resources");
+ if (n==2) return time(integrate((x^2-1)/((x^2+1)*sqrt(x^4+1)), x),"resources");
+ if (n==3) return time(integrate(x*sin(x)/(1+cos(x)^2), x, 0, pi),"resources");
+ if (n==4) return time(simplify(integrate(1/(sin(x)^4+cos(x)^4), x)),"resources");
+ if (n==5) return time(simplify(integrate((1+x^(1/4))^(1/3)/sqrt(x), x)),"resources");
+ if (n==6) return time(integrate(ln(1+x)/(1+x^2), x, 0, 1),"resources");
+ if (n==7) return time(integrate(sin(x)^3/x, x, 0, +infinity),"resources");
+ if (n==8) return time(integrate(x^2/(exp(x)+exp(-x)+2), x, -infinity, +infinity),"resources");
+ if (n==9) return time(simplify(integrate((3*sin(x)-sin(3*x))^(1/3),x)),"resources");
+ if (n==10) return time(integrate(ln(x)^2/sqrt(x*(1-x)),x,0,1),"resources");
+ if (n==11) return time(integrate(ln(x)/(sqrt(x)*(1+x^2)),x,0,+infinity),"resources");
+ if (n==12) return time(integrate(exp(-3*x)*(sin(2*x+pi/3)-sin(pi/3))/x,x,0,+infinity),"resources");
+ if (n==13) return time(integrate(exp(-2*x-3/x)/sqrt(x),x,0,+infinity),"resources");
+ if (n==14) return time(integrate(x^5*(1-x^3)^4096,x,0,1),"resources");
+ if (n==15) return time(integrate(x^16/(exp(2*x-3)+exp(-2*x+3)+2),x,-infinity,+infinity),"resources");
+ return "Choose a case from 1 to 15";
+};

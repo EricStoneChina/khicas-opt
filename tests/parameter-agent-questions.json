@@ -1,0 +1,14 @@
+{
+  "sources": {"inputs": "Fresh question-only subagent matrix_remaining_questions, returned and ended after checkpoint e9ce25a; root independently reviewed references"},
+  "notes": "Ordinary improper integrals, no regularization; positive real bases use exp(z*ln(x)). Parameter formulas require stated domains, which are not implied by successful numeric samples.",
+  "cases": [
+    {"id":"PARAM-Q1","f":"exp(-a*x)*cos(b*x)","bounds":["0","+infinity"],"expected":"a/(a^2+b^2)","domain":"Re(a)>0, b real","symbolic_parameters":true},
+    {"id":"PARAM-Q2","f":"exp(-(1+i)*x)-exp(-(1-i)*x)","bounds":["0","+infinity"],"expected":"-i","domain":"absolute convergence, positive decay real parts"},
+    {"id":"PARAM-Q3","f":"x^(s-1)*exp(-c*x)","bounds":["0","+infinity"],"expected":"Gamma(s)*exp(-s*ln(c))","domain":"Re(s)>0, Re(c)>0, principal Log(c)","symbolic_parameters":true},
+    {"id":"PARAM-Q4","f":"(1+x)^(a-1)*(1-x)^(b-1)","bounds":["-1","1"],"expected":"2^(a+b-1)*Gamma(a)*Gamma(b)/Gamma(a+b)","domain":"Re(a)>0, Re(b)>0, positive bases inside interval","symbolic_parameters":true},
+    {"id":"PARAM-Q5","f":"x^(2*i)/(1+x^2)","bounds":["0","+infinity"],"expected":"pi/(2*cosh(pi))","domain":"x>0, complex power via real ln(x), absolute convergence"},
+    {"id":"PARAM-Q6","f":"ln(1-x^2)/x","expected":"-Li2(x^2)/2","domain":"0<x<1, principal Li2"},
+    {"id":"PARAM-Q7","f":"x^(i-1)*exp(-x)","bounds":["0","+infinity"],"behavior":"divergent","domain":"origin has oscillating epsilon^i term, Gamma(i) analytic continuation is not the ordinary integral"},
+    {"id":"PARAM-Q8","f":"x^i/(1+x)","bounds":["0","+infinity"],"behavior":"divergent","domain":"infinity has oscillating R^i term, i*pi/sinh(pi) is not the ordinary integral"}
+  ]
+}

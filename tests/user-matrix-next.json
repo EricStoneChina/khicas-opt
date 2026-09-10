@@ -1,0 +1,310 @@
+{
+  "sources": {
+    "inputs": "Root structural variants of user A4, A5, B6 and previous five failures; references derived independently"
+  },
+  "cases": [
+    {
+      "id": "NEXT-ABS-AFFINE",
+      "f": "sqrt((x-1/2)^2)",
+      "bounds": [
+        "-1",
+        "3"
+      ],
+      "expected": "17/4"
+    },
+    {
+      "id": "NEXT-ABS-NEGATIVE-SLOPE",
+      "f": "sqrt((2-3*x)^2)",
+      "bounds": [
+        "-1",
+        "2"
+      ],
+      "expected": "41/6"
+    },
+    {
+      "id": "NEXT-ABS-REVERSE",
+      "f": "abs(3*x-2)",
+      "bounds": [
+        "2",
+        "-1"
+      ],
+      "expected": "-41/6"
+    },
+    {
+      "id": "NEXT-ABS-SIN",
+      "f": "sqrt(sin(x)^2)",
+      "bounds": [
+        "0",
+        "2*pi"
+      ],
+      "expected": "4"
+    },
+    {
+      "id": "NEXT-ABS-COS-SCALED",
+      "f": "-3*sqrt(cos(2*x+1)^2)",
+      "bounds": [
+        "0",
+        "3*pi"
+      ],
+      "expected": "-18"
+    },
+    {
+      "id": "NEXT-LOG-COS-QUARTER",
+      "f": "ln(cos(x))",
+      "bounds": [
+        "0",
+        "pi/4"
+      ],
+      "expected": "-pi*ln(2)/4+((Psi(1/4,1)-Psi(3/4,1))/16)/2"
+    },
+    {
+      "id": "NEXT-LOG-SIN-QUARTER",
+      "f": "ln(sin(3*x))",
+      "bounds": [
+        "0",
+        "pi/12"
+      ],
+      "expected": "-pi*ln(2)/12-((Psi(1/4,1)-Psi(3/4,1))/16)/6"
+    },
+    {
+      "id": "NEXT-LOG-ABS-NEGATIVE-WAVE",
+      "f": "ln(abs(sin(x)))",
+      "bounds": [
+        "-pi/4",
+        "pi/4"
+      ],
+      "expected": "-pi*ln(2)/2-((Psi(1/4,1)-Psi(3/4,1))/16)"
+    },
+    {
+      "id": "NEXT-LOG-COS-REVERSE",
+      "f": "ln(cos(2*x))",
+      "bounds": [
+        "pi/8",
+        "0"
+      ],
+      "expected": "pi*ln(2)/8-((Psi(1/4,1)-Psi(3/4,1))/16)/4"
+    },
+    {
+      "id": "NEXT-LOG-MEAN-COS",
+      "f": "ln(2+cos(x))",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "pi*ln((2+sqrt(3))/2)"
+    },
+    {
+      "id": "NEXT-LOG-MEAN-SIN",
+      "f": "ln(5-3*sin(2*x))",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "pi*ln(9/2)"
+    },
+    {
+      "id": "NEXT-LOG-MEAN-SQUARES",
+      "f": "ln(3*cos(x)^2+sin(x)^2)",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "expected": "pi*ln((sqrt(3)+1)/2)"
+    },
+    {
+      "id": "NEXT-LOG-MEAN-SQUARES-SCALE",
+      "f": "2*ln(4*cos(3*x)^2+9*sin(3*x)^2)",
+      "bounds": [
+        "0",
+        "pi/6"
+      ],
+      "expected": "2*pi*ln(5/2)/3"
+    },
+    {
+      "id": "NEXT-LOG-MEAN-SINGLE-SQUARE",
+      "f": "ln(1+3*cos(x)^2)",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "2*pi*ln(3/2)"
+    },
+    {
+      "id": "NEXT-FRULLANI-COS",
+      "f": "(exp(-x)-exp(-3*x))*cos(x)/x",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "ln(5)/2"
+    },
+    {
+      "id": "NEXT-FRULLANI-COS-ENVELOPE",
+      "f": "exp(-2*x)*(exp(-x)-exp(-3*x))*cos(-4*x)/x",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "ln(41/25)/2"
+    },
+    {
+      "id": "NEXT-FRULLANI-COS-MULTI",
+      "f": "(2*exp(-x)-3*exp(-2*x)+exp(-4*x))*cos(3*x)/x",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "(-2*ln(10)+3*ln(13)-ln(25))/2"
+    },
+    {
+      "id": "NEXT-QUARTIC-1",
+      "f": "(-1*x^2+-1)/((1*x^2-1)*sqrt(x^4+(0)*x^2+1))",
+      "expected": "-(-1)*atanh(sqrt(2)*x/sqrt(x^4+(0)*x^2+1))/(1*sqrt(2))",
+      "samples": [
+        "-5",
+        "-1/3",
+        "1/3",
+        "5"
+      ]
+    },
+    {
+      "id": "NEXT-QUARTIC-4",
+      "f": "(3*x^2+12)/((2*x^2-8)*sqrt(x^4+(1)*x^2+16))",
+      "expected": "-(3)*atanh(sqrt(9)*x/sqrt(x^4+(1)*x^2+16))/(2*sqrt(9))",
+      "samples": [
+        "-5",
+        "-1/3",
+        "1/3",
+        "5"
+      ]
+    },
+    {
+      "id": "NEXT-QUARTIC-9",
+      "f": "(-2*x^2+-18)/((3*x^2-27)*sqrt(x^4+(-5)*x^2+81))",
+      "expected": "-(-2)*atanh(sqrt(13)*x/sqrt(x^4+(-5)*x^2+81))/(3*sqrt(13))",
+      "samples": [
+        "-5",
+        "-1/3",
+        "1/3",
+        "5"
+      ]
+    },
+    {
+      "id": "NEXT-CATALAN-ATAN-CUBIC",
+      "f": "atan(8*x^3)/x",
+      "bounds": [
+        "0",
+        "1/2"
+      ],
+      "expected": "((Psi(1/4,1)-Psi(3/4,1))/16)/3"
+    },
+    {
+      "id": "NEXT-CATALAN-ATAN-NEGATIVE",
+      "f": "atan(-4*x^2)/x",
+      "bounds": [
+        "0",
+        "1/2"
+      ],
+      "expected": "-((Psi(1/4,1)-Psi(3/4,1))/16)/2"
+    },
+    {
+      "id": "NEXT-CATALAN-LOG-CUBIC",
+      "f": "x^2*ln(8*x^3)/(1+64*x^6)",
+      "bounds": [
+        "0",
+        "1/2"
+      ],
+      "expected": "-((Psi(1/4,1)-Psi(3/4,1))/16)/24"
+    },
+    {
+      "id": "NEXT-ATAN-CIRCLE",
+      "f": "atan(x)/(x*sqrt(1-x^2))",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "pi*ln(1+sqrt(2))/2"
+    },
+    {
+      "id": "NEXT-ATAN-CIRCLE-SCALE",
+      "f": "atan(6*x^2)/(x*sqrt(1-16*x^4))",
+      "bounds": [
+        "0",
+        "1/2"
+      ],
+      "expected": "pi*asinh(3/2)/4"
+    },
+    {
+      "id": "NEXT-ATAN-CIRCLE-NEGATIVE",
+      "f": "atan(-3*x)/(x*sqrt(1-4*x^2))",
+      "bounds": [
+        "0",
+        "1/2"
+      ],
+      "expected": "-pi*asinh(3/2)/2"
+    },
+    {
+      "id": "NEXT-WEIGHTED-SINE-COSINE",
+      "f": "x/(sin(x)+cos(x))",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "expected": "pi*ln(1+sqrt(2))/(2*sqrt(2))"
+    },
+    {
+      "id": "NEXT-WEIGHTED-SINE-COSINE-SCALE",
+      "f": "(3*x+2)/(sin(2*x)+cos(2*x))",
+      "bounds": [
+        "0",
+        "pi/4"
+      ],
+      "expected": "(3*pi/8+2)*ln(1+sqrt(2))/sqrt(2)"
+    },
+    {
+      "id": "NEXT-POISSON-MEAN",
+      "f": "ln(1-2*(1/3)*cos(x)+1/9)",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "0"
+    },
+    {
+      "id": "NEXT-COSINE-HARMONIC",
+      "f": "cos(3*x)/(2+cos(x))",
+      "bounds": [
+        "0",
+        "2*pi"
+      ],
+      "expected": "2*pi*(sqrt(3)-2)^3/sqrt(3)"
+    },
+    {
+      "id": "NEXT-POISSON-HARMONIC",
+      "f": "cos(5*x)/(1+cos(x)+1/4)",
+      "bounds": [
+        "0",
+        "2*pi"
+      ],
+      "expected": "-pi/12"
+    },
+    {
+      "id": "NEXT-LOG-POISSON-HARMONIC",
+      "f": "ln(1+cos(x)+1/4)*cos(3*x)",
+      "bounds": [
+        "0",
+        "2*pi"
+      ],
+      "expected": "pi/12"
+    },
+    {
+      "id": "NEXT-LOG-POISSON-SCALED",
+      "f": "ln(1-2*cos(2*x)/3+1/9)*cos(8*x)",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "-pi/324"
+    }
+  ]
+}

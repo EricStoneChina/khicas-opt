@@ -1,0 +1,27 @@
+{
+  "sources": [
+    {
+      "description": "User inputs; independent double-integral symmetry and x -> pi-x reflection proofs"
+    }
+  ],
+  "cases": [
+    {
+      "id": "USER-EXTRA-01",
+      "f": "atan(sqrt(x^2+2))/((x^2+1)*sqrt(x^2+2))",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "5*pi^2/96"
+    },
+    {
+      "id": "USER-EXTRA-02",
+      "f": "x*ln(sin(x))",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "-pi^2*ln(2)/2"
+    }
+  ]
+}
