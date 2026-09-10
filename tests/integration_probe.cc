@@ -9,6 +9,15 @@
 #include <cstdlib>
 #include <sys/resource.h>
 static unsigned parser_calls;
+// An independent exact identity check, not a numerical tolerance: hyperbolic
+// functions and their exponential definitions have identical derivatives.
+// Keep this optional proof bounded before the host simplifier expands it.
+static bool hyperbolic_zero(const giac::gen &g,const giac::context *contextptr){
+  using namespace giac;
+  if(taille(g,129)>128 ||
+     !(contains(g,*at_sinh) || contains(g,*at_cosh) || contains(g,*at_tanh)))return false;
+  return is_zero(_simplify(hyp2exp(g,contextptr),contextptr));
+}
 namespace giac {
 int giac_yyparse(void *p){
   static auto parse=reinterpret_cast<int(*)(void*)>(dlsym(RTLD_NEXT,"_ZN4giac12giac_yyparseEPv"));
@@ -55,6 +64,10 @@ static int probe_main(int argc,char **argv){
   if (!indefinite && !is_zero(delta)) delta=_simplify(_evalc(delta,contextptr),contextptr);
   gen reference_delta=indefinite?_simplify(reference-target,contextptr):gen(0);
   if (is_zero(delta) && is_zero(reference_delta)) {std::cerr<<"CHECK exact\n";return 0;}
+  if (indefinite && (is_zero(delta) || hyperbolic_zero(actual-target,contextptr)) &&
+      (is_zero(reference_delta) || hyperbolic_zero(reference-target,contextptr))){
+    std::cerr<<"CHECK_METHOD hyperbolic_exponential_identity\nCHECK exact\n";return 0;
+  }
   if (!indefinite) {
     gen a=evalf_double(actual,1,contextptr),b=evalf_double(target,1,contextptr);
     if (a.type==_DOUBLE_ && b.type==_DOUBLE_ && std::isfinite(a._DOUBLE_val)

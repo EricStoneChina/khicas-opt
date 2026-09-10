@@ -32,6 +32,6 @@ with tempfile.TemporaryDirectory(prefix='khicas-simplify-nested-') as tmp:
     libs=shlex.split(os.environ.get('LDFLAGS',''))+['-lgiac','-pthread']
     libs += shlex.split(os.environ.get('GIAC_NUMERIC_LIBS', '-lgmp -lmpfr'))
     flags+=['-I',str(p)]
-    for test in ('simplify_nested_powers.cc','simplify_special_functions.cc','equation_simplification.cc','simplify_real_roots.cc'):
+    for test in ('simplify_nested_powers.cc','simplify_special_functions.cc','equation_simplification.cc','simplify_real_roots.cc','high_frequency_trig_simplify.cc'):
         subprocess.run(flags+[str(p/'simplify.cc'),str(p/'normalize.cc'),str(ROOT/'tests'/test)]+libs+['-o',str(p/'test')],check=True)
         subprocess.run([str(p/'test')],check=True,timeout=60)

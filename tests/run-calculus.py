@@ -38,6 +38,7 @@ if args.only:
     assert len(cases) == len(selected), 'Unknown or duplicate problem ID'
 report = {'baseline': args.baseline_ref, 'timeout_seconds': args.timeout,
           'scope': 'actual yintg, zintgab and normalization, host Giac dependencies; not CG50 timings',
+          'validation_probe_sha256':hashlib.sha256((ROOT/'tests/integration_probe.cc').read_bytes()).hexdigest(),
           'source_sha256': {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest()
                             for name in ('yintg.cc','zintgab.cc','ysym2poly.cc','integration_guard.h')},
           'corpus_file': str(args.corpus),

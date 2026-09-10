@@ -14,7 +14,7 @@
 
 已通过的积分题目与核对结果见 [独立题目清单](docs/PASSED-INTEGRALS.md)。
 最新方程显示与积分实现分别保存为 `checkpoint/equations-2026a`、
-`checkpoint/integration-cycle5-2026a`。
+`checkpoint/integration-cycle6-2026a`。
 
 ## 性能 checkpoint
 

@@ -1,8 +1,8 @@
 # 已通过的积分题目列表
 
-验证源码：`dff6974`，`checkpoint/integration-cycle5-2026a`。
-正式题库与用户题目共 **450 条通过记录**：**440 条精确验证、9 条导数采样通过、1 条数值常量检查通过**。
-保留各题库的编号和重复项；仅去除输入空白后有 443 种输入文本，这不是数学意义的去重。
+验证源码：`checkpoint/integration-cycle6-2026a`。
+正式题库与用户题目共 **458 条通过记录**：**453 条精确验证、5 条导数采样通过、0 条数值常量检查通过**。
+保留各题库的编号和重复项；仅去除输入空白后有 451 种输入文本，这不是数学意义的去重。
 
 “核对参考结果”来自已验证题库，用于阅读和比对，并不保证与计算器实际打印的写法相同。
 不定积分省略积分常数；实根、对数和反三角函数须遵守原题定义域。采样检查不能代替完整符号证明。
@@ -13,7 +13,7 @@
 
 ## 用户原始 8 题（8 条）
 
-[原题与定义域](../tests/user-integrals.json) · [实际输出和验证记录](benchmarks/user-eight-cycle5-2026a.json)
+[原题与定义域](../tests/user-integrals.json) · [实际输出和验证记录](benchmarks/user-eight-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -28,7 +28,7 @@
 
 ## 用户追加 2 题（2 条）
 
-[原题与定义域](../tests/user-extra-integrals.json) · [实际输出和验证记录](benchmarks/user-extra-cycle5-2026a.json)
+[原题与定义域](../tests/user-extra-integrals.json) · [实际输出和验证记录](benchmarks/user-extra-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -37,7 +37,7 @@
 
 ## 用户追加 5 题（5 条）
 
-[原题与定义域](../tests/user-challenge-integrals.json) · [实际输出和验证记录](benchmarks/user-challenge-cycle5-2026a.json)
+[原题与定义域](../tests/user-challenge-integrals.json) · [实际输出和验证记录](benchmarks/user-challenge-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -49,7 +49,7 @@
 
 ## MIT / Princeton 题库（168 条）
 
-[原题与定义域](../tests/calculus-corpus.json) · [实际输出和验证记录](benchmarks/calculus-cycle5-2026a.json)
+[原题与定义域](../tests/calculus-corpus.json) · [实际输出和验证记录](benchmarks/calculus-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -63,13 +63,13 @@
 | `2025-Q14` | `integrate(sec(x)^4-tan(x)^4,x)` | `2*tan(x)-x` | 精确验证 |
 | `2025-Q15` | `integrate(sqrt(x*(1-x)),x,0,1)` | `pi/8` | 精确验证 |
 | `2025-Q16` | `integrate(sin(4*x)*cos(x)/(cos(2*x)*sin(x)),x)` | `2*x+sin(2*x)` | 精确验证 |
-| `2025-Q17` | `integrate(sin(x)*sinh(x),x)` | `(sin(x)*cosh(x)-cos(x)*sinh(x))/2` | 导数采样通过 |
+| `2025-Q17` | `integrate(sin(x)*sinh(x),x)` | `(sin(x)*cosh(x)-cos(x)*sinh(x))/2` | 精确验证 |
 | `2025-Q19` | `integrate((cos(x)+cos(x+2*pi/3)+cos(x-2*pi/3))^2,x)` | `0` | 精确验证 |
 | `2026-Q1` | `integrate(sin(x)^2025*cos(x)^2026,x,-pi,pi)` | `0` | 精确验证 |
 | `2026-Q2` | `integrate(exp(2026*exp(x)+x),x)` | `exp(2026*exp(x))/2026` | 精确验证 |
 | `2026-Q3` | `integrate(floor(x)/3-floor(floor(x)/3),x,0,2026)` | `675` | 精确验证 |
 | `2026-Q5` | `integrate(1/(sqrt(x+1)-sqrt(x-1)),x)` | `((x+1)^(3/2)+(x-1)^(3/2))/3` | 精确验证 |
-| `2026-Q6` | `integrate(sqrt(1+cosh(x)),x)` | `2*sqrt(2)*sinh(x/2)` | 导数采样通过 |
+| `2026-Q6` | `integrate(sqrt(1+cosh(x)),x)` | `2*sqrt(2)*sinh(x/2)` | 精确验证 |
 | `2026-Q7` | `integrate(2^(ln(x))/x^2,x)` | `x^(ln(2)-1)/(ln(2)-1)` | 导数采样通过 |
 | `2026-Q9` | `integrate(x^2*sin(x),x)` | `2*x*sin(x)-(x^2-2)*cos(x)` | 精确验证 |
 | `2026-Q10` | `integrate((x-1)^2/(2*exp(x)+x^2+1),x)` | `x-ln(2*exp(x)+x^2+1)` | 精确验证 |
@@ -185,9 +185,9 @@
 | `2016-Q5` | `integrate(ln(ln(x))/(x*ln(x)),x)` | `ln(ln(x))^2/2` | 精确验证 |
 | `2016-Q10` | `integrate(x^3*exp(-x^2),x,0,+infinity)` | `1/2` | 精确验证 |
 | `2016-Q16` | `integrate(x/(x^4+x^2+1),x)` | `atan((2*x^2+1)/sqrt(3))/sqrt(3)` | 精确验证 |
-| `2016-Q20` | `integrate(1/(2+cosh(x)),x,0,+infinity)` | `ln(2+sqrt(3))/sqrt(3)` | 数值常量检查通过 |
+| `2016-Q20` | `integrate(1/(2+cosh(x)),x,0,+infinity)` | `ln(2+sqrt(3))/sqrt(3)` | 精确验证 |
 | `2017-Q2` | `integrate(ln(x)/x^2,x,1,+infinity)` | `1` | 精确验证 |
-| `2017-Q3` | `integrate(1/cosh(x),x)` | `2*atan(exp(x))` | 导数采样通过 |
+| `2017-Q3` | `integrate(1/cosh(x),x)` | `2*atan(exp(x))` | 精确验证 |
 | `2017-Q5` | `integrate(1/(x*sqrt(x^2-1)),x,1,2)` | `pi/3` | 精确验证 |
 | `2017-Q6` | `integrate(1/(x*(x^2+1)),x,1,+infinity)` | `ln(2)/2` | 精确验证 |
 | `2017-Q8` | `integrate(exp(-2*x^2-5*x-3),x,-infinity,+infinity)` | `exp(1/8)*sqrt(pi/2)` | 精确验证 |
@@ -224,7 +224,7 @@
 
 ## 独立泛化题库（152 条）
 
-[原题与定义域](../tests/generalization-corpus.json) · [实际输出和验证记录](benchmarks/generalization-cycle5-2026a.json)
+[原题与定义域](../tests/generalization-corpus.json) · [实际输出和验证记录](benchmarks/generalization-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -347,7 +347,7 @@
 | `GEN-trig-power-01` | `integrate(sin(x)^3,x)` | `-cos(x)+cos(x)^3/3` | 精确验证 |
 | `GEN-trig-power-02` | `integrate(cos(x)^4,x)` | `3*x/8+sin(2*x)/4+sin(4*x)/32` | 精确验证 |
 | `GEN-trig-logarithm-01` | `integrate(tan(x),x)` | `-ln(abs(cos(x)))` | 精确验证 |
-| `GEN-hyperbolic-product-01` | `integrate(sinh(x)*cosh(x)^3,x)` | `cosh(x)^4/4` | 导数采样通过 |
+| `GEN-hyperbolic-product-01` | `integrate(sinh(x)*cosh(x)^3,x)` | `cosh(x)^4/4` | 精确验证 |
 | `GEN-absolute-value-01` | `integrate(abs(x),x)` | `x*abs(x)/2` | 精确验证 |
 | `GEN-absolute-value-02` | `integrate(abs(2*x-1),x)` | `(2*x-1)*abs(2*x-1)/4` | 精确验证 |
 | `GEN-real-odd-root-01` | `integrate(surd(x,3),x)` | `3*x*surd(x,3)/4` | 精确验证 |
@@ -383,7 +383,7 @@
 
 ## 第二轮泛化题库（61 条）
 
-[原题与定义域](../tests/generalization-cycle2.json) · [实际输出和验证记录](benchmarks/cycle2-cycle5-2026a.json)
+[原题与定义域](../tests/generalization-cycle2.json) · [实际输出和验证记录](benchmarks/cycle2-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -451,7 +451,7 @@
 
 ## 第三轮泛化题库（30 条）
 
-[原题与定义域](../tests/generalization-cycle3.json) · [实际输出和验证记录](benchmarks/cycle3-cycle5-2026a.json)
+[原题与定义域](../tests/generalization-cycle3.json) · [实际输出和验证记录](benchmarks/cycle3-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -488,7 +488,7 @@
 
 ## 第四轮泛化题库（16 条）
 
-[原题与定义域](../tests/generalization-cycle4.json) · [实际输出和验证记录](benchmarks/cycle4-cycle5-2026a.json)
+[原题与定义域](../tests/generalization-cycle4.json) · [实际输出和验证记录](benchmarks/cycle4-cycle6-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -511,7 +511,7 @@
 
 ## 第五轮泛化题库（8 条）
 
-[原题与定义域](../tests/generalization-cycle5.json) · [实际输出和验证记录](benchmarks/cycle5-stack-2026a.json)
+[原题与定义域](../tests/generalization-cycle5.json) · [实际输出和验证记录](benchmarks/cycle5-cycle6-stack-2026a.json)
 
 | 编号 | 可输入的题目 | 核对参考结果 | 验证 |
 | --- | --- | --- | --- |
@@ -523,6 +523,21 @@
 | `C5-reciprocal-gaussian-erf-01` | `integrate((x+1)*exp(-(sqrt(x)-1/sqrt(x))^2)*erf((sqrt(x)-1/sqrt(x)))^2/x^(3/2),x,0,+infinity)` | `2*sqrt(pi)/3` | 精确验证 |
 | `C5-arc-quartic-pullback-01` | `integrate(4*x*acos((3-x^4)/(5-x^4))/(1+x^4),x,0,2^(1/4))` | `2*pi*atan(sqrt(2))-2*atan(sqrt(2))^2-2*pi*atan(sqrt(5))+pi^2/2` | 精确验证 |
 | `C5-atan-rectangle-pair-01` | `integrate(2*atan(3/sqrt(4*x^2+2))/((1+4*x^2)*sqrt(4*x^2+2))+3*atan(2/sqrt(9*x^2+2))/((1+9*x^2)*sqrt(9*x^2+2)),x,0,1)` | `atan(2)*atan(3)` | 精确验证 |
+
+## 第六轮泛化题库（8 条）
+
+[原题与定义域](../tests/generalization-cycle6.json) · [实际输出和验证记录](benchmarks/cycle6-stack-2026a.json)
+
+| 编号 | 可输入的题目 | 核对参考结果 | 验证 |
+| --- | --- | --- | --- |
+| `C6-gaussian-atan-parts-01` | `integrate(x*exp(-x^2)*atan(x),x,0,+infinity)` | `pi*exp(1)*erfc(1)/4` | 精确验证 |
+| `C6-half-period-log-sine-moment-01` | `integrate(x*ln(sin(x)),x,0,pi/2)` | `7*Zeta(3)/16-pi^2*ln(2)/8` | 精确验证 |
+| `C6-opposite-logarithm-product-01` | `integrate(ln(1-x)*ln(1+x)/x,x,0,1)` | `-5*Zeta(3)/8` | 精确验证 |
+| `C6-mixed-degree-mellin-log-01` | `integrate(ln(x)/((1+x)*(1+x^2)),x,0,+infinity)` | `-pi^2/16` | 精确验证 |
+| `C6-trig-log-quarter-period-01` | `integrate(ln(1+sin(x)),x,0,pi/2)` | `(Psi(1/4,1)-Psi(3/4,1))/8-pi*ln(2)/2` | 精确验证 |
+| `C6-mobius-atan-log-measure-01` | `integrate(atan(x)/(1+x),x,0,1)` | `pi*ln(2)/8` | 精确验证 |
+| `C6-oscillatory-third-order-cancellation-01` | `integrate((sin(x)-x*cos(x))/x^3,x,0,+infinity)` | `pi/4` | 精确验证 |
+| `C6-fermi-logarithm-first-moment-01` | `integrate(x*ln(1+exp(-x)),x,0,+infinity)` | `3*Zeta(3)/4` | 精确验证 |
 
 ---
 

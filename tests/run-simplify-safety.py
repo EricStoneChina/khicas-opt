@@ -9,7 +9,8 @@ p.add_argument('--report',type=Path,required=True)
 p.add_argument('--probe',type=Path,help='Reuse a probe built with target_simplify=True')
 args=p.parse_args()
 report={'scope':'Repository integration/normalization and FXCG simplify entry points; other dependencies are host Giac. A guarded pthread stack excludes dynamic-loader startup; not CG50 memory or timing.',
-        'source_sha256':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in
+        'validation_probe_sha256':hashlib.sha256((ROOT/'tests/integration_probe.cc').read_bytes()).hexdigest(),
+          'source_sha256':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in
                          ('yintg.cc','zintgab.cc','ysym2poly.cc','ksubst.cc','integration_guard.h','equation_normalize.h') if (ROOT/n).exists()},
         'runs':[]}
 with tempfile.TemporaryDirectory(prefix='khicas-simplify-safety-') as tmp:

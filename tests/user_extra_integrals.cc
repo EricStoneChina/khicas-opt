@@ -11,6 +11,7 @@ const Case yes[]={
 {"atan(sqrt(x^2+2)/2)/((x^2+1)*sqrt(x^2+2))","0","2","(pi*atan(2/sqrt(6))-atan(2)^2)/2"},
 {"atan(sqrt(x^2+2))/((x^2+1)*sqrt(x^2+2))","1","0","-5*pi^2/96"},
 {"x*ln(sin(x))","0","pi","-pi^2*ln(2)/2"},
+{"x*ln(sin(x))","0","pi/2","7*Zeta(3)/16-pi^2*ln(2)/8"},
 {"(2*x+3)*ln(sin(2*x))","0","pi/2","-(pi/2+3)*pi*ln(2)/2"},
 {"x*ln(sin(x))","pi","0","pi^2*ln(2)/2"},
 {"(3*x+2)*ln(cos(x))","-pi/2","pi/2","-2*pi*ln(2)"},
@@ -23,12 +24,11 @@ const Case no[]={
 {"atan(sqrt(x^2+2))/((x^2+1)*sqrt(x^2+3))","0","1",0},
 {"atan(sqrt(x^2+2))/((x^2+1)*sqrt(x^2+2))","0","2",0},
 {"atan(sqrt(x^2-2))/((x^2-1)*sqrt(x^2-2))","0","1",0},
-{"x*ln(sin(x))","0","pi/2",0},
 {"x^2*ln(sin(x))","0","pi",0},
 {"x*ln(abs(sin(x)))","1","1+pi",0},
 {"x*ln(cos(x))","0","pi",0}
 };
 for(const Case&t:no)assert(!integrate_real_definite(gen(t.f,ctx),x,gen(t.lo,ctx).eval(1,ctx),gen(t.hi,ctx).eval(1,ctx),res,ctx));
 angle_radian(false,ctx);assert(!integrate_real_definite(gen(yes[0].f,ctx),x,0,1,res,ctx));
-std::cout<<"PASS: 10 symmetry identities and 9 rejected conditions\n";
+std::cout<<"PASS: 11 symmetry identities and 8 rejected conditions\n";
 }

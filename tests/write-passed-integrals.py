@@ -3,17 +3,18 @@
 import argparse,collections,hashlib,json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-SNAPSHOT='dff6974'
+SNAPSHOT='checkpoint/integration-cycle6-2026a'
 GROUPS=[
- ('用户原始 8 题','user-integrals','user-eight-cycle5-2026a','user'),
- ('用户追加 2 题','user-extra-integrals','user-extra-cycle5-2026a','corpus'),
- ('用户追加 5 题','user-challenge-integrals','user-challenge-cycle5-2026a','stack'),
- ('MIT / Princeton 题库','calculus-corpus','calculus-cycle5-2026a','corpus'),
- ('独立泛化题库','generalization-corpus','generalization-cycle5-2026a','corpus'),
- ('第二轮泛化题库','generalization-cycle2','cycle2-cycle5-2026a','corpus'),
- ('第三轮泛化题库','generalization-cycle3','cycle3-cycle5-2026a','corpus'),
- ('第四轮泛化题库','generalization-cycle4','cycle4-cycle5-2026a','corpus'),
- ('第五轮泛化题库','generalization-cycle5','cycle5-stack-2026a','stack')]
+ ('用户原始 8 题','user-integrals','user-eight-cycle6-2026a','user'),
+ ('用户追加 2 题','user-extra-integrals','user-extra-cycle6-2026a','corpus'),
+ ('用户追加 5 题','user-challenge-integrals','user-challenge-cycle6-2026a','stack'),
+ ('MIT / Princeton 题库','calculus-corpus','calculus-cycle6-2026a','corpus'),
+ ('独立泛化题库','generalization-corpus','generalization-cycle6-2026a','corpus'),
+ ('第二轮泛化题库','generalization-cycle2','cycle2-cycle6-2026a','corpus'),
+ ('第三轮泛化题库','generalization-cycle3','cycle3-cycle6-2026a','corpus'),
+ ('第四轮泛化题库','generalization-cycle4','cycle4-cycle6-2026a','corpus'),
+ ('第五轮泛化题库','generalization-cycle5','cycle5-cycle6-stack-2026a','stack'),
+ ('第六轮泛化题库','generalization-cycle6','cycle6-stack-2026a','stack')]
 LABELS={'exact':'精确验证','sampled':'导数采样通过','numeric_constant':'数值常量检查通过'}
 def code(value):
  return '`'+str(value).replace('|','&#124;').replace('`','&#96;').replace('\n',' ')+'`'
@@ -51,7 +52,7 @@ def generate():
    output.append('| '+ ' | '.join((code(c['id']),code(expression),code(reference),LABELS[status]))+' |')
   groups.append((title,corpus_name,report_name,output))
  text=['# 已通过的积分题目列表','',
-  f'验证源码：`{SNAPSHOT}`，`checkpoint/integration-cycle5-2026a`。',
+  f'验证源码：`{SNAPSHOT}`。',
   f'正式题库与用户题目共 **{sum(totals.values())} 条通过记录**：**{totals["exact"]} 条精确验证、{totals["sampled"]} 条导数采样通过、{totals["numeric_constant"]} 条数值常量检查通过**。',
   f'保留各题库的编号和重复项；仅去除输入空白后有 {len(set(seen))} 种输入文本，这不是数学意义的去重。','',
   '“核对参考结果”来自已验证题库，用于阅读和比对，并不保证与计算器实际打印的写法相同。',
@@ -69,4 +70,4 @@ if __name__=='__main__':
  expected=generate();target=ROOT/'docs/PASSED-INTEGRALS.md'
  if args.check:assert target.read_text()==expected,'Regenerate docs/PASSED-INTEGRALS.md'
  else:target.write_text(expected)
- print('PASS: passed-integral Markdown matches all nine corpus reports')
+ print('PASS: passed-integral Markdown matches all corpus reports')

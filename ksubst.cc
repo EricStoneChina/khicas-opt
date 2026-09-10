@@ -2683,6 +2683,30 @@ namespace giac {
   }
 
   gen simplify(const gen & e_orig,GIAC_CONTEXT){
+    // A rational normalization may replace cos(u)^(2m) by
+    // (1-sin(u)^2)^m, expanding a compact integer trig product. Preserve
+    // this already compact form once its degree is large. No real-only
+    // placeholder is used: the original entire functions remain intact.
+    if (e_orig.is_symb_of_sommet(at_prod) && e_orig._SYMBptr->feuille.type==_VECT &&
+        e_orig._SYMBptr->feuille._VECTptr->size()<=4 && taille(e_orig,65)<=64){
+      const vecteur &factors=*e_orig._SYMBptr->feuille._VECTptr;
+      bool simple=true,large=false;
+      for (unsigned i=0;i<factors.size() && simple;++i){
+        const gen &factor=factors[i];
+        if (factor.type==_INT_ || factor.type==_ZINT || factor.type==_FRAC || factor.type==_IDNT ||
+            factor.is_symb_of_sommet(at_sin) || factor.is_symb_of_sommet(at_cos)) continue;
+        if (factor.is_symb_of_sommet(at_inv)){
+          const gen &den=factor._SYMBptr->feuille;
+          if (den.type==_INT_ || den.type==_ZINT || den.type==_FRAC)continue;
+        }
+        if (!factor.is_symb_of_sommet(at_pow) || factor._SYMBptr->feuille.type!=_VECT){simple=false;break;}
+        const vecteur &power=*factor._SYMBptr->feuille._VECTptr;
+        if (power.size()!=2 || power[1].type!=_INT_ || power[1].val<1 ||
+            (!power[0].is_symb_of_sommet(at_sin) && !power[0].is_symb_of_sommet(at_cos))){simple=false;break;}
+        large=large || power[1].val>=32;
+      }
+      if (simple && large)return e_orig;
+    }
     bool psi=false;unsigned budget=2048;
     unsigned terms=simplify_special_terms(e_orig,psi,budget,0);
     if(!budget)return e_orig;

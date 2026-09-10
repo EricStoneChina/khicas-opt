@@ -12,7 +12,8 @@ cases=json.loads(corpus.read_text())['cases']
 report={'scope':'Repository integration, normalization and FXCG simplification entry points; other dependencies host Giac, not a CG50 emulator or hardware timings',
         'validation':'Printed target results independently checked in a separate host-Giac process',
         'corpus_sha256':hashlib.sha256(corpus.read_bytes()).hexdigest(),
-        'source_sha256':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in ('yintg.cc','zintgab.cc','ysym2poly.cc','ksubst.cc','integration_guard.h','equation_normalize.h') if (ROOT/n).exists()},
+        'validation_probe_sha256':hashlib.sha256((ROOT/'tests/integration_probe.cc').read_bytes()).hexdigest(),
+          'source_sha256':{n:hashlib.sha256((ROOT/n).read_bytes()).hexdigest() for n in ('yintg.cc','zintgab.cc','ysym2poly.cc','ksubst.cc','integration_guard.h','equation_normalize.h') if (ROOT/n).exists()},
         'runs':[]}
 with tempfile.TemporaryDirectory(prefix='khicas-user-challenge-') as tmp:
     d=Path(tmp);target=build(d/'target',target_simplify=True);validator=build_validation_probe(d/'validator')
