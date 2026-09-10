@@ -16,7 +16,7 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(',
  '  static bool integration_power(', '  static gen integration_coefficient(',
  '  static bool integration_monomial(', '  static bool integration_beta_weight(',
  '  static gen integration_beta_psi(', '  static void integration_beta_partitions(',
- '  static unsigned integration_beta_terms(', '  static gen integration_beta_moment(',
+ '  static unsigned integration_beta_terms(', '  static gen integration_cumulant_moment(', '  static gen integration_beta_moment(',
  '  static bool integration_outer_power(', '  static gen integration_beta_joint(',
  '  static bool integrate_beta_log(', '  static bool integrate_inverse_gaussian('):text+=function(s,sig)
 text+='''bool cycle4_beta_gaussian_rule(const gen &f,const gen &x,const gen &lo,const gen &hi,gen &r,GIAC_CONTEXT){

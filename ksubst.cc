@@ -2307,6 +2307,71 @@ namespace giac {
     return res;
   }
 
+  // Inspect syntax before recursive preprocessing. The explicit DFS stack
+  // borrows gen pointers; it neither copies expressions nor expands powers.
+  // Heuristic recursion needs a tighter bound than a syntax-only depth limit.
+  static bool simplify_preflight(const gen &input,bool &large_power){
+    struct frame {const gen *node;unsigned child;unsigned functions;};
+    frame pending[33];unsigned used=1,remaining=2048;
+    pending[0].node=&input;pending[0].child=0;pending[0].functions=0;
+    large_power=false;
+    while(used){
+      frame &top=pending[used-1];const gen &g=*top.node;
+      if(!top.child){
+        if(!remaining--)return false;
+        if(g.type==_SYMB){
+          const unary_function_ptr &op=g._SYMBptr->sommet;
+          if(op!=at_plus && op!=at_prod && op!=at_neg && op!=at_inv && op!=at_division && op!=at_equal){
+            if(++top.functions>6)return false;
+          }
+          if(op==at_pow && g._SYMBptr->feuille.type==_VECT){
+            const vecteur &p=*g._SYMBptr->feuille._VECTptr;
+            if(p.size()==2 && p[1].type==_INT_ && (p[1].val>=64 || p[1].val<=-64) &&
+               p[0].type==_SYMB)large_power=true;
+          }
+        }
+      }
+      const gen *child=0;unsigned index=top.child++;
+      if(g.type==_SYMB){if(!index)child=&g._SYMBptr->feuille;}
+      else if(g.type==_VECT){if(index<g._VECTptr->size())child=&(*g._VECTptr)[index];}
+      else if(g.type==_FRAC){if(index<2)child=index?&g._FRACptr->den:&g._FRACptr->num;}
+      else if(g.type==_CPLX){if(index<2)child=&g._CPLXptr[index];}
+      if(!child){--used;continue;}
+      if(used==33)return false;
+      unsigned functions=top.functions;
+      pending[used].node=child;pending[used].child=0;pending[used].functions=functions;++used;
+    }
+    return true;
+  }
+
+  // Flatten a bounded unary/singleton-vector chain, simplify its small leaf
+  // once, then rebuild syntax without invoking functions recursively. This
+  // retains cheap x+x -> 2*x algebra even in deeply nested sin/erf expressions.
+  static gen simplify_shallow_leaf(const gen &input,GIAC_CONTEXT){
+    const gen *shells[64],*leaf=&input;unsigned count=0;
+    while(count<64){
+      const gen *next=0;
+      if(leaf->type==_VECT && leaf->_VECTptr->size()==1)next=&leaf->_VECTptr->front();
+      else if(leaf->type==_SYMB && leaf->_SYMBptr->feuille.type!=_VECT){
+        const unary_function_ptr &op=leaf->_SYMBptr->sommet;
+        if(op==at_sin || op==at_cos || op==at_tan || op==at_sinh || op==at_cosh || op==at_tanh ||
+           op==at_exp || op==at_ln || op==at_erf || op==at_atan || op==at_asin || op==at_acos || op==at_abs)
+          next=&leaf->_SYMBptr->feuille;
+      }
+      if(!next)break;
+      shells[count++]=leaf;leaf=next;
+    }
+    bool large=false;
+    if(!count || !simplify_preflight(*leaf,large) || large)return input;
+    gen result=simplify(*leaf,contextptr);
+    while(count){
+      const gen &shell=*shells[--count];
+      if(shell.type==_VECT)result=gen(vecteur(1,result),shell.subtype);
+      else result=symbolic(shell._SYMBptr->sommet,result);
+    }
+    return result;
+  }
+
   // Saturating upper bound for expanded arithmetic terms. Special functions
   // are atoms: their arguments are inspected only to find nested Psi nodes.
   // This bounds the check itself and avoids allocating an expanded expression.
@@ -2522,7 +2587,12 @@ namespace giac {
 	vector<int> lcms(bases.size(),1);
 	for (int i=0;i<S;++i){
 	  int p=base[i];
-	  lcms[p]=(lcms[p]*long(expo[i]))/gcd(lcms[p],expo[i]);
+	  // Divide first and bound the product before multiplying: long is
+          // only 32 bits on SH4. A larger common field is optional work.
+          if(expo[i]<=0)return e_orig;
+          int quotient=lcms[p]/gcd(lcms[p],expo[i]);
+          if(quotient>256/expo[i])return e_orig;
+          lcms[p]=quotient*expo[i];
 	}
 	for (int p=0;p<int(bases.size());++p){
 	  bases[p]=symb_pow(bases[p],fraction(1,lcms[p]));
@@ -2683,6 +2753,9 @@ namespace giac {
   }
 
   gen simplify(const gen & e_orig,GIAC_CONTEXT){
+    bool large_power=false;
+    if(!simplify_preflight(e_orig,large_power))return simplify_shallow_leaf(e_orig,contextptr);
+    if(large_power)return e_orig;
     // A rational normalization may replace cos(u)^(2m) by
     // (1-sin(u)^2)^m, expanding a compact integer trig product. Preserve
     // this already compact form once its degree is large. No real-only
@@ -2898,6 +2971,9 @@ namespace giac {
 
   gen _simplify(const gen & args,GIAC_CONTEXT){
     if ( args.type==_STRNG && args.subtype==-1) return  args;
+    bool large_power=false;
+    if(!simplify_preflight(args,large_power))return simplify_shallow_leaf(args,contextptr);
+    if(large_power)return args;
     gen var,res;
     if (is_algebraic_program(args,var,res))
       return symb_prog3(var,0,_simplify(res,contextptr));

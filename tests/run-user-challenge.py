@@ -39,10 +39,14 @@ with tempfile.TemporaryDirectory(prefix='khicas-user-challenge-') as tmp:
                     assert result.returncode==0,row
                     verification=[case['expected'],'definite' if definite else 'indefinite',case['f']]
                     if not definite:verification+=case.get('samples',['1/3','1','2'])
-                    check=subprocess.run([str(validator),row['result']]+verification,
-                                         capture_output=True,text=True,timeout=30)
-                    row['validation']={'exit':check.returncode,'stderr':check.stderr}
-                    assert check.returncode==0 and 'CHECK exact' in check.stderr,row
+                    if case.get('verification',{}).get('symbolic_proof')=='generic-binomial-parts':
+                        from compact_reference import verify_binomial_reference
+                        row['validation']=verify_binomial_reference(case,row['result'])
+                    else:
+                        check=subprocess.run([str(validator),row['result']]+verification,
+                                             capture_output=True,text=True,timeout=30)
+                        row['validation']={'exit':check.returncode,'stderr':check.stderr}
+                        assert check.returncode==0 and 'CHECK exact' in check.stderr,row
                     if stack=='normal':normal_result=row['result']
                     else:assert row['result']==normal_result,row
                     row['status']='exact'

@@ -5,7 +5,7 @@ from pathlib import Path
 from integration_build import ROOT,compiler_options,function
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--verify',action='store_true');args=p.parse_args()
 s=(ROOT/'yintg.cc').read_text();text='#include "giacPCH.h"\nnamespace giac {\n'
-for name,kind in [('decompose_prod','void'),('extract_cst','gen'),('integration_rational','bool'),('integration_syntax','gen'),('integration_power','bool'),('integration_one_plus','bool'),('integration_coefficient','gen'),('integration_monomial','bool'),('integration_beta_psi','gen'),('integration_beta_partitions','void'),('integration_beta_terms','unsigned'),('integration_beta_moment','gen'),('integration_outer_power','bool'),('integration_mellin_monomial','bool'),('integrate_mellin_log','bool'),('integrate_erf_tail_product','bool')]:
+for name,kind in [('decompose_prod','void'),('extract_cst','gen'),('integration_rational','bool'),('integration_syntax','gen'),('integration_power','bool'),('integration_one_plus','bool'),('integration_coefficient','gen'),('integration_monomial','bool'),('integration_beta_psi','gen'),('integration_beta_partitions','void'),('integration_beta_terms','unsigned'),('integration_cumulant_moment','gen'),('integration_beta_moment','gen'),('integration_outer_power','bool'),('integration_mellin_monomial','bool'),('integrate_mellin_log','bool'),('integrate_erf_tail_product','bool')]:
  sig='  '+('' if name in ('decompose_prod','extract_cst') else 'static ')+kind+' '+name+'('
  text+=function(s,sig).replace('  static ','  ',1)
 text+='}\n'

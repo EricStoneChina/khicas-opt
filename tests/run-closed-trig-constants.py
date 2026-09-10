@@ -8,7 +8,7 @@ s=(args.source or ROOT/'ksubst.cc').read_text()
 text='#include "giacPCH.h"\n#include "equation_normalize.h"\n#define FXCG\n#define NO_STDEXCEPT\nnamespace giac {\n'
 text+='unsigned closed_trig_mask_calls=0;\ngen ataninv2atan(const gen &,GIAC_CONTEXT);\ngen cklin(const gen &,GIAC_CONTEXT);\n'
 text+=function((ROOT/'zprog.cc').read_text(),'  gen symb_prog3(')
-for sig in ('  gen tsimplify_noexpln(', '  static unsigned simplify_special_terms(', '  static gen simplify_special_core(', '  gen simplify(const gen & e_orig,GIAC_CONTEXT)', '  gen _simplify('):
+for sig in ('  gen tsimplify_noexpln(', '  static bool simplify_preflight(', '  static gen simplify_shallow_leaf(', '  static unsigned simplify_special_terms(', '  static gen simplify_special_core(', '  gen simplify(const gen & e_orig,GIAC_CONTEXT)', '  gen _simplify('):
  f=function(s,sig)
  if sig.startswith('  gen simplify('):
   marker='gen masked=quotesubst(e_orig,closed,names,contextptr);'

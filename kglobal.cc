@@ -2699,8 +2699,8 @@ extern "C" void Sleep(unsigned int miliSecond);
 	}
       }
 #endif
-      string ts(s);
-      ustl::pair<charptr_gen *,charptr_gen *> p=ustl::equal_range(builtin_lexer_functions_begin(),builtin_lexer_functions_end(),std::pair<const char *,gen>(ts.c_str(),0),tri);
+      // The input name remains alive throughout lookup; no string copy is needed.
+      ustl::pair<charptr_gen *,charptr_gen *> p=ustl::equal_range(builtin_lexer_functions_begin(),builtin_lexer_functions_end(),std::pair<const char *,gen>(s.c_str(),0),tri);
       if (p.first!=p.second && p.first!=builtin_lexer_functions_end()){
 	if (p.first->second.subtype==T_TO-256)
 	  res=plus_one;
@@ -2719,10 +2719,14 @@ extern "C" void Sleep(unsigned int miliSecond);
 	  }
 #else // keep this code, required for the nspire otherwise evalf(pi)=reboot
 	  int pos=p.first-builtin_lexer_functions_begin();
-	  const unary_function_ptr * tab[]={
+	  // References bind to the at_* pointer variables at link time.
+          // This preserves the NSPIRE pointer conversion without a per-call
+          // pointer table or dynamic/static-guard initialization.
+          struct builtin_pointer_reference { const unary_function_ptr * const &pointer; };
+          static const builtin_pointer_reference tab[]={
 #include "static_lexer_.h"
 	  };
-	  res=gen(tab[pos]);
+	  res=gen(tab[pos].pointer);
 	  if (builtin_lexer_functions[pos]._FUNC_%2){
 	    res._FUNC_ +=1;
 	  }
@@ -2741,7 +2745,7 @@ extern "C" void Sleep(unsigned int miliSecond);
 	token += (token<0)?512:256 ;	
 	return token;
       }
-      lexer_tab_int_type tst={ts.c_str(),0,0,0,0};
+      lexer_tab_int_type tst={s.c_str(),0,0,0,0};
 #ifdef USTL
       ustl::pair<const lexer_tab_int_type *,const lexer_tab_int_type *> pp = ustl::equal_range(lexer_tab_int_values,lexer_tab_int_values_end,tst,tri1);
 #else

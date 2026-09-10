@@ -25,7 +25,7 @@ if args.simplify_source:
  text='#include "giacPCH.h"\n#include "equation_normalize.h"\n#define FXCG\n#define NO_STDEXCEPT\nnamespace giac {\n'
  text+='gen ataninv2atan(const gen &,GIAC_CONTEXT);\ngen cklin(const gen &,GIAC_CONTEXT);\n'
  text+=function((ROOT/'zprog.cc').read_text(),'  gen symb_prog3(')
- for sig in ('  gen tsimplify_noexpln(', '  static unsigned simplify_special_terms(', '  static gen simplify_special_core(', '  gen simplify(const gen & e_orig,GIAC_CONTEXT)', '  gen _simplify('):text+=function(s,sig)
+ for sig in ('  gen tsimplify_noexpln(', '  static bool simplify_preflight(', '  static gen simplify_shallow_leaf(', '  static unsigned simplify_special_terms(', '  static gen simplify_special_core(', '  gen simplify(const gen & e_orig,GIAC_CONTEXT)', '  gen _simplify('):text+=function(s,sig)
  text+='}\n'
  with tempfile.TemporaryDirectory(prefix='khicas-high-frequency-simplify-') as tmp:
   d=Path(tmp);(d/'simplify.cc').write_text(text);(d/'equation_normalize.h').write_bytes((ROOT/'equation_normalize.h').read_bytes())

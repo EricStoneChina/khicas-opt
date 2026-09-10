@@ -43,7 +43,7 @@ with tempfile.TemporaryDirectory(prefix='khicas-equation-stack-') as tmp:
   text+=function((ROOT/'zprog.cc').read_text(),'  gen symb_prog3(')
   text+=function(s,'  gen tsimplify_noexpln(')
   if '  static unsigned simplify_special_terms(' in s:
-   text+=function(s,'  static unsigned simplify_special_terms(')
+   text+=function(s,'  static bool simplify_preflight(')+function(s,'  static gen simplify_shallow_leaf(')+function(s,'  static unsigned simplify_special_terms(')
    text+=function(s,'  static gen simplify_special_core(')
   text+=function(s,'  gen simplify(const gen & e_orig,GIAC_CONTEXT)')
   text+=function(s,'  gen _simplify(')+'}\n'

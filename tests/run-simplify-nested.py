@@ -16,7 +16,7 @@ if args.replacement:
     text+=args.replacement.read_text()
 else:
     if '  static unsigned simplify_special_terms(' in s:
-        text+=function(s,'  static unsigned simplify_special_terms(')
+        text+=function(s,'  static bool simplify_preflight(')+function(s,'  static gen simplify_shallow_leaf(')+function(s,'  static unsigned simplify_special_terms(')
         text+=function(s,'  static gen simplify_special_core(')
     text+=function(s,'  gen simplify(const gen & e_orig,GIAC_CONTEXT)')
 text+=function(s,'  gen _simplify(')+'}\n'

@@ -10,7 +10,7 @@ args=parser.parse_args()
 candidate=args.candidate.read_text() if args.candidate else s
 extra=''.join(function(candidate,sig) for sig in (
  '  static gen integration_beta_psi(', '  static void integration_beta_partitions(',
- '  static unsigned integration_beta_terms(', '  static gen integration_beta_moment(',
+ '  static unsigned integration_beta_terms(', '  static gen integration_cumulant_moment(', '  static gen integration_beta_moment(',
  '  static bool integration_outer_power(', '  static bool integration_mellin_monomial(',
  '  static bool integrate_mellin_log(', '  static gen integration_beta_joint(', '  static bool integrate_beta_log('))
 text='#include "giacPCH.h"\nnamespace giac {\n'

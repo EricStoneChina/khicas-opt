@@ -12,7 +12,7 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(',
  '  static gen integration_coefficient(', '  static bool integration_monomial(',
  '  static bool integration_beta_weight(', '  static gen integration_beta_psi(',
  '  static void integration_beta_partitions(', '  static unsigned integration_beta_terms(',
- '  static gen integration_beta_moment(', '  static bool integration_outer_power(',
+ '  static gen integration_cumulant_moment(', '  static gen integration_beta_moment(', '  static bool integration_outer_power(',
  '  static bool integration_mellin_monomial(', '  static gen integration_beta_joint(',
  '  static bool integrate_beta_log(', '  static bool integrate_loglog_mellin('):text+=function(s,sig)
 if args.helpers:text+=args.helpers.read_text()

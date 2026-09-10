@@ -73,6 +73,8 @@ def build(directory, ref='current', target_simplify=False):
         simplified+='gen ataninv2atan(const gen &,GIAC_CONTEXT);\ngen cklin(const gen &,GIAC_CONTEXT);\n'
         simplified+=function(source(ref, 'zprog.cc'), '  gen symb_prog3(')
         if '  static unsigned simplify_special_terms(' in s:
+            if '  static bool simplify_preflight(' in s:
+                simplified+=function(s,'  static bool simplify_preflight(')+function(s,'  static gen simplify_shallow_leaf(')
             simplified+=function(s, '  static unsigned simplify_special_terms(')
             simplified+=function(s, '  static gen simplify_special_core(')
         for sig in ('  gen tsimplify_noexpln(',
