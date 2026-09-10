@@ -17,6 +17,7 @@
   "Current session will be lost": "当前会话将丢失",
   "DEL: erase session": "DEL: 清除会话",
   "Digits (9, 19, 28)?": "位数 (9, 19, 28)?",
+  "Digits ": "位数 ",
   "end": "结尾",
   "Erase session.xw?": "清除 session.xw?",
   "EXE: next, AC: cancel": "EXE: 下一个, AC: 取消",
@@ -86,5 +87,17 @@
   "     File exists!": "     文件已存在!",
   "Memory full": "内存已满",
   "Run session": "运行会话",
-  "Save session": "保存会话"
+  "Save session": "保存会话",
+  "Help": "帮助",
+  "Plot help": "图形帮助\n\n基本操作\n方向键: 平移视图; 在几何模式下移动光标\n+: 放大\n-: 缩小\n(-): 沿 Y 轴缩放\n*: 自动缩放\n/: 保持横纵比例\nVARS: 显示/隐藏坐标轴\nF6: 打开视图菜单\nEXIT: 返回主界面\n\n曲线追踪\nF2: 显示当前对象信息\nF3: 显示/隐藏切线和斜率\nF4: 显示/隐藏法线\nF5: 显示/隐藏曲率圆\nTAB: 打开曲线研究菜单\n\n三维图形\n方向键: 旋转视图\n1/2/3/7/8/9: 平移视图\n5: 重置三维视角\n0: 显示/隐藏背面\n.: 显示/隐藏曲面填充\n^: 精细绘制\n(/): 调整曲面细节\n\n几何模式\nF4: 打开几何工具\nF1: 框架模式\nF2: 指针模式\nF3-F5: 选择几何工具\nEXE: 创建或移动对象\nEXIT: 返回符号界面",
+  "Save figure": "保存图形",
+  "Save as": "另存为",
+  "Orthonormalize /": "正交化 /",
+  "Autoscale *": "自动缩放 *",
+  "Zoom in +": "放大 +",
+  "Zoom out -": "缩小 -",
+  "Y-Zoom out (-)": "Y轴缩放 (-)",
+  "Show axes": "显示坐标轴",
+  "Hide axes": "隐藏坐标轴",
+  "Clear trace": "清除轨迹"
 }

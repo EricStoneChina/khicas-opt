@@ -27,6 +27,7 @@ extern "C" {
 #include "textGUI.hpp"
 #include "main.h"
 #include "graphicsProvider.hpp"
+#include "khicas_zhui.h"
 extern giac::context * contextptr;
 
 using namespace std;
@@ -7151,12 +7152,15 @@ void Graph2d::tracemode_set(int operation){
     textArea text;
     text.editable=false;
     text.clipline=-1;
-    text.title = (char*)((lang==1)?"Aide":"Help");
+    text.title = (char*)zhui("Help", "Aide");
     text.allowF1=false;
     text.python=false;
-    add(&text,lang==1?
-	"haut/bas/droit/gauche: change point de vue\ny^x ou e^x: trace 3d precis\nEXIT: quitte ou interrompt le trace 3d en cours\n( et ): modifie le rendu des surfaces raides 3d\n0: surfaces cachees 3d ON/OFF\n.: remplissage surface 3d raide ON/OFF\n5 reset 3d view\n7,8,9,1,2,3: deplacement 3d\n\nGeometrie\nF4: change le mode\nLe mode repere (shift F1) permet de changer le point de vue\nLe mode pointeur (shift F2) permet de bouger un objet et les objets dependants avec EXE et les touches de deplacement\nLes autres modes permettent de creer des objets\nEXIT: permet de passer en vue symbolique et de creer/modifier des objets par des commandes, taper EXE pour revenir en vue graphique\n4,6: modifie la profondeur du clic":
-	"up/down/right/left: modify viewpoint\nON/Back: leave or interrupt 3d rendering\ny^x or e^x: precise 3d\n( and ): modify stiff surfaces 3d rendering\n0: hidden 3d surfaces ON/OFF\n.: fill stiff 3d surfacesON/OFF\n5 reset 3d view\n7,8,9,1,2,3: move 3d view\n\nGeometry\nF4: change geometry mode\nFrame mode (shift F1): modify viewpoint\nPointer mode (shift F2): select an object and move it with EXE and cursor keys\nOther modes: create an object\nEXIT: go to symbolic view where you can create/modify objects with commands, press EXE to go back to graphic view");
+    const char * english =
+	"Graph help\n\nBasic controls\nArrow keys: pan the view; move the cursor in geometry mode\n+: zoom in\n-: zoom out\n(-): Y zoom\n*: autoscale\n/: orthonormalize\nVARS: show/hide axes\nF6: open view menu\nEXIT: return to the main screen\n\nCurve tracing\nF2: show object information\nF3: show/hide tangent and slope\nF4: show/hide normal\nF5: show/hide curvature circle\nTAB: open curve study menu\n\n3D graphs\nArrow keys: rotate the view\n1/2/3/7/8/9: move the view\n5: reset the 3D view\n0: show/hide hidden surfaces\n.: show/hide surface filling\n^: precise rendering\n(/): adjust surface detail\n\nGeometry mode\nF4: open geometry tools\nF1: frame mode\nF2: pointer mode\nF3-F5: choose a geometry tool\nEXE: create or move an object\nEXIT: return to the symbolic screen";
+    const char * french =
+	"Aide graphique\n\nCommandes\nHaut/bas/gauche/droite: deplacer la vue\n+: zoom avant\n-: zoom arriere\n(-): zoom Y\n*: autoscale\n/: orthonormaliser\nVARS: afficher/masquer les axes\nF6: menu de la vue\nEXIT: retour a l ecran principal\n\nTrace de courbe\nF2: informations sur l objet\nF3: afficher/masquer la tangente\nF4: afficher/masquer la normale\nF5: afficher/masquer le cercle de courbure\nTAB: etude de courbe\n\nGraphes 3D\nTouches flechees: tourner la vue\n1/2/3/7/8/9: deplacer la vue\n5: reinitialiser la vue 3D\n0: surfaces cachees ON/OFF\n.: remplissage ON/OFF\n\nMode geometrie\nF4: outils geometriques\nEXIT: retour a la vue symbolique";
+    const char * content = zh_ui_enabled ? zhui("Plot help", "") : (lang==1 ? french : english);
+    add(&text,content);
     int exec=doTextArea(&text);
   }
 
@@ -7628,18 +7632,18 @@ void Graph2d::tracemode_set(int operation){
 	  smallmenuitems[4].text = (char *) menu_zmin;
 	  smallmenuitems[5].text = (char *) menu_zmax;
 	  smallmenuitems[6].text = (char *) menu_depth;
-	  smallmenuitems[7].text = (char *) ((lang==1)?"Aide":"Help");
-	  smallmenuitems[8].text = (char*) (lang==1?"Sauvegarder figure":"Save figure");
-	  smallmenuitems[9].text = (char*) (lang==1?"Sauvegarder comme":"Save as");
-	  smallmenuitems[10].text = (char*)((lang==1)?"Quitter":"Quit");
-	  smallmenuitems[11].text = (char*) "Orthonormalize /";
-	  smallmenuitems[12].text = (char*) "Autoscale *";
-	  smallmenuitems[13].text = (char *) ("Zoom in +");
-	  smallmenuitems[14].text = (char *) ("Zoom out -");
-	  smallmenuitems[15].text = (char *) ("Y-Zoom out (-)");
-	  smallmenuitems[16].text = (char*) ((lang==1)?"Voir axes":"Show axes");
-	  smallmenuitems[17].text = (char*) ((lang==1)?"Cacher axes":"Hide axes");
-	  smallmenuitems[18].text = (char*) ((lang==1)?"Effacer trace":"Clear trace");
+      smallmenuitems[7].text = (char *)zhui("Help", "Aide");
+      smallmenuitems[8].text = (char*)zhui("Save figure", "Sauvegarder figure");
+      smallmenuitems[9].text = (char*)zhui("Save as", "Sauvegarder comme");
+      smallmenuitems[10].text = (char*)zhui("Quit", "Quitter");
+      smallmenuitems[11].text = (char*)zhui("Orthonormalize /", "Orthonormaliser /");
+      smallmenuitems[12].text = (char*)zhui("Autoscale *", "Autoscale *");
+      smallmenuitems[13].text = (char*)zhui("Zoom in +", "Zoom avant +");
+      smallmenuitems[14].text = (char*)zhui("Zoom out -", "Zoom arriere -");
+      smallmenuitems[15].text = (char*)zhui("Y-Zoom out (-)", "Zoom Y (-)");
+      smallmenuitems[16].text = (char*)zhui("Show axes", "Voir axes");
+      smallmenuitems[17].text = (char*)zhui("Hide axes", "Cacher axes");
+      smallmenuitems[18].text = (char*)zhui("Clear trace", "Effacer trace");
 	  drawRectangle(0,180,LCD_WIDTH_PX,60,_BLACK);
 	  int sres = doMenu(&smallmenu);
 	  if (sres == MENU_RETURN_EXIT)
@@ -8342,4 +8346,3 @@ void Graph2d::tracemode_set(int operation){
 #ifndef NO_NAMESPACE_XCAS
 } // namespace xcas
 #endif // ndef NO_NAMESPACE_XCAS
-
