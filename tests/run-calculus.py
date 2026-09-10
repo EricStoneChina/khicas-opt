@@ -12,26 +12,30 @@ from integration_build import ROOT, BASE, build
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--compare', action='store_true')
+parser.add_argument('--baseline-ref', default=BASE, help='Git reference used with --compare')
+parser.add_argument('--corpus', type=Path, default=ROOT/'tests/calculus-corpus.json',
+                    help='Input corpus JSON (sources and cases)')
 parser.add_argument('--timeout', type=float, default=10)
 parser.add_argument('--report', type=Path, required=True)
 parser.add_argument('--strict', action='store_true')
 parser.add_argument('--only', help='Comma-separated problem IDs')
 args = parser.parse_args()
-data = json.loads((ROOT/'tests/calculus-corpus.json').read_text())
+data = json.loads(args.corpus.read_text())
 cases = data['cases']
 if args.only:
     selected = args.only.split(',')
     cases = [c for c in cases if c['id'] in selected]
     assert len(cases) == len(selected), 'Unknown or duplicate problem ID'
-report = {'baseline': BASE, 'timeout_seconds': args.timeout,
+report = {'baseline': args.baseline_ref, 'timeout_seconds': args.timeout,
           'scope': 'actual yintg, zintgab and normalization, host Giac dependencies; not CG50 timings',
           'source_sha256': {name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest()
                             for name in ('yintg.cc','zintgab.cc','ysym2poly.cc','integration_guard.h')},
-          'corpus_sha256': hashlib.sha256((ROOT/'tests/calculus-corpus.json').read_bytes()).hexdigest(),
+          'corpus_file': str(args.corpus),
+          'corpus_sha256': hashlib.sha256(args.corpus.read_bytes()).hexdigest(),
           'sources': data['sources'], 'runs': {}}
 with tempfile.TemporaryDirectory(prefix='khicas-calculus-') as tmp:
     for ref in (('baseline', 'current') if args.compare else ('current',)):
-        exe = build(Path(tmp)/ref, ref)
+        exe = build(Path(tmp)/ref, 'current' if ref=='current' else args.baseline_ref)
         rows = []
         for case in cases:
             tail = ','.join(['x'] + case.get('bounds', []))

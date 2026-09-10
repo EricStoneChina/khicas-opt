@@ -8,7 +8,8 @@ BASE = 'checkpoint/equations'
 def source(ref, name):
     if ref == 'current':
         return (ROOT / name).read_text()
-    return subprocess.check_output(['git', 'show', f'{BASE}:{name}'], cwd=ROOT, text=True)
+    git_ref = BASE if ref == 'baseline' else ref
+    return subprocess.check_output(['git', 'show', f'{git_ref}:{name}'], cwd=ROOT, text=True)
 
 def function(s, signature):
     start = s.index(signature)
@@ -27,8 +28,8 @@ def build(directory, ref='current'):
         '  // Left redimension p to degree n, i.e. size n+1')
     (directory / 'yintg.cc').write_text(text)
     (directory / 'zintgab.cc').write_text(source(ref, 'zintgab.cc'))
-    if ref == 'current':
-        (directory / 'integration_guard.h').write_bytes((ROOT / 'integration_guard.h').read_bytes())
+    if '#include "integration_guard.h"' in text:
+        (directory / 'integration_guard.h').write_text(source(ref, 'integration_guard.h'))
     syms = source(ref, 'ysym2poly.cc')
     normalized = '#include "giacPCH.h"\nnamespace giac {\n'
     for sig in ('  static bool sort_func(', '  static vecteur sort1(',
