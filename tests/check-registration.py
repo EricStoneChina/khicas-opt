@@ -43,5 +43,7 @@ for release in (False, True):
 for command in COMMANDS:
     assert f'* const at_{command};' in (ROOT / 'static_extern.h').read_text()
     for catalog in ('catalogen.cpp', 'catalogfr.cpp'):
-        assert (ROOT / catalog).read_text().count(f'"{command}(') == 1
-print('PASS: all six conversions declared and present in both catalogs')
+        text = (ROOT / catalog).read_text()
+        entries = re.findall(r'\{\s*"' + re.escape(command) + r'\(', text)
+        assert len(entries) == 1
+print('PASS: all new commands declared and present in both catalogs')
