@@ -2313,6 +2313,7 @@ namespace giac {
     if(!budget || depth>32){budget=0;return 65;}
     --budget;
     if(g.is_symb_of_sommet(at_Psi)){psi=true;return 1;}
+    if(g.is_symb_of_sommet(at_atan) || g.is_symb_of_sommet(at_asin) || g.is_symb_of_sommet(at_acos))psi=true;
     if(g.type==_FRAC){
       unsigned a=simplify_special_terms(g._FRACptr->num,psi,budget,depth+1);
       unsigned b=simplify_special_terms(g._FRACptr->den,psi,budget,depth+1);
@@ -2685,10 +2686,69 @@ namespace giac {
     unsigned terms=simplify_special_terms(e_orig,psi,budget,0);
     if(!budget)return e_orig;
     if(!psi)return simplify_special_core(e_orig,contextptr);
-    // Bell-polynomial output is exact in its factored form. Retain it when
-    // normalization would distribute more than 64 terms or exceed the scan.
-    if(terms>64 || !budget)return e_orig;
-    vecteur special=lop(e_orig,at_Psi),replacement;
+    vecteur psi_atoms=lop(e_orig,at_Psi),special,replacement;
+    // The real placeholders below are valid for positive rational Psi
+    // arguments and nonnegative integer orders. Inspect their syntax without
+    // evaluating a possibly expensive or complex special function.
+    if(!psi_atoms.empty() && terms>64)return e_orig;
+    for(unsigned i=0;i<psi_atoms.size();++i){
+      const gen &f=psi_atoms[i]._SYMBptr->feuille;
+      const gen *argument=&f;
+      if(f.type==_VECT){
+        const vecteur &v=*f._VECTptr;
+        if(v.size()!=2 || v[1].type!=_INT_ || v[1].val<0)continue;
+        argument=&v[0];
+      }
+      const gen &a=*argument;
+      bool rational=a.type==_INT_ || a.type==_ZINT;
+      if(a.type==_FRAC)
+        rational=(a._FRACptr->num.type==_INT_ || a._FRACptr->num.type==_ZINT) &&
+          (a._FRACptr->den.type==_INT_ || a._FRACptr->den.type==_ZINT) && !is_zero(a._FRACptr->den);
+      if(rational && is_strictly_positive(a,contextptr))special.push_back(psi_atoms[i]);
+    }
+    // Protect closed inverse angles when integer powers make logarithmic
+    // rewrites grow. Simple angle sums still use the normal identities,
+    // including atan(a)+atan(1/a) and asin(a)+acos(a).
+    vecteur atoms=lvar(e_orig);
+    vecteur powers=lop(e_orig,at_pow);bool angle_power=false;
+    for(unsigned i=0;i<powers.size() && !angle_power;++i){
+      const gen &f=powers[i]._SYMBptr->feuille;
+      if(f.type!=_VECT || f._VECTptr->size()!=2)continue;
+      const gen &base=(*f._VECTptr)[0],&exponent=(*f._VECTptr)[1];
+      if(exponent.type==_INT_ && exponent.val>=2 &&
+         (base.is_symb_of_sommet(at_atan) || base.is_symb_of_sommet(at_asin) || base.is_symb_of_sommet(at_acos)) && equalposcomp(atoms,base))angle_power=true;
+    }
+    // Multiplication may retain h*h instead of constructing the power h^2.
+    // Detect that spelling too, without expanding a sum or a product.
+    if(!angle_power){
+      vecteur products=lop(e_orig,at_prod);
+      for(unsigned i=0;i<products.size() && !angle_power;++i){
+        const gen &f=products[i]._SYMBptr->feuille;
+        if(f.type!=_VECT)continue;
+        const vecteur &v=*f._VECTptr;
+        for(unsigned j=0;j<v.size() && !angle_power;++j){
+          if(!(v[j].is_symb_of_sommet(at_atan) || v[j].is_symb_of_sommet(at_asin) || v[j].is_symb_of_sommet(at_acos)) || !equalposcomp(atoms,v[j]))continue;
+          for(unsigned k=0;k<j;++k)if(v[k]==v[j]){angle_power=true;break;}
+        }
+      }
+    }
+    for(unsigned i=0;i<atoms.size();++i){
+      const gen &atom=atoms[i];
+      if(!angle_power || !(atom.is_symb_of_sommet(at_atan) || atom.is_symb_of_sommet(at_asin) || atom.is_symb_of_sommet(at_acos)) || taille(atom,65)>64)continue;
+      vecteur names=lidnt(atom);bool closed=true;
+      for(unsigned j=0;j<names.size();++j)if(names[j]!=cst_pi){closed=false;break;}
+      if(!closed)continue;
+      const gen &argument=atom._SYMBptr->feuille;
+      if(!is_zero(im(argument,contextptr)))continue;
+      if(!atom.is_symb_of_sommet(at_atan) &&
+         (!(is_zero(1-argument) || is_strictly_positive(1-argument,contextptr)) ||
+          !(is_zero(1+argument) || is_strictly_positive(1+argument,contextptr))))continue;
+      special.push_back(atom);
+    }
+    if(special.empty())return simplify_special_core(e_orig,contextptr);
+    // Retain factored special-function arithmetic when distributing it
+    // would exceed the same 64-term budget used by the integration rules.
+    if(terms>64)return e_orig;
     if(special.size()>64)return e_orig;
     unsigned candidate=0;
     for(unsigned i=0;i<special.size();++i){

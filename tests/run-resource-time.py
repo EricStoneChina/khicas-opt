@@ -44,7 +44,7 @@ source += r'''
 }
 int main(int argc,char **argv){
   using namespace giac;
-  assert(argc==2);
+  assert(argc==3);
   context ctx; const context *contextptr=&ctx;
   gen("n:=0",contextptr).eval(1,contextptr);
   gen expression("n:=n+1",contextptr);
@@ -77,6 +77,8 @@ int main(int argc,char **argv){
   assert(!is_undef(benchmark));
   gen bresult=gen("cgtest(0)",contextptr).eval(1,contextptr);
   assert(bresult==string2gen("Choose a case from 1 to 15",false));
+  assert(!is_undef(_read(string2gen(argv[2],false),contextptr)));
+  assert(gen("ct(0)",contextptr).eval(1,contextptr)==string2gen("ct(1) to ct(5)",false));
   std::cout<<"PASS: target read branch and benchmark parsing, single evaluation, resource fields, unavailable stats, legacy time modes\n";
 }
 '''
@@ -85,4 +87,4 @@ with tempfile.TemporaryDirectory(prefix='khicas-resource-time-') as tmp:
     flags=[os.environ.get('CXX','c++'),'-std=c++11','-O2','-DHAVE_CONFIG_H','-DGIAC_GENERIC_CONSTANTS','-Wno-deprecated-declarations','-I',os.environ.get('GIAC_INCLUDE','/usr/include/giac')]+shlex.split(os.environ.get('CXXFLAGS',''))
     libs=shlex.split(os.environ.get('LDFLAGS',''))+['-lgiac']
     subprocess.run(flags+[str(p/'test.cc')]+libs+['-o',str(p/'test')],check=True)
-    subprocess.run([str(p/'test'),str(ROOT/'bench/CG50TEST.xw')],check=True,timeout=30)
+    subprocess.run([str(p/'test'),str(ROOT/'bench/CG50TEST.xw'),str(ROOT/'bench/CG50USER.xw')],check=True,timeout=30)

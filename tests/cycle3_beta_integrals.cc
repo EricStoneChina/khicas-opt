@@ -11,6 +11,11 @@ int main(){
  context c;const context *ctx=&c;angle_radian(true,ctx);gen x(identificateur("x")),res;
  struct Case{const char *f,*hi,*answer;};
  const Case yes[]={
+ // On the unit interval: integral(log(x)^2)=2 and
+ // integral(log(x)*log(1-x))=2-pi^2/6; expansion gives the first identity.
+ // Expanding log(1-x) as -sum(x^n/n) gives the second via zeta(2),zeta(3).
+ {"ln(x/(1-x))*ln(x^2/(1-x))","1","pi^2/2"},
+ {"ln(x)^2*ln(1-x)","1","-6+pi^2/3+2*Zeta(3)"},
  {"ln(x/(1-x))^2/sqrt(x*(1-x))","1","pi^3"},
  {"sqrt(x/(1-x))*ln(x/(1-x))","1","pi"},
  {"ln(x)^3/sqrt(x*(1-x))","1","-pi*(8*ln(2)^3+2*pi^2*ln(2)+12*Zeta(3))"},
@@ -45,10 +50,9 @@ int main(){
  }
  const Case no[]={
  {"sqrt(ln(x)^2)","1",0}, {"sqrt(ln(x)^2)/(1+x^2)","+infinity",0},
+ {"ln(x)^2*ln(1-x)^2","1",0},
  {"ln(x)^17","1",0}, {"ln(x)/x","1",0},
  {"ln(x)/(1-x)","1",0}, {"ln(x/(x-1))^2/sqrt(x*(1-x))","1",0},
- {"ln(x/(1-x))*ln(x^2/(1-x))","1",0},
- {"ln(x)^2*ln(1-x)","1",0},
  {"ln(x)^17/(1+x^2)","+infinity",0},
  {"x^3/(1+x^2)^2","+infinity",0},
  {"1/x/(1+x^2)^2","+infinity",0},
@@ -58,5 +62,5 @@ int main(){
  for(const Case &t:no){gen f=gen(t.f,ctx).eval(1,ctx),hi=gen(t.hi,ctx).eval(1,ctx);
   bool ok=(hi==1?integrate_beta_log(f,x,0,hi,res,ctx):integrate_mellin_log(f,x,0,hi,res,ctx));
   if(ok){std::cerr<<"UNEXPECTED "<<t.f<<" => "<<res<<'\n';return 1;}}
- std::cout<<"PASS: 25 beta/logit/Mellin identities in raw and evaluated syntax and 13 rejected conditions\n";
+ std::cout<<"PASS: 27 beta/logit/Mellin identities in raw and evaluated syntax and 12 rejected conditions\n";
 }
