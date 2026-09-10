@@ -1,0 +1,29 @@
+// Deterministic baseline: run on the same device, clock setting and clean session.
+// All timed expressions are repeatable: KhiCAS time() may evaluate them 100 times.
+// Run five times and compare medians. A displayed 0 means below timer resolution.
+// This script also runs on the baseline firmware (no conversion commands).
+purge(x,y,z,kk,ll,k);
+bench_matrix:=[[40,1,2,3,4,5],[1,40,3,4,5,6],[2,3,40,5,6,0],
+               [3,4,5,40,0,1],[4,5,6,0,40,2],[5,6,0,1,2,40]];
+bench_transpose:=seq(seq(100*kk+ll,ll,1,20),kk,1,24);
+
+// Verify exact results before comparing speed.
+assert(tran(tran(bench_transpose))==bench_transpose);
+assert(normal(bench_matrix*inv(bench_matrix))==idn(6));
+assert(normal(gcd(x^100-1,x^60-1)-(x^20-1))==0);
+assert(expand(factor(x^24-1))==x^24-1);
+
+bench_results:=[
+ ["1000 factorial",time(1000!)],
+ ["large integer scalar arithmetic",time(sum(seq((2^512+k)*k,k,1,100)))],
+ ["prime 2^127-1",time(isprime(2^127-1))],
+ ["factor x^50-1",time(factor(x^50-1))],
+ ["polynomial gcd",time(gcd(x^100-1,x^60-1))],
+ ["symbolic integration",time(integrate(ln(x)^3,x))],
+ ["Taylor series",time(series(sin(x),x=0,20))],
+ ["expand degree 12",time(expand((x+y+z)^12))],
+ ["exact matrix inverse",time(inv(bench_matrix))],
+ ["matrix product",time(bench_matrix*bench_matrix)],
+ ["transpose batch",time(seq(tran(bench_transpose),k,1,8))]
+];
+bench_results;
