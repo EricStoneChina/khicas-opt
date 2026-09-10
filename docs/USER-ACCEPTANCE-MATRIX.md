@@ -1,14 +1,14 @@
 # 用户 A1–F6 验收进度
 
-当前源码：`checkpoint/user-matrix-next-2026a`（2026-09-10）。
+当前源码：`checkpoint/complex-parameter-2026a`（2026-09-10）。
 
-**36 题中 31 题通过全部四种运行方式**：29 个精确积分结果，2 个正确的发散拒绝（C5、C6）。上一 checkpoint 为14/36。仍未完整通过的是D1、D2、D3、D4、F5，未计入通过。
+**36 题中 35 题通过全部四种运行方式**：33个精确积分结果，2个正确发散拒绝。最近两次checkpoint为14→31→35题。D1–D4还通过显式复数声明后的完整条件与答案核对；剩余F5的Li2实现仍未计入通过。
 
 四种方式为直接积分／外层 `simplify` × 普通栈／带保护页的64 KiB线程栈。主机运行实际仓库积分、归一化和FXCG化简代码，依赖主机Giac；不是SH4/MMU模拟器或CG50实机测试。
 
-**此前另外5道未解积分已全部通过20次精确检查**。[原题](../tests/user-reported-five-gaps.json) · [实际输出](benchmarks/user-reported-five-gaps-next-2026a.json)。
+**此前另外5道未解积分已全部通过20次精确检查**。[原题](../tests/user-reported-five-gaps.json) · [实际输出](benchmarks/user-reported-five-gaps-parameter-2026a.json)。
 
-[36题原题与条件](../tests/user-acceptance-matrix.json) · [实际输出及无假设检查](benchmarks/user-acceptance-matrix-next-2026a.json) · [独立符号验证](benchmarks/user-acceptance-matrix-next-verification-2026a.json) · [完整通过列表](PASSED-INTEGRALS.md)。
+[36题原题与条件](../tests/user-acceptance-matrix.json) · [实际输出及无假设检查](benchmarks/user-acceptance-matrix-parameter-2026a.json) · [独立符号验证](benchmarks/user-acceptance-matrix-parameter-verification-2026a.json) · [完整通过列表](PASSED-INTEGRALS.md)。
 
 E5/E6 使用 `assume(n,integer)` 后接 `additionally(n>=0)`／`additionally(n>=1)`。直接测试确认整数标记仍存在；第二次使用 `assume` 会覆盖该标记。非整数阶、未经证明为整数的阶数、错误相位和有实极点的核均拒绝套用新公式。
 
@@ -32,10 +32,10 @@ E5/E6 使用 `assume(n,integer)` 后接 `additionally(n>=0)`／`additionally(n>=
 | C4 | 精确核对通过 | 精确核对通过 | 是 | `pi/2` |
 | C5 | 正确拒绝发散 | 正确拒绝发散 | 是 | `undef` |
 | C6 | 正确拒绝发散 | 正确拒绝发散 | 是 | `undef` |
-| D1 | 仅实参数子域 | 小栈/执行失败 | 否 | `1/a` |
-| D2 | 仍含积分 | 小栈/执行失败 | 否 | `integrate(x^(s-1)*exp(-x),x,0,+infinity)` |
-| D3 | 仅实参数子域 | 仅实参数子域 | 否 | `Gamma(a)*Gamma(b)/Gamma(a+b)` |
-| D4 | 仍含积分 | 小栈/执行失败 | 否 | `integrate(x^(s-1)/(1+x),x,0,+infinity)` |
+| D1 | 精确核对通过 | 精确核对通过 | 是 | `1/a` |
+| D2 | 精确核对通过 | 精确核对通过 | 是 | `Gamma(s)` |
+| D3 | 精确核对通过 | 精确核对通过 | 是 | `Gamma(a)*Gamma(b)/Gamma(a+b)` |
+| D4 | 精确核对通过 | 精确核对通过 | 是 | `pi/sin(pi*s)` |
 | D5 | 精确核对通过 | 精确核对通过 | 是 | `pi*exp(-a*abs(b))/(2*a)` |
 | D6 | 精确核对通过 | 精确核对通过 | 是 | `2*pi/sqrt(a*a-b*b)` |
 | E1 | 精确核对通过 | 精确核对通过 | 是 | `0` |
@@ -74,16 +74,18 @@ E5/E6 使用 `assume(n,integer)` 后接 `additionally(n>=0)`／`additionally(n>=
 
 [逐次原始记录](benchmarks/performance-user-matrix-next-2026a.json)。
 
-## 资源与剩余缺口
+## 复参数、资源与剩余缺口
 
-CG50实编译：ROM **2056836/2065152 B**（余8316），静态RAM **424620/442368 B**（余17748），AC2 **2440864/2559996 B**（余119132）。相对上一checkpoint ROM增加456 B、AC2增加12864 B，静态RAM和1572864 B CAS堆配置不变。73个积分入口及6个转换入口的AC2位置已检查；尚未达到实际代码容量上限。
+D1–D4的复参数结果显示明确条件，例如 `when(re(a)>0,1/a,undef)`。通过了32次完整复参数条件/答案核验（含两种栈、外层化简、冷加载/eager binding）和16次必要收敛边界检查；条件用独立符号核对，不靠复数数值样例猜测。另有6个65位精度复积分独立数值检查。[条件验收](benchmarks/complex-parameter-contracts-2026a.json) · [独立数值参考](benchmarks/complex-parameter-reference-2026a.json)。
 
-- D1：实正参数普通栈有结果；64 KiB仍失败，完整复半平面和条件输出待处理。
-- D2：符号Gamma积分仍未求出；64 KiB失败。
-- D3：正实参数Beta结果通过，但复参数定义域尚未覆盖，不能宣称原题完整通过。
-- D4：符号Mellin积分仍未求出；完整复条带条件待处理，64 KiB失败。
-- F5：缺少可求值、可微分的Li2实现，继续保留积分，不用未知函数名伪装已解。
+泛化的复数尺度Gamma积分在右半平面给出条件公式；尺度落在纯虚轴时可能条件收敛，因此条件外保留原积分，不误判发散。`simplify` 保持未决条件的惰性分支，防止提前访问无定义的Gamma/对数分支。最多4项、衰减实部已证为正的复指数和直接算端点系数，修复新题Q2的小栈失败。
 
-原518条题库结果保持513条精确、5条导数采样；加上29条矩阵正结果、5条此前错题、33条变体，当前通过列表为585条记录（580精确、5采样；保留来源重复项）。本checkpoint尚未安装到CG50。积分与化简完成后再处理圆、椭圆、双曲线的分支覆盖和参数显示，[待办](NEXT-PRIORITIES.md)。
+仅新建的出题代理给出8题后已结束、未复用上下文。主代理独立检查后7/8通过（其中3题有明确复参数条件、2题为发散拒绝）；剩余Q6同属Li2。[原题](../tests/parameter-agent-questions.json) · [验收](benchmarks/parameter-agent-questions-2026a.json)。
 
-[资源报告](benchmarks/resources-user-matrix-next-2026a.json) · [回归索引](benchmarks/user-matrix-next-verification-2026a.json) · [推导](USER-MATRIX-NEXT-DERIVATIONS.md)。
+CG50实编译：ROM **2056948/2065152 B**（余8204），静态RAM **424620/442368 B**（余17748），AC2 **2446824/2559996 B**（余113172）。相对上一checkpoint ROM增加112 B、AC2增加5960 B；CAS堆1572864 B与静态RAM不变。74个积分入口及6个转换入口的AC2位置已经检查，尚未达到实际代码容量上限。
+
+F5和新题Q6需要可求值、可微分且分支一致的Li2函数，当前保留积分。独立通过列表有589条来源记录：584精确、5导数采样；原有518条验证等级保持不变。更一般的复杂化简资源与atan零点定义域仍在排期，之后处理圆锥曲线分支与标签。[排期](NEXT-PRIORITIES.md)。
+
+本checkpoint尚未安装到CG50。主机耗时不代表实机性能，主机小栈测试也不等同于SH4 TLB复现。
+
+[资源](benchmarks/resources-complex-parameter-2026a.json) · [回归索引](benchmarks/complex-parameter-verification-2026a.json) · [前一轮公式推导](USER-MATRIX-NEXT-DERIVATIONS.md)。

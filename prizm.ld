@@ -91,6 +91,7 @@ SECTIONS
     yintg.o(.text.*integrate_cauchy_fourier*)
     yintg.o(.text.*integrate_unit_log_arc*)
     yintg.o(.text.*integrate_positive_cosine_kernel*)
+    yintg.o(.text.*integrate_parameter_kernel*)
     yintg.o(.text.*integrate_compact_definite*)
 		yintg.o(.text.*integrate_real_root*)
 		yintg.o(.text.*integrate_residue_kernel*)

@@ -6230,16 +6230,135 @@ namespace giac {
     return true;
   }
 
+  // Complex parameter kernels on a real integration interval. Preserve
+  // unproved convergence as an explicit condition, rather than treating
+  // analytic continuation as the value of an ordinary improper integral.
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_parameter_kernel(const gen &input,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if(taille(input,97)>96)return false;
+    gen e=input,coefficient=integration_coefficient(e,x,contextptr);
+    if(contains(coefficient,x) || taille(coefficient,17)>16 || is_zero(coefficient))return false;
+    if(is_zero(lo) && hi==plus_inf && e.is_symb_of_sommet(at_plus) && e._SYMBptr->feuille.type==_VECT){
+      const vecteur &terms=*e._SYMBptr->feuille._VECTptr;
+      if(terms.size()>4)return false;
+      gen sum=0;bool complex_rate=false;
+      for(unsigned i=0;i<terms.size();++i){
+        gen term=terms[i],c=integration_coefficient(term,x,contextptr),a,b;
+        if(!term.is_symb_of_sommet(at_exp) || !is_linear_wrt(term._SYMBptr->feuille,x,a,b,contextptr) || !is_zero(b) ||
+           contains(a,x) || contains(c,x) || taille(a,17)>16 || taille(c,17)>16)return false;
+        gen realrate=re(-a,contextptr);
+        if(contains(realrate,*at_re) || !is_strictly_positive(realrate,contextptr))return false;
+        complex_rate=complex_rate || !is_zero(im(a,contextptr));sum-=c/a;
+      }
+      if(!complex_rate)return false;
+      res=ratnormal(coefficient*sum,contextptr);return true;
+    }
+    vecteur factors=e.is_symb_of_sommet(at_prod) && e._SYMBptr->feuille.type==_VECT?*e._SYMBptr->feuille._VECTptr:vecteur(1,e);
+    if(factors.size()>2)return false;
+    gen shape=1,rate=0,den,answer,condition=1,fallback=undef;
+    vecteur required;bool power=false,exponential=false,inverse=false,trig=false,sine=false;gen frequency;
+    if(is_zero(lo) && hi==plus_inf){
+      for(unsigned i=0;i<factors.size();++i){
+        gen base;const gen &f=factors[i];
+        if(f.is_symb_of_sommet(at_exp)){
+          gen a,b;
+          if(exponential || !is_linear_wrt(f._SYMBptr->feuille,x,a,b,contextptr) || !is_zero(b) || contains(a,x))return false;
+          exponential=true;rate=-a;
+        }
+        else if(f.is_symb_of_sommet(at_sin) || f.is_symb_of_sommet(at_cos)){
+          gen phase;
+          if(trig || !angle_radian(contextptr) || !is_linear_wrt(f._SYMBptr->feuille,x,frequency,phase,contextptr) ||
+             !is_zero(phase) || contains(frequency,x) || !is_zero(im(frequency,contextptr)))return false;
+          trig=true;sine=f.is_symb_of_sommet(at_sin);
+        }
+        else if(integration_power(f,base,-1) && base.is_symb_of_sommet(at_plus)){
+          if(inverse)return false;inverse=true;den=base;
+        }
+        else if(f.is_symb_of_sommet(at_pow) && f._SYMBptr->feuille.type==_VECT && f._SYMBptr->feuille._VECTptr->size()==2 && f._SYMBptr->feuille[0]==x){
+          if(power || contains(f._SYMBptr->feuille[1],x))return false;power=true;shape=ratnormal(f._SYMBptr->feuille[1]+1,contextptr);
+        }
+        else if(f==x){if(power)return false;power=true;shape=2;}
+        else return false;
+      }
+      if(taille(shape,17)>16 || taille(rate,17)>16)return false;
+      // Leave the existing bounded rational-parameter families in charge of
+      // their established exact and high-power behavior.
+      if(integration_rational(shape) && integration_rational(rate))return false;
+      if(exponential && !inverse){
+        gen realrate=re(rate,contextptr);
+        required.push_back(realrate);
+        if(trig){
+          if(power)return false;
+          answer=(sine?frequency:rate)/(rate*rate+frequency*frequency);
+        }
+        else if(!power){answer=inv(rate,contextptr);}
+        else {
+          required.push_back(re(shape,contextptr));
+          answer=symbolic(at_Gamma,shape)/(is_one(rate)?gen(1):gen(symbolic(at_pow,makesequence(rate,shape))));
+          // Purely imaginary rates can have conditionally convergent Fourier
+          // integrals. Outside the right half-plane retain that unsolved case.
+          if(contains(realrate,*at_re) || !is_strictly_positive(realrate,contextptr))
+            fallback=symb_quote(symbolic(at_integrate,makesequence(input,x,lo,hi)));
+        }
+      }
+      else if(inverse && !exponential && !trig){
+        if(!angle_radian(contextptr))return false;
+        gen other,c,q;
+        if(!integration_one_plus(den,other) || !integration_monomial(other,x,c,q,contextptr) || !is_one(c) ||
+           !integration_resource_rational(q) || !is_strictly_positive(q,contextptr) || is_strictly_greater(q,16,contextptr))return false;
+        if(q.type==_FRAC && (q._FRACptr->den.type!=_INT_ || q._FRACptr->den.val>16))return false;
+        required.push_back(re(shape,contextptr));required.push_back(q-re(shape,contextptr));
+        answer=cst_pi/(q*sin(cst_pi*shape/q,contextptr));
+      }
+      else return false;
+    }
+    else {
+      if(factors.size()!=2 || !integration_resource_rational(lo) || !integration_resource_rational(hi) || !is_strictly_positive(hi-lo,contextptr))return false;
+      gen alpha=0,beta=0,left=0,right=0;
+      for(unsigned i=0;i<2;++i){
+        const gen &f=factors[i];gen base=f,exponent=1;
+        if(f.is_symb_of_sommet(at_pow) && f._SYMBptr->feuille.type==_VECT && f._SYMBptr->feuille._VECTptr->size()==2){base=f._SYMBptr->feuille[0];exponent=f._SYMBptr->feuille[1];}
+        gen a,b;
+        if(contains(exponent,x) || taille(exponent,17)>16 || !is_linear_wrt(base,x,a,b,contextptr) || !integration_resource_rational(a) || !integration_resource_rational(b))return false;
+        if(is_strictly_positive(a,contextptr) && is_zero(a*lo+b) && is_zero(left)){left=a*(hi-lo);alpha=ratnormal(exponent+1,contextptr);}
+        else if(is_strictly_positive(-a,contextptr) && is_zero(a*hi+b) && is_zero(right)){right=-a*(hi-lo);beta=ratnormal(exponent+1,contextptr);}
+        else return false;
+      }
+      if(is_zero(left) || is_zero(right) || (integration_rational(alpha) && integration_rational(beta)))return false;
+      required.push_back(re(alpha,contextptr));required.push_back(re(beta,contextptr));
+      gen leftscale=is_one(left)?gen(1):gen(symbolic(at_pow,makesequence(left,alpha-1)));
+      gen rightscale=is_one(right)?gen(1):gen(symbolic(at_pow,makesequence(right,beta-1)));
+      answer=(hi-lo)*leftscale*rightscale*symbolic(at_Gamma,alpha)*symbolic(at_Gamma,beta)/symbolic(at_Gamma,alpha+beta);
+    }
+    for(unsigned i=0;i<required.size();++i){
+      const gen &v=required[i];
+      bool unknown_real_part=contains(v,*at_re);
+      if(!unknown_real_part && is_strictly_positive(v,contextptr))continue;
+      if(!unknown_real_part && (is_zero(v) || is_strictly_positive(-v,contextptr))){
+        if(is_undef(fallback) || i>0){*logptr(contextptr)<<"Divergent improper integral (parameter convergence boundary)"<<'\n';res=undef;return true;}
+        return false;
+      }
+      gen next=symb_superieur_strict(v,0);condition=is_one(condition)?next:symb_and(condition,next);
+    }
+    answer=coefficient*answer;
+    res=is_one(condition)?answer:gen(symbolic(at_when,makesequence(condition,answer,fallback)));
+    return true;
+  }
+
 #if defined(__GNUC__) && !defined(__clang__)
   __attribute__((noinline,optimize("Os")))
 #endif
   static bool integrate_real_definite(const gen &input,const gen &x,gen lo,gen hi,gen &res,GIAC_CONTEXT){
-    if (taille(input,129)>128 || complex_variables(contextptr)) return false;
+    if (taille(input,129)>128) return false;
     bool reverse=(lo==plus_inf || hi==minus_inf) ||
       (!is_inf(lo) && !is_inf(hi) && is_strictly_greater(lo,hi,contextptr));
     if (reverse) swapgen(lo,hi);
     bool full=lo==minus_inf && hi==plus_inf;
     gen e=integration_syntax(input,contextptr);
+    if(integrate_parameter_kernel(e,x,lo,hi,res,contextptr)){if(reverse)res=-res;return true;}
+    if(complex_variables(contextptr))return false;
     if(full){
       unsigned budget=128;int degree;gen leading;
       if(integration_rational_tail(e,x,degree,leading,budget,0,contextptr) && degree==-1){

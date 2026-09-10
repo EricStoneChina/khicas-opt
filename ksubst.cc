@@ -2418,7 +2418,7 @@ namespace giac {
   static gen simplify_special_core(const gen & e_orig,GIAC_CONTEXT){
     // An unresolved integral is an opaque atom, as in simplifier(). Avoid
     // expanding its integrand and restarting a failed integration search.
-    if (e_orig.is_symb_of_sommet(at_integrate))
+    if (e_orig.is_symb_of_sommet(at_integrate) || e_orig.is_symb_of_sommet(at_when))
       return e_orig;
     if (e_orig.type<=_POLY || is_inf(e_orig) || has_num_coeff(e_orig))
       return e_orig;
@@ -2992,6 +2992,9 @@ namespace giac {
 
   gen _simplify(const gen & args,GIAC_CONTEXT){
     if ( args.type==_STRNG && args.subtype==-1) return  args;
+    // A conditional value is a lazy branch boundary. Evaluating or
+    // normalizing both branches can enter an undefined Gamma/log branch.
+    if(args.is_symb_of_sommet(at_when))return args;
     bool large_power=false;
     if(!simplify_preflight(args,large_power))return simplify_shallow_leaf(args,contextptr);
     if(large_power)return args;

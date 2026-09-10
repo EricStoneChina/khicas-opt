@@ -66,6 +66,7 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(',
             '  static bool integrate_finite_polynomial(',
             '  static bool integration_finite_elementary_bound(',
             '  static bool integrate_finite_elementary(',
+            '  static bool integrate_parameter_kernel(',
             '  static bool integrate_real_definite('):
     text+=function(s,sig).replace('  static ', '  ',1)
 text+='}\n'
@@ -74,6 +75,6 @@ with tempfile.TemporaryDirectory(prefix='khicas-real-definite-') as tmp:
     flags=[os.environ.get('CXX','c++'),'-std=c++11','-O2','-DHAVE_CONFIG_H','-DGIAC_GENERIC_CONSTANTS','-Wno-deprecated-declarations','-I',os.environ.get('GIAC_INCLUDE','/usr/include/giac')]+shlex.split(os.environ.get('CXXFLAGS',''))
     libs=shlex.split(os.environ.get('LDFLAGS',''))+['-lgiac']+shlex.split(os.environ.get('GIAC_NUMERIC_LIBS','-lgmp -lmpfr'))
     for test in ('real_definite.cc','compact_integrals.cc','cycle1_integrals.cc','cycle2_integrals.cc','user_extra_integrals.cc',
-                 'cycle3_laplace_integrals.cc','user_matrix_rules.cc','user_matrix_next_rules.cc'):
+                 'cycle3_laplace_integrals.cc','user_matrix_rules.cc','user_matrix_next_rules.cc','parameter_kernel_rules.cc'):
         subprocess.run(flags+[str(p/'rules.cc'),str(ROOT/'tests'/test)]+libs+['-pthread','-o',str(p/'test')],check=True)
         subprocess.run([str(p/'test')],check=True,timeout=60)

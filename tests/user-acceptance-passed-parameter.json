@@ -2,7 +2,7 @@
   "sources": {
     "inputs": "User-authored A1-F6 acceptance table, 2026-09-10"
   },
-  "notes": "Absolute-value bars damaged by Markdown table parsing restored. References are user requirements to be independently audited, not claimed engine passes. Parameter conditions remain part of acceptance. Assumed real subsets are explicitly not proofs of complex domains.",
+  "notes": "33 positive results; complex parameter contracts separately verified with explicit complex declarations and exact predicates. C5/C6 divergent inputs excluded.",
   "cases": [
     {
       "id": "A1",
@@ -17,7 +17,8 @@
         "1/3",
         "2"
       ],
-      "real_values": true
+      "real_values": true,
+      "input": "integrate(sqrt(x^2),x)"
     },
     {
       "id": "A2",
@@ -32,7 +33,8 @@
         "-1/3",
         "1/3",
         "2"
-      ]
+      ],
+      "input": "integrate(x/sqrt(x^2),x)"
     },
     {
       "id": "A3",
@@ -47,7 +49,8 @@
         "2",
         "4"
       ],
-      "real_values": true
+      "real_values": true,
+      "input": "integrate(1/(x*ln(x)),x)"
     },
     {
       "id": "A4",
@@ -59,7 +62,8 @@
       "bounds": [
         "-1",
         "3"
-      ]
+      ],
+      "input": "integrate(sqrt((x-1/2)^2),x,-1,3)"
     },
     {
       "id": "A5",
@@ -71,7 +75,8 @@
       "bounds": [
         "0",
         "2*pi"
-      ]
+      ],
+      "input": "integrate(sqrt(sin(x)^2),x,0,2*pi)"
     },
     {
       "id": "A6",
@@ -86,7 +91,8 @@
         "1/3",
         "2"
       ],
-      "real_values": true
+      "real_values": true,
+      "input": "integrate(1/(x^2-1),x)"
     },
     {
       "id": "B1",
@@ -98,7 +104,8 @@
       "bounds": [
         "0",
         "pi/2"
-      ]
+      ],
+      "input": "integrate(sin(x)^7/(sin(x)^7+cos(x)^7),x,0,pi/2)"
     },
     {
       "id": "B2",
@@ -110,7 +117,8 @@
       "bounds": [
         "0",
         "1"
-      ]
+      ],
+      "input": "integrate(x^5/(x^5+(1-x)^5),x,0,1)"
     },
     {
       "id": "B3",
@@ -122,7 +130,8 @@
       "bounds": [
         "0",
         "pi/2"
-      ]
+      ],
+      "input": "integrate(x/(sin(x)+cos(x)),x,0,pi/2)"
     },
     {
       "id": "B4",
@@ -135,7 +144,8 @@
       "bounds": [
         "0",
         "1"
-      ]
+      ],
+      "input": "integrate(atan(x)/x,x,0,1)"
     },
     {
       "id": "B5",
@@ -148,7 +158,8 @@
       "bounds": [
         "0",
         "1"
-      ]
+      ],
+      "input": "integrate(ln(x)/(1+x^2),x,0,1)"
     },
     {
       "id": "B6",
@@ -160,7 +171,8 @@
       "bounds": [
         "0",
         "pi/4"
-      ]
+      ],
+      "input": "integrate(ln(cos(x)),x,0,pi/4)"
     },
     {
       "id": "C1",
@@ -176,7 +188,8 @@
       "bounds": [
         "0",
         "+infinity"
-      ]
+      ],
+      "input": "[assume(a>0),assume(b>0),integrate((exp(-a*x)-exp(-b*x))/x,x,0,+infinity)][2]"
     },
     {
       "id": "C2",
@@ -191,7 +204,8 @@
       "bounds": [
         "0",
         "+infinity"
-      ]
+      ],
+      "input": "[assume(a>0),integrate(exp(-a*x)*sin(b*x)/x,x,0,+infinity)][1]"
     },
     {
       "id": "C3",
@@ -206,7 +220,8 @@
       "bounds": [
         "0",
         "+infinity"
-      ]
+      ],
+      "input": "[assume(a>0),integrate(exp(-a*x)*(1-cos(b*x))/x,x,0,+infinity)][1]"
     },
     {
       "id": "C4",
@@ -218,33 +233,8 @@
       "bounds": [
         "0",
         "+infinity"
-      ]
-    },
-    {
-      "id": "C5",
-      "f": "cos(x)",
-      "expected": "Divergent",
-      "domain": "ordinary improper integral; Abel/Cesaro values not accepted",
-      "priority": "P0",
-      "assumptions": [],
-      "behavior": "divergent",
-      "bounds": [
-        "0",
-        "+infinity"
-      ]
-    },
-    {
-      "id": "C6",
-      "f": "x/(1+x^2)",
-      "expected": "Divergent",
-      "domain": "ordinary improper integral; PV=0 is not accepted",
-      "priority": "P0",
-      "assumptions": [],
-      "behavior": "divergent",
-      "bounds": [
-        "-infinity",
-        "+infinity"
-      ]
+      ],
+      "input": "integrate(sin(x)/x,x,0,+infinity)"
     },
     {
       "id": "D1",
@@ -260,7 +250,8 @@
         "0",
         "+infinity"
       ],
-      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included."
+      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included.",
+      "input": "[assume(a>0),integrate(exp(-a*x),x,0,+infinity)][1]"
     },
     {
       "id": "D2",
@@ -276,7 +267,8 @@
         "0",
         "+infinity"
       ],
-      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included."
+      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included.",
+      "input": "[assume(s>0),integrate(x^(s-1)*exp(-x),x,0,+infinity)][1]"
     },
     {
       "id": "D3",
@@ -293,7 +285,8 @@
         "0",
         "1"
       ],
-      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included."
+      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included.",
+      "input": "[assume(a>0),assume(b>0),integrate(x^(a-1)*(1-x)^(b-1),x,0,1)][2]"
     },
     {
       "id": "D4",
@@ -309,7 +302,8 @@
         "0",
         "+infinity"
       ],
-      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included."
+      "complex_contract_verification": "docs/benchmarks/complex-parameter-contracts-2026a.json: explicit complex declarations, exact symbolic guard and answer verification, all modes plus eager binding; convergence boundary tests included.",
+      "input": "[assume(s>0 and s<1),integrate(x^(s-1)/(1+x),x,0,+infinity)][1]"
     },
     {
       "id": "D5",
@@ -324,7 +318,8 @@
       "bounds": [
         "0",
         "+infinity"
-      ]
+      ],
+      "input": "[assume(a>0),integrate(cos(b*x)/(x^2+a^2),x,0,+infinity)][1]"
     },
     {
       "id": "D6",
@@ -339,7 +334,8 @@
       "bounds": [
         "0",
         "2*pi"
-      ]
+      ],
+      "input": "[assume(a>abs(b)),integrate(1/(a+b*cos(x)),x,0,2*pi)][1]"
     },
     {
       "id": "E1",
@@ -354,7 +350,8 @@
       "bounds": [
         "0",
         "pi"
-      ]
+      ],
+      "input": "[assume(r>-1 and r<1),integrate(ln(1-2*r*cos(x)+r^2),x,0,pi)][1]"
     },
     {
       "id": "E2",
@@ -369,7 +366,8 @@
       "bounds": [
         "0",
         "2*pi"
-      ]
+      ],
+      "input": "[assume(a>abs(b)),integrate(ln(a+b*cos(x)),x,0,2*pi)][1]"
     },
     {
       "id": "E3",
@@ -381,7 +379,8 @@
       "bounds": [
         "0",
         "2*pi"
-      ]
+      ],
+      "input": "integrate(cos(3*x)/(2+cos(x)),x,0,2*pi)"
     },
     {
       "id": "E4",
@@ -396,7 +395,8 @@
       "bounds": [
         "0",
         "2*pi"
-      ]
+      ],
+      "input": "[assume(r>-1 and r<1),integrate(1/(1-2*r*cos(x)+r^2),x,0,2*pi)][1]"
     },
     {
       "id": "E5",
@@ -414,7 +414,8 @@
         "0",
         "2*pi"
       ],
-      "assumption_verification": "tests/user_matrix_next_rules.cc checks is_assumed_integer before/after additionally, and rejects noninteger harmonic order."
+      "assumption_verification": "tests/user_matrix_next_rules.cc checks is_assumed_integer before/after additionally, and rejects noninteger harmonic order.",
+      "input": "[assume(r>-1 and r<1),assume(n,integer),additionally(n>=0),integrate(cos(n*x)/(1-2*r*cos(x)+r^2),x,0,2*pi)][3]"
     },
     {
       "id": "E6",
@@ -432,7 +433,8 @@
         "0",
         "2*pi"
       ],
-      "assumption_verification": "tests/user_matrix_next_rules.cc checks is_assumed_integer before/after additionally, and rejects noninteger harmonic order."
+      "assumption_verification": "tests/user_matrix_next_rules.cc checks is_assumed_integer before/after additionally, and rejects noninteger harmonic order.",
+      "input": "[assume(r>-1 and r<1),assume(n,integer),additionally(n>=1),integrate(ln(1-2*r*cos(x)+r^2)*cos(n*x),x,0,2*pi)][3]"
     },
     {
       "id": "F1",
@@ -446,7 +448,8 @@
         "-1/3",
         "1/3",
         "2"
-      ]
+      ],
+      "input": "integrate(exp(-x^2),x)"
     },
     {
       "id": "F2",
@@ -461,7 +464,8 @@
         "-1/3",
         "1/3",
         "2"
-      ]
+      ],
+      "input": "integrate(sin(x^2),x)"
     },
     {
       "id": "F3",
@@ -475,7 +479,8 @@
         "-1/3",
         "1/3",
         "2"
-      ]
+      ],
+      "input": "integrate(sin(x)/x,x)"
     },
     {
       "id": "F4",
@@ -489,21 +494,8 @@
         "-1/3",
         "1/3",
         "2"
-      ]
-    },
-    {
-      "id": "F5",
-      "f": "ln(1-x)/x",
-      "expected": "-Li2(x)",
-      "domain": "0<x<1",
-      "priority": "P0",
-      "assumptions": [],
-      "samples": [
-        "1/8",
-        "1/4",
-        "1/2",
-        "3/4"
-      ]
+      ],
+      "input": "integrate(exp(x)/x,x)"
     },
     {
       "id": "F6",
@@ -517,7 +509,8 @@
         "1/2",
         "2",
         "4"
-      ]
+      ],
+      "input": "integrate(1/ln(x),x)"
     }
   ]
 }
