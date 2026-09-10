@@ -1,4 +1,4 @@
-KhiCAS ZH 1.8.0-zh.2
+KhiCAS ZH 1.8.0-zh.3
 fx-CG50 中文符号计算
 中文界面 · 中文帮助
 Function Catalog · Example
