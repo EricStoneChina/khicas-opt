@@ -12,6 +12,10 @@
 增加保留高次幂结构、稀疏有理式匹配、整周期积分和绝对值分段处理。
 定位证据、测量及回归范围见 [docs/PERFORMANCE-2026a.md](docs/PERFORMANCE-2026a.md)。
 
+已通过的积分题目与核对结果见 [独立题目清单](docs/PASSED-INTEGRALS.md)。
+最新方程显示与积分实现分别保存为 `checkpoint/equations-2026a`、
+`checkpoint/integration-cycle5-2026a`。
+
 ## 性能 checkpoint
 
 `checkpoint/performance`：大数小整数乘加减少堆分配，矩阵转置减少复制和临时数组；
