@@ -37,6 +37,7 @@ using namespace std;
 #include "ti89.h"
 #include "alg_ext.h"
 #include "giacintl.h"
+#include "equation_normalize.h"
 
 #ifndef NO_NAMESPACE_GIAC
 namespace giac {
@@ -2313,7 +2314,7 @@ namespace giac {
     if(!budget || depth>32){budget=0;return 65;}
     --budget;
     if(g.is_symb_of_sommet(at_Psi)){psi=true;return 1;}
-    if(g.is_symb_of_sommet(at_atan) || g.is_symb_of_sommet(at_asin) || g.is_symb_of_sommet(at_acos))psi=true;
+    if(g.is_symb_of_sommet(at_atan) || g.is_symb_of_sommet(at_asin) || g.is_symb_of_sommet(at_acos) || g.is_symb_of_sommet(at_abs))psi=true;
     if(g.type==_FRAC){
       unsigned a=simplify_special_terms(g._FRACptr->num,psi,budget,depth+1);
       unsigned b=simplify_special_terms(g._FRACptr->den,psi,budget,depth+1);
@@ -2686,6 +2687,38 @@ namespace giac {
     unsigned terms=simplify_special_terms(e_orig,psi,budget,0);
     if(!budget)return e_orig;
     if(!psi)return simplify_special_core(e_orig,contextptr);
+    // Keep real odd-root factors intact through rational/trigonometric
+    // simplification. In particular sign(g) must stay defined at g=0.
+    vecteur root_powers=lop(e_orig,at_pow),root_signs=lop(e_orig,at_sign);
+    vecteur real_roots,root_names;
+    for(unsigned i=0;i<root_powers.size();++i){
+      const gen &f=root_powers[i]._SYMBptr->feuille;
+      if(f.type!=_VECT || f._VECTptr->size()!=2)continue;
+      const gen &base=(*f._VECTptr)[0],&exponent=(*f._VECTptr)[1];
+      if(!base.is_symb_of_sommet(at_abs) || exponent.type!=_FRAC ||
+         !is_one(exponent._FRACptr->num) || exponent._FRACptr->den.type!=_INT_)continue;
+      int n=exponent._FRACptr->den.val;
+      if(n<3 || n>9 || !(n%2))continue;
+      const gen &argument=base._SYMBptr->feuille;
+      if(taille(argument,129)>128 || !is_zero(im(argument,contextptr)))continue;
+      real_roots.push_back(root_powers[i]);
+      for(unsigned j=0;j<root_signs.size();++j)
+        if(root_signs[j]._SYMBptr->feuille==argument && !equalposcomp(real_roots,root_signs[j]))real_roots.push_back(root_signs[j]);
+      if(real_roots.size()>32)return e_orig;
+    }
+    if(!real_roots.empty()){
+      unsigned k=0;
+      for(unsigned i=0;i<real_roots.size();++i){
+        gen name;
+        do {
+          if(k>=128)return e_orig;
+          name=identificateur(" simplify_real_root_"+print_INT_(int(k++)));
+        } while(contains(e_orig,name) || eval(name,1,contextptr)!=name);
+        root_names.push_back(name);
+      }
+      gen masked=quotesubst(e_orig,real_roots,root_names,contextptr);
+      return quotesubst(simplify(masked,contextptr),root_names,real_roots,contextptr);
+    }
     vecteur psi_atoms=lop(e_orig,at_Psi),special,replacement;
     // The real placeholders below are valid for positive rational Psi
     // arguments and nonnegative integer orders. Inspect their syntax without
@@ -2791,8 +2824,10 @@ namespace giac {
       }
       return apply(args,_simplify,contextptr);
     }
-    if (is_equal(args))
+    if (is_equal(args)){
+      if(equation_primitive(args,res,contextptr))return res;
       return apply_to_equal(args,_simplify,contextptr);
+    }
     int st=step_infolevel(contextptr);
     step_infolevel(0,contextptr);
     int c=calc_mode(contextptr);

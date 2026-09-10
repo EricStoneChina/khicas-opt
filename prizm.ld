@@ -19,6 +19,8 @@ SECTIONS
 	.rominram : {
 		/* Bounded integration helpers use spare AC2 code space.
 		   Keep hot general integration and the CAS heap layout unchanged. */
+    /* Conversion routines share the available AC2 code region. */
+    kconvert.o(.text.*)
     yintg.o(.text.*integrate_atan_square*)
     yintg.o(.text.*integrate_log_zeta*)
     yintg.o(.text.*integrate_hyperbolic_log*)

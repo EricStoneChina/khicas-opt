@@ -47,6 +47,7 @@ report = {'baseline': args.baseline_ref, 'timeout_seconds': args.timeout,
 if args.target_simplify:
     report['scope']='actual yintg, zintgab, normalization and FXCG simplify entry points; other dependencies host Giac; not CG50 timings'
     report['source_sha256']['ksubst.cc']=hashlib.sha256((ROOT/'ksubst.cc').read_bytes()).hexdigest()
+    if (ROOT/'equation_normalize.h').exists():report['source_sha256']['equation_normalize.h']=hashlib.sha256((ROOT/'equation_normalize.h').read_bytes()).hexdigest()
     report['validation_scope']='separate host Giac probe validates the printed target result; no repository integration, normalization or FXCG simplify linked'
     report['validation_timeout_seconds']=args.timeout
 with tempfile.TemporaryDirectory(prefix='khicas-calculus-') as tmp:

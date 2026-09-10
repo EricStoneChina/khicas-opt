@@ -8,6 +8,7 @@
 #include "rpn.h"
 #include "derive.h"
 #include "lin.h"
+#include "equation_normalize.h"
 
 namespace giac {
 
@@ -47,10 +48,257 @@ static bool scalar(const gen &g) {
   return g.type!=_VECT && g.type!=_STRNG && !is_undef(g);
 }
 
+struct curve_term {
+  unsigned px,py;gen coefficient;
+  curve_term(unsigned x,unsigned y,const gen &c):px(x),py(y),coefficient(c){}
+};
+typedef std::vector<curve_term> curve_polynomial_terms;
+
+static bool curve_rational(const gen &g) {
+  return g.type==_INT_ || g.type==_ZINT ||
+    (g.type==_FRAC && (g._FRACptr->num.type==_INT_ || g._FRACptr->num.type==_ZINT) &&
+     (g._FRACptr->den.type==_INT_ || g._FRACptr->den.type==_ZINT) && !is_zero(g._FRACptr->den));
+}
+static gen curve_coefficient(const curve_polynomial_terms &p,unsigned x,unsigned y) {
+  for(unsigned i=0;i<p.size();++i)if(p[i].px==x && p[i].py==y)return p[i].coefficient;
+  return 0;
+}
+static bool curve_add_term(curve_polynomial_terms &p,unsigned x,unsigned y,const gen &c,unsigned &work) {
+  if(!work || x+y>8)return false;--work;
+  if(is_zero(c))return true;
+  for(unsigned i=0;i<p.size();++i)if(p[i].px==x && p[i].py==y){
+    p[i].coefficient+=c;
+    if(is_zero(p[i].coefficient))p.erase(p.begin()+i);
+    return true;
+  }
+  if(p.size()>=64)return false;
+  p.push_back(curve_term(x,y,c));return true;
+}
+static bool curve_multiply(const curve_polynomial_terms &a,const curve_polynomial_terms &b,
+                           curve_polynomial_terms &p,unsigned &work) {
+  p.clear();
+  for(unsigned i=0;i<a.size();++i)for(unsigned j=0;j<b.size();++j)
+    if(!curve_add_term(p,a[i].px+b[j].px,a[i].py+b[j].py,a[i].coefficient*b[j].coefficient,work))return false;
+  return true;
+}
+static bool curve_collect_polynomial(const gen &g,const gen &x,const gen &y,
+                                     curve_polynomial_terms &out,unsigned depth,unsigned &work,GIAC_CONTEXT) {
+  if(!work || depth>16)return false;--work;out.clear();
+  if(g==x){out.push_back(curve_term(1,0,1));return true;}
+  if(g==y){out.push_back(curve_term(0,1,1));return true;}
+  if(!depends(g,x) && !depends(g,y)){
+    if(!is_zero(g))out.push_back(curve_term(0,0,g));return true;
+  }
+  if(g.type!=_SYMB)return false;
+  const gen &f=g._SYMBptr->feuille;
+  if(g.is_symb_of_sommet(at_neg)){
+    if(!curve_collect_polynomial(f,x,y,out,depth+1,work,contextptr))return false;
+    for(unsigned i=0;i<out.size();++i)out[i].coefficient=-out[i].coefficient;return true;
+  }
+  if(f.type!=_VECT)return false;
+  const vecteur &v=*f._VECTptr;
+  if(g.is_symb_of_sommet(at_division) && v.size()==2){
+    if(depends(v[1],x)||depends(v[1],y))return false;
+    gen denominator=ratnormal(v[1],contextptr);
+    if(!curve_rational(denominator)||is_zero(denominator) ||
+       !curve_collect_polynomial(v[0],x,y,out,depth+1,work,contextptr))return false;
+    for(unsigned i=0;i<out.size();++i)out[i].coefficient=out[i].coefficient/denominator;
+    return true;
+  }
+  if(g.is_symb_of_sommet(at_plus)){
+    if(v.size()>64)return false;
+    for(unsigned i=0;i<v.size();++i){curve_polynomial_terms a;
+      if(!curve_collect_polynomial(v[i],x,y,a,depth+1,work,contextptr))return false;
+      for(unsigned j=0;j<a.size();++j)if(!curve_add_term(out,a[j].px,a[j].py,a[j].coefficient,work))return false;
+    }return true;
+  }
+  if(g.is_symb_of_sommet(at_prod)){
+    if(v.size()>16)return false;out.push_back(curve_term(0,0,1));
+    for(unsigned i=0;i<v.size();++i){curve_polynomial_terms a,p;
+      if(!curve_collect_polynomial(v[i],x,y,a,depth+1,work,contextptr) || !curve_multiply(out,a,p,work))return false;
+      out.swap(p);
+    }return true;
+  }
+  if(g.is_symb_of_sommet(at_pow) && v.size()==2 && v[1].type==_INT_ && v[1].val>=0 && v[1].val<=8){
+    curve_polynomial_terms a;
+    if(!curve_collect_polynomial(v[0],x,y,a,depth+1,work,contextptr))return false;
+    out.push_back(curve_term(0,0,1));
+    for(int i=0;i<v[1].val;++i){curve_polynomial_terms p;if(!curve_multiply(out,a,p,work))return false;out.swap(p);}return true;
+  }
+  return false;
+}
+static bool curve_polynomial(const gen &g,const gen &x,const gen &y,curve_polynomial_terms &out,GIAC_CONTEXT) {
+  if(taille(g,513)>512)return false;unsigned work=4096;
+  return curve_collect_polynomial(g,x,y,out,0,work,contextptr);
+}
+static bool curve_folium_param(const curve_polynomial_terms &p,const gen &t,gen &out,GIAC_CONTEXT) {
+  if(p.size()!=2 && p.size()!=3)return false;
+  gen L=ratnormal(curve_coefficient(p,3,0),contextptr);
+  if(!curve_rational(L)||is_zero(L) || !is_zero(ratnormal(curve_coefficient(p,0,3)-L,contextptr)))return false;
+  gen K=-curve_coefficient(p,1,1);
+  if(is_zero(K)){
+    if(p.size()!=2)return false;
+    out=vecteur(1,makevecteur(t,-t));return true;
+  }
+  if(p.size()!=3 || !(is_strictly_positive(K,contextptr)||is_strictly_positive(-K,contextptr)))return false;
+  gen X=ratnormal((K/L)*t/(1+pow(t,3)),contextptr);
+  out=vecteur(1,makevecteur(X,ratnormal(t*X,contextptr)));
+  *logptr(contextptr)<<"Rational parametrization: t=-1 is excluded.\n";
+  return true;
+}
+
+static bool curve_lemniscate_param(const curve_polynomial_terms &p,const gen &t,gen &out,GIAC_CONTEXT) {
+  if(p.size()!=3 && p.size()!=5)return false;
+  gen L=curve_coefficient(p,4,0);
+  if(!(is_strictly_positive(L,contextptr)||is_strictly_positive(-L,contextptr)))return false;
+  if(!is_zero(ratnormal(curve_coefficient(p,0,4)-L,contextptr)) ||
+     !is_zero(ratnormal(curve_coefficient(p,2,2)-2*L,contextptr)) ||
+     !is_zero(ratnormal(curve_coefficient(p,2,0)+curve_coefficient(p,0,2),contextptr)))return false;
+  gen K=ratnormal(curve_coefficient(p,0,2)/L,contextptr);
+  if(is_zero(K)){if(p.size()!=3)return false;out=vecteur(1,makevecteur(0,0));return true;}
+  if(p.size()!=5 || !angle_radian(contextptr))return false;
+  bool rotated=is_strictly_positive(-K,contextptr);
+  if(!rotated && !is_strictly_positive(K,contextptr))return false;
+  gen s=sin(t,contextptr),c=cos(t,contextptr),X=sqrt(rotated?-K:K,contextptr)*c/(1+s*s);
+  out=vecteur(1,rotated?makevecteur(X*s,X):makevecteur(X,X*s));return true;
+}
+
+static bool curve_origin_pencil(const curve_polynomial_terms &p,const gen &t,gen &out,GIAC_CONTEXT) {
+  if(p.empty())return false;unsigned low=9,high=0;
+  for(unsigned i=0;i<p.size();++i){
+    if(!curve_rational(p[i].coefficient))return false;
+    unsigned n=p[i].px+p[i].py;if(n<low)low=n;if(n>high)high=n;
+  }
+  if(high<2 || high>8 || low+1!=high)return false;
+  gen P=0,Q=0;
+  for(unsigned i=0;i<p.size();++i){
+    gen term=p[i].coefficient*pow(t,int(p[i].py));
+    if(p[i].px+p[i].py==high)P+=term;else Q+=term;
+  }
+  // A common direction factor is a line component. Let factor/solve handle it
+  // instead of cancelling it out of the parameter map.
+  gen common=_gcd(makesequence(P,Q),contextptr);
+  if(is_undef(common)||depends(common,t))return false;
+  gen X=ratnormal(-Q/P,contextptr);
+  vecteur branches(1,makevecteur(X,ratnormal(t*X,contextptr)));
+  // Every nonvertical nonzero point has t=y/x. Add the missing vertical point
+  // (or vertical component) and an isolated origin when the map misses it.
+  gen verticalP=curve_coefficient(p,0,high),verticalQ=curve_coefficient(p,0,high-1);
+  if(is_zero(verticalP) && is_zero(verticalQ))branches.push_back(makevecteur(0,t));
+  else if(!is_zero(verticalP) && !is_zero(verticalQ))branches.push_back(makevecteur(0,-verticalQ/verticalP));
+  bool origin_at_zero=!is_zero(curve_coefficient(p,high,0)) && is_zero(curve_coefficient(p,high-1,0));
+  if(!origin_at_zero && !(is_zero(verticalP)&&is_zero(verticalQ)))branches.push_back(makevecteur(0,0));
+  *logptr(contextptr)<<"Rational parametrization: retain nonzero denominator conditions; constant branches include missing points.\n";
+  out=branches;return true;
+}
+
+static bool curve_constant_linear_graph(const gen &f,const vecteur &xy,const gen &t,int first,gen &out,GIAC_CONTEXT) {
+  for(int j=0;j<2;++j){int i=j?1-first:first;gen a,b;
+    if(!is_linear_wrt(f,xy[i],a,b,contextptr) || !curve_rational(a) || is_zero(a))continue;
+    gen value=subst(ratnormal(-b/a,contextptr),xy[1-i],t,false,contextptr);
+    out=vecteur(1,i?makevecteur(t,value):makevecteur(value,t));return true;
+  }return false;
+}
+
+// A real odd radius is sign(g)*abs(g)^(1/n), not the principal complex root.
+// Only a nonzero rational leading coefficient is removed, so no exceptional
+// angle where that coefficient vanishes is lost.
+static bool curve_odd_polar_radius(const gen &f,const gen &r,const gen &theta,const gen &t,gen &out,GIAC_CONTEXT) {
+  if(taille(f,129)>128)return false;
+  vecteur terms;
+  if(f.is_symb_of_sommet(at_plus)&&f._SYMBptr->feuille.type==_VECT)terms=*f._SYMBptr->feuille._VECTptr;
+  else terms.push_back(f);
+  if(terms.size()>8)return false;
+  gen rhs=0,coefficient=0;int n=0;
+  for(unsigned i=0;i<terms.size();++i){
+    gen g=terms[i];
+    if(!depends(g,r)){rhs-=g;continue;}
+    gen c=1;
+    if(g.is_symb_of_sommet(at_neg)){c=-1;g=gen(g._SYMBptr->feuille);}
+    if(g.is_symb_of_sommet(at_prod)&&g._SYMBptr->feuille.type==_VECT){
+      const vecteur &v=*g._SYMBptr->feuille._VECTptr;gen power=1;
+      if(v.size()>8)return false;
+      for(unsigned j=0;j<v.size();++j){if(!depends(v[j],r))c=c*v[j];else power=power*v[j];}
+      g=power;
+    }
+    c=ratnormal(c,contextptr);
+    if(!curve_rational(c))return false;
+    if(!g.is_symb_of_sommet(at_pow)||g._SYMBptr->feuille.type!=_VECT)return false;
+    const vecteur &v=*g._SYMBptr->feuille._VECTptr;
+    if(v.size()!=2||v[0]!=r||v[1].type!=_INT_||v[1].val<3||v[1].val>9||!(v[1].val%2))return false;
+    if(n&&n!=v[1].val)return false;n=v[1].val;coefficient+=c;
+  }
+  if(!n||!curve_rational(coefficient)||is_zero(coefficient))return false;
+  gen value=subst(rhs/coefficient,theta,t,false,contextptr);
+  // Reject explicitly nonreal radii; symbols without a real assumption are
+  // left to the existing general conversion path and its domain convention.
+  if(!is_zero(im(value,contextptr)))return false;
+  // Keep the real odd root pointwise exact without sending a trigonometric
+  // argument through abs()'s general normalization on the calculator stack.
+  gen radius;
+  if(curve_rational(value))
+    radius=sign(value,contextptr)*pow(abs(value,contextptr),gen(1)/n,contextptr);
+  else
+    radius=gen(symbolic(at_sign,value))*gen(symbolic(at_pow,
+      makesequence(gen(symbolic(at_abs,value)),gen(1)/n)));
+  out=vecteur(1,makevecteur(radius*cos(t,contextptr),radius*sin(t,contextptr)));return true;
+}
+
+static bool curve_polar_nonzero(const gen &g,GIAC_CONTEXT) {
+  return !is_undef(g) && !is_inf(g) &&
+    (is_strictly_positive(g,contextptr) || is_strictly_positive(-g,contextptr));
+}
+
+static bool curve_compact_polar(const gen &g,const gen &x,const gen &y,
+                                const gen &r,const gen &theta,gen &result,GIAC_CONTEXT) {
+  curve_polynomial_terms p;
+  if(!curve_polynomial(g,x,y,p,contextptr))return false;
+  gen leading=curve_coefficient(p,4,0),xx=curve_coefficient(p,2,0);
+  if(curve_polar_nonzero(leading,contextptr) && curve_coefficient(p,0,4)==leading &&
+     curve_coefficient(p,2,2)==2*leading && curve_coefficient(p,0,2)==-xx) {
+    bool shape=true;
+    for(unsigned i=0;i<p.size();++i){
+      const curve_term &t=p[i];
+      if(!((t.px==4 && t.py==0) || (t.px==0 && t.py==4) || (t.px==2 && t.py==2) ||
+           (t.px==2 && t.py==0) || (t.px==0 && t.py==2)))shape=false;
+    }
+    if(shape){
+      gen k=-xx/leading;if(is_undef(k) || is_inf(k))return false;
+      result=symb_equal(pow(r,2),k*cos(2*theta,contextptr));
+      *logptr(contextptr)<<"Same Cartesian curve; origin retained. Angle labels at the origin may differ.\n";
+      return true;
+    }
+  }
+  leading=curve_coefficient(p,3,0);
+  if(!curve_polar_nonzero(leading,contextptr) || curve_coefficient(p,0,3)!=leading)return false;
+  for(unsigned i=0;i<p.size();++i){
+    const curve_term &t=p[i];
+    if(!((t.px==3 && t.py==0) || (t.px==0 && t.py==3) || (t.px==1 && t.py==1)))return false;
+  }
+  gen k=-curve_coefficient(p,1,1)/leading;
+  if(is_undef(k) || is_inf(k))return false;
+  gen sine=sin(theta,contextptr),cosine=cos(theta,contextptr),denominator=pow(cosine,3)+pow(sine,3);
+  if(curve_polar_nonzero(k,contextptr)){
+    result=symb_equal(r,k*sine*cosine/denominator);
+    *logptr(contextptr)<<"Same Cartesian curve; origin retained. Explicit radius excludes "<<denominator<<"=0.\n";
+  }
+  else {
+    // At k=0 the folium degenerates to the entire line x+y=0. Dividing
+    // by this denominator would incorrectly reduce that line to the origin.
+    result=symb_equal(r*denominator,k*sine*cosine);
+    *logptr(contextptr)<<"Same Cartesian curve; origin retained. Implicit radius preserves zero-parameter cases.\n";
+  }
+  return true;
+}
+
 static gen equation(const gen &g,GIAC_CONTEXT) {
   if (is_undef(g)) return g;
+  gen result;
+  if(equation_primitive(symb_equal(g,0),result,contextptr))return result;
   gen n=normal(g,contextptr);
-  return is_undef(n)?n:symb_equal(n,0);
+  if(is_undef(n))return n;
+  gen relation=symb_equal(n,0);
+  return equation_primitive(relation,result,contextptr)?result:relation;
 }
 
 // Substitution is simultaneous, so one coordinate cannot capture the other.
@@ -65,10 +313,12 @@ gen _cart2polar(const gen &args,GIAC_CONTEXT) {
   const vecteur &w=*v[2]._VECTptr;
   if (depends(v[0],w[0]) || depends(v[0],w[1]))
     return gensizeerr("Output coordinates already occur in input");
-  gen converted=subst(residual(v[0]),*v[1]._VECTptr,
+  const vecteur &xy=*v[1]._VECTptr;
+  gen input=residual(v[0]),compact;
+  if(curve_compact_polar(input,xy[0],xy[1],w[0],w[1],compact,contextptr))return compact;
+  gen converted=subst(input,xy,
     makevecteur(w[0]*cos(w[1],contextptr),w[0]*sin(w[1],contextptr)),false,contextptr);
-  // Product-to-sum identities preserve sin/cos domains. The general simplify
-  // command may introduce tan(theta/2), which is undefined at odd multiples of pi.
+  // Preserve the existing pointwise substitution for all other curves.
   return equation(_tlin(converted,contextptr),contextptr);
 }
 
@@ -113,6 +363,13 @@ gen _cart2param(const gen &args,GIAC_CONTEXT) {
           return vecteur(1,i?makevecteur(v[2],value):makevecteur(value,v[2]));
         }
   }
+  // Direct algebraic graphs and textbook lemniscates avoid general solving.
+  gen direct;
+  if(curve_constant_linear_graph(f,xy,v[2],1,direct,contextptr))return direct;
+  curve_polynomial_terms polynomial;
+  bool bounded_polynomial=curve_polynomial(f,xy[0],xy[1],polynomial,contextptr);
+  if(bounded_polynomial && (curve_lemniscate_param(polynomial,v[2],direct,contextptr) ||
+      curve_folium_param(polynomial,v[2],direct,contextptr)))return direct;
   // Split reducible curves before isolation, so x*y=0 retains the vertical
   // component x=0 as well as y=0. Multiplicities do not create new branches.
   gen factored=_factor(f,contextptr);
@@ -132,6 +389,8 @@ gen _cart2param(const gen &args,GIAC_CONTEXT) {
       }
     }
     if (depends(part,xy[0]) || depends(part,xy[1])) components.push_back(part);
+    else if (!curve_polar_nonzero(part,contextptr))
+      return gensizeerr("Parameter factor may vanish; assume it is nonzero first");
   }
   if (components.size()>1) {
     vecteur out;
@@ -145,7 +404,15 @@ gen _cart2param(const gen &args,GIAC_CONTEXT) {
     return out;
   }
   if (components.size()==1) f=components[0];
+  bounded_polynomial=curve_polynomial(f,xy[0],xy[1],polynomial,contextptr);
   int solved=depends(f,xy[1])?1:0;
+  if(bounded_polynomial){
+    unsigned dx=0,dy=0;
+    for(unsigned i=0;i<polynomial.size();++i){if(polynomial[i].px>dx)dx=polynomial[i].px;if(polynomial[i].py>dy)dy=polynomial[i].py;}
+    if(dx && (!dy || dx<dy))solved=0;
+  }
+  if(curve_constant_linear_graph(f,xy,v[2],solved,direct,contextptr))return direct;
+  if(bounded_polynomial && curve_origin_pencil(polynomial,v[2],direct,contextptr))return direct;
   gen roots=_solve(makesequence(symb_equal(f,0),xy[solved]),contextptr);
   if (is_undef(roots)) return roots;
   if (roots.type!=_VECT || roots._VECTptr->empty())
@@ -172,6 +439,9 @@ gen _polar2param(const gen &args,GIAC_CONTEXT) {
   if (!angle_radian(contextptr)) return gensizeerr("Equation conversion requires radians");
   // Reuse the all-branches solver with axes [theta,r]. This also handles rays.
   const vecteur &rt=*v[1]._VECTptr;
+  if(depends(v[0],v[2]))return gensizeerr("Parameter already occurs in input");
+  gen direct;
+  if(curve_odd_polar_radius(residual(v[0]),rt[0],rt[1],v[2],direct,contextptr))return direct;
   gen branches=_cart2param(makesequence(v[0],makevecteur(rt[1],rt[0]),v[2]),contextptr);
   if (is_undef(branches) || branches.type!=_VECT) return branches;
   vecteur out;

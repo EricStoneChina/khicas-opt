@@ -65,7 +65,11 @@ def build(directory, ref='current', target_simplify=False):
         # Exercise the real FXCG-only simplification branch without changing
         # the host ABI headers. Other helper/library dependencies remain host.
         s=source(ref, 'ksubst.cc')
-        simplified='#include "giacPCH.h"\n#define FXCG\n#define NO_STDEXCEPT\nnamespace giac {\n'
+        header=''
+        if '#include "equation_normalize.h"' in s:
+            (directory/'equation_normalize.h').write_text(source(ref,'equation_normalize.h'))
+            header='#include "equation_normalize.h"\n'
+        simplified='#include "giacPCH.h"\n'+header+'#define FXCG\n#define NO_STDEXCEPT\nnamespace giac {\n'
         simplified+='gen ataninv2atan(const gen &,GIAC_CONTEXT);\ngen cklin(const gen &,GIAC_CONTEXT);\n'
         simplified+=function(source(ref, 'zprog.cc'), '  gen symb_prog3(')
         if '  static unsigned simplify_special_terms(' in s:

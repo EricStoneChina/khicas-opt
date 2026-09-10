@@ -76,7 +76,7 @@ int main(int argc,char **argv) {
   p=call(_param2polar,"([-3,4],t)",contextptr);
   expect_equal(p._VECTptr->back(),parse("arg(-3+4*i)",contextptr),contextptr);
   p=call(_param2polar,"([cos(t),sin(t)],t,[r,theta])",contextptr);
-  expect_equal(expr(p),parse("4*(r^2-1)",contextptr),contextptr);
+  expect_equal(expr(p),parse("r^2-1",contextptr),contextptr);
   p=call(_param2polar,"([t,t^2],t,[r,theta])",contextptr);
   expect_equal(expr(p),parse("r*sin(theta)-r^2*cos(theta)^2",contextptr),contextptr);
   p=call(_param2cart,"([t,t^2],t,[x,y])",contextptr);

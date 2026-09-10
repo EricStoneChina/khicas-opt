@@ -44,6 +44,7 @@ if args.target_simplify:
     report['validation_scope']='separate host Giac probe; validates the printed target result, with no repository integration, normalization or FXCG simplify linked'
     report['validation_timeout_seconds']=30
     report['source_sha256']['ksubst.cc']=hashlib.sha256((ROOT/'ksubst.cc').read_bytes()).hexdigest()
+    if (ROOT/'equation_normalize.h').exists():report['source_sha256']['equation_normalize.h']=hashlib.sha256((ROOT/'equation_normalize.h').read_bytes()).hexdigest()
 failed=False
 with tempfile.TemporaryDirectory(prefix='khicas-user-integrals-') as tmp:
     exe=build(Path(tmp),target_simplify=args.target_simplify)

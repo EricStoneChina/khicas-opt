@@ -26,6 +26,7 @@ with tempfile.TemporaryDirectory(prefix="khicas-cas-") as tmp:
              os.environ.get("GIAC_INCLUDE", "/usr/include/giac")]
     flags += shlex.split(os.environ.get("CXXFLAGS", ""))
     libs = shlex.split(os.environ.get("LDFLAGS", "")) + ["-lgiac"]
+    libs += shlex.split(os.environ.get('GIAC_NUMERIC_LIBS', '-lgmp -lmpfr'))
     content = (ROOT / "zvecteur.cc").read_text()
     transpose = work / "transpose.cc"
     transpose.write_text('#include "giacPCH.h"\nnamespace giac {\n' +
@@ -44,6 +45,7 @@ with tempfile.TemporaryDirectory(prefix="khicas-cas-") as tmp:
     # Resolve quoted headers against host Giac, not the calculator-only headers.
     conversion = work / "kconvert.cc"
     conversion.write_bytes((ROOT / "kconvert.cc").read_bytes())
+    (work/"equation_normalize.h").write_bytes((ROOT/"equation_normalize.h").read_bytes())
     subprocess.run(flags + [str(conversion),
         str(ROOT / "tests/equation_conversions.cc")] + libs + ["-o", str(output)], check=True)
     subprocess.run([str(output), str(ROOT / "bench/conversions.xws")], check=True)

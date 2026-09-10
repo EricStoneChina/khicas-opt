@@ -22,7 +22,8 @@ for name in regions:
 # Verify every selected helper actually moved, including compiler clones.
 selectors=re.findall(r'yintg\.o\(\.text\.\*(\w+)\*\)',(d/'prizm.ld').read_text())
 symbols=(d/'khicasen.elf.symbols').read_text(); moved={}
-for name in selectors:
+conversion_names=['_'+name for name in ('cart2param','cart2polar','param2cart','param2polar','polar2cart','polar2param')] if 'kconvert.o(.text.*)' in (d/'prizm.ld').read_text() else []
+for name in selectors+conversion_names:
     hits=re.findall(r'^([0-9a-f]+)\s+.*?\bF\s+(\S+)\s+([0-9a-f]+)\s+giac::'+name+r'\(',symbols,re.M)
     assert hits, f'Missing helper: {name}'
     for address,section,size in hits:
@@ -39,11 +40,12 @@ assert heap_sizes=={0x180000}, 'Review CAS heap change separately'
 report={'scope':'SH4 linker/binary capacity and single compiler stack frames; no CG50 runtime measurements',
         'regions':{name:{'origin':hex(origin),'used_bytes':used[name],'capacity_bytes':size,'remaining_bytes':size-used[name]} for name,(origin,size) in regions.items()},
         'configured_CAS_heap_bytes':0x180000,
-        'moved_helpers':moved,
+        'moved_helpers':{name:moved[name] for name in selectors},
+        'moved_conversion_entries':{name:moved[name] for name in conversion_names},
         'largest_single_frames':sorted(frames,key=lambda v:v['bytes'],reverse=True)[:30],
         'integration_helper_frames':[r for r in frames if any(name+'(' in r['function'] for name in selectors)],
-        'sha256':{name:hashlib.sha256((d/name).read_bytes()).hexdigest() for name in ('khicas50.g3a','khicas50.ac2','khicasen.elf','prizm.ld','main.cc','zmaple.cc','yintg.cc','ksubst.cc','zprog.cc','input_lexer.cc','input_lexer.ll')}}
+        'sha256':{name:hashlib.sha256((d/name).read_bytes()).hexdigest() for name in ('khicas50.g3a','khicas50.ac2','khicasen.elf','prizm.ld','main.cc','zmaple.cc','yintg.cc','ksubst.cc','equation_normalize.h','parametric_display.h','kconvert.cc','zprog.cc','input_lexer.cc','input_lexer.ll')}}
 a.report.write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n')
 for name,row in report['regions'].items():
     print(f"{name}: {row['used_bytes']} / {row['capacity_bytes']} bytes; {row['remaining_bytes']} free")
-print(f'PASS: {len(moved)} helpers placed in AC2; CAS heap configuration unchanged')
+print(f'PASS: {len(selectors)} integration helpers and {len(conversion_names)} conversion entries placed in AC2; CAS heap configuration unchanged')
