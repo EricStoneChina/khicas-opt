@@ -6,7 +6,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM = 'upstream/khicas-2026-07-31'
-COMMANDS = {'cart2param', 'param2cart', 'cart2polar', 'polar2cart',
+COMMANDS = {'Li2', 'cart2param', 'param2cart', 'cart2polar', 'polar2cart',
             'polar2param', 'param2polar'}
 
 
