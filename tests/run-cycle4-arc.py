@@ -11,7 +11,7 @@ text='#include "giacPCH.h"\nnamespace giac {\n'
 for sig in ('  void decompose_prod(', '  gen extract_cst(', '  static bool small_polynomial(', '  static bool small_sparse_polynomial(', '  static bool integration_rational(', '  static gen integration_syntax(', '  static bool integration_power(', '  static gen integration_coefficient(', '  static bool integration_quadratic(', '  static bool integration_square_root('):text+=function(s,sig)
 if args.helpers:text+=args.helpers.read_text()
 else:
-    for sig in ('  static bool integrate_atan_square(', '  static bool integrate_arc_rational_circle('):text+=function(s,sig)
+    for sig in ('  static gen integration_acos_circle_value(', '  static bool integrate_atan_square(', '  static bool integrate_arc_rational_circle('):text+=function(s,sig)
 text+='''bool cycle4_arc_rule(const gen &f,const gen &x,const gen &lo,const gen &hi,gen &r,GIAC_CONTEXT){
   gen e=integration_syntax(f,contextptr),c=integration_coefficient(e,x,contextptr);
   if(!integration_rational(c))return false;

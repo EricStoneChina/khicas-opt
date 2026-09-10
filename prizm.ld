@@ -28,6 +28,12 @@ SECTIONS
     yintg.o(.text.*integrate_acos_circle*)
     yintg.o(.text.*integrate_mellin_two_binomials*)
     yintg.o(.text.*integrate_gaussian_erf*)
+    /* Cycle5 bounded helpers; gaussian_erf* also covers gaussian_erf_exp. */
+    yintg.o(.text.*integrate_beta_affine_log*)
+    yintg.o(.text.*integrate_acos_monomial_pullback*)
+    yintg.o(.text.*integrate_erf_chain*)
+    yintg.o(.text.*integrate_atan_rectangle_pair*)
+    yintg.o(.text.*integration_acos_circle_value*)
     yintg.o(.text.*integrate_exp_difference*)
     yintg.o(.text.*integrate_reciprocal_trig_period*)
     yintg.o(.text.*integrate_atan_frullani*)

@@ -3942,6 +3942,143 @@ namespace giac {
   }
 
   // Read a bounded affine expression in one cosine without polynomial expansion.
+  static bool integration_beta_affine_weight(const gen &g,const gen &x,const gen &lo,const gen &hi,gen &p,gen &q,gen &coefficient,const gen &power,unsigned &budget,GIAC_CONTEXT){
+    if(!budget)return false;--budget;
+    // Affine widths raised to huge integer powers can allocate large exact
+    // coefficients even when logarithm arguments later cancel those factors.
+    if(is_strictly_greater(power,32,contextptr) || is_strictly_greater(-power,32,contextptr))return false;
+    if(integration_rational(g)){
+      if(!is_strictly_positive(g,contextptr))return false;
+      coefficient=coefficient*pow(g,power,contextptr);return true;
+    }
+    if(g.is_symb_of_sommet(at_inv))return integration_beta_affine_weight(g._SYMBptr->feuille,x,lo,hi,p,q,coefficient,-power,budget,contextptr);
+    if(g.is_symb_of_sommet(at_sqrt))return integration_beta_affine_weight(g._SYMBptr->feuille,x,lo,hi,p,q,coefficient,power/2,budget,contextptr);
+    if(g.is_symb_of_sommet(at_pow) && g._SYMBptr->feuille.type==_VECT){
+      const vecteur &v=*g._SYMBptr->feuille._VECTptr;
+      return v.size()==2 && integration_rational(v[1]) && integration_beta_affine_weight(v[0],x,lo,hi,p,q,coefficient,power*v[1],budget,contextptr);
+    }
+    if(g.is_symb_of_sommet(at_prod) && g._SYMBptr->feuille.type==_VECT){
+      const vecteur &v=*g._SYMBptr->feuille._VECTptr;
+      for(unsigned i=0;i<v.size();++i)if(!integration_beta_affine_weight(v[i],x,lo,hi,p,q,coefficient,power,budget,contextptr))return false;
+      return true;
+    }
+    gen poly[3];
+    if(g==x)poly[1]=1;
+    else {
+      if(!g.is_symb_of_sommet(at_plus) || g._SYMBptr->feuille.type!=_VECT)return false;
+      const vecteur &v=*g._SYMBptr->feuille._VECTptr;if(v.size()>3)return false;
+      for(unsigned i=0;i<v.size();++i){gen c,n;
+        if(!integration_monomial(v[i],x,c,n,contextptr) || n.type!=_INT_ || n.val<0 || n.val>2)return false;
+        poly[n.val]+=c;
+      }
+    }
+    gen left=ratnormal(poly[0]+lo*(poly[1]+lo*poly[2]),contextptr);
+    gen right=ratnormal(poly[0]+hi*(poly[1]+hi*poly[2]),contextptr),width=hi-lo,scale;
+    if(is_zero(poly[2])){
+      if(is_zero(left) && is_strictly_positive(right,contextptr)){p+=power;scale=right;}
+      else if(is_zero(right) && is_strictly_positive(left,contextptr)){q+=power;scale=left;}
+      else return false;
+    }
+    else {
+      if(!is_zero(left) || !is_zero(right) || !is_strictly_positive(-poly[2],contextptr))return false;
+      p+=power;q+=power;scale=-poly[2]*width*width;
+    }
+    coefficient=coefficient*pow(scale,power,contextptr);return true;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_beta_affine_log(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if(!angle_radian(contextptr) || !integration_rational(lo) || !integration_rational(hi) ||
+       !is_strictly_positive(hi-lo,contextptr) || (is_zero(lo) && hi==1))return false;
+    vecteur singleton;const vecteur *terms;
+    if(e.is_symb_of_sommet(at_prod) && e._SYMBptr->feuille.type==_VECT)terms=e._SYMBptr->feuille._VECTptr;
+    else {singleton.push_back(e);terms=&singleton;}
+    const vecteur &v=*terms;if(v.size()>8)return false;
+    gen t(identificateur(" khicas_beta_affine"));
+    if(contains(e,t) || eval(t,1,contextptr)!=t)return false;
+    gen p=0,q=0,c=1,mapped=1;unsigned budget=64,logs=0;
+    for(unsigned i=0;i<v.size();++i){
+      gen f=v[i],base;int order=1;
+      if(f.is_symb_of_sommet(at_pow) && f._SYMBptr->feuille.type==_VECT){
+        const vecteur &power=*f._SYMBptr->feuille._VECTptr;
+        if(power.size()==2 && power[0].is_symb_of_sommet(at_ln) && power[1].type==_INT_){order=power[1].val;f=gen(power[0]);}
+      }
+      if(f.is_symb_of_sommet(at_ln)){
+        if(order<1 || order>16 || (logs+=order)>16)return false;
+        gen a=0,b=0,scale=1;
+        if(!integration_beta_affine_weight(f._SYMBptr->feuille,x,lo,hi,a,b,scale,1,budget,contextptr) ||
+           !is_zero(ratnormal(scale-1,contextptr)))return false;
+        gen argument=pow(t,a,contextptr)*pow(1-t,b,contextptr);
+        mapped=mapped*pow(symbolic(at_ln,argument),order);continue;
+      }
+      if(!integration_beta_affine_weight(v[i],x,lo,hi,p,q,c,1,budget,contextptr))return false;
+    }
+    if(!logs)return false;
+    mapped=mapped*pow(t,p,contextptr)*pow(1-t,q,contextptr);
+    if(!integrate_beta_log(mapped,t,0,1,res,contextptr))return false;
+    res=(hi-lo)*c*res;return true;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static gen integration_acos_circle_value(const gen &q,GIAC_CONTEXT){
+    gen h=atan(sqrt(q,contextptr),contextptr);
+    return 2*cst_pi*h-2*h*h-2*cst_pi*atan(sqrt(1+2*q,contextptr),contextptr)+cst_pi*cst_pi/2;
+  }
+
+  static bool integration_arc_binomial(gen g,const gen &x,gen &constant,gen &coefficient,gen &degree,unsigned &budget,GIAC_CONTEXT){
+    gen scale=integration_coefficient(g,x,contextptr);
+    if(!integration_rational(scale) || !g.is_symb_of_sommet(at_plus) || g._SYMBptr->feuille.type!=_VECT)return false;
+    const vecteur &v=*g._SYMBptr->feuille._VECTptr;if(v.size()!=2)return false;
+    constant=0;coefficient=0;degree=0;
+    for(unsigned i=0;i<v.size();++i){gen c,n;
+      if(!integration_mellin_monomial(v[i],x,c,n,budget,contextptr))return false;
+      if(is_zero(n))constant+=scale*c;
+      else {if(!is_zero(degree))return false;degree=n;coefficient=scale*c;}
+    }
+    return !is_zero(degree) && !is_zero(coefficient);
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_acos_monomial_pullback(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if(!angle_radian(contextptr) || !is_zero(lo) || is_inf(hi) || !is_zero(im(hi,contextptr)) ||
+       !is_strictly_positive(hi,contextptr) || !e.is_symb_of_sommet(at_prod) || e._SYMBptr->feuille.type!=_VECT)return false;
+    const vecteur &v=*e._SYMBptr->feuille._VECTptr;if(v.size()>5)return false;
+    gen angle,denominator,weight=1;unsigned budget=64;
+    for(unsigned i=0;i<v.size();++i){gen base;
+      if(v[i].is_symb_of_sommet(at_acos)){if(!is_zero(angle))return false;angle=v[i];}
+      else if(integration_power(v[i],base,-1) && base.is_symb_of_sommet(at_plus)){
+        if(!is_zero(denominator))return false;denominator=base;
+      }
+      else weight=weight*v[i];
+    }
+    gen E,d,k,c,m;
+    if(is_zero(angle) || is_zero(denominator) || !integration_arc_binomial(denominator,x,E,d,k,budget,contextptr) ||
+       !is_strictly_positive(E,contextptr) || !is_strictly_positive(d,contextptr) || !is_strictly_positive(k,contextptr) ||
+       !integration_mellin_monomial(weight,x,c,m,budget,contextptr) || m+1!=k/2)return false;
+    d=d/E;c=c/E;
+    gen arg=angle._SYMBptr->feuille,outer=integration_coefficient(arg,x,contextptr),num=outer,den;
+    if(!integration_rational(outer) || !arg.is_symb_of_sommet(at_prod) || arg._SYMBptr->feuille.type!=_VECT)return false;
+    const vecteur &a=*arg._SYMBptr->feuille._VECTptr;if(a.size()>4)return false;
+    for(unsigned i=0;i<a.size();++i){gen base;
+      if(integration_power(a[i],base,-1) && !integration_rational(base)){if(!is_zero(den))return false;den=base;}
+      else num=num*a[i];
+    }
+    gen A,B,C,D,kn,kd;
+    if(is_zero(den) || !integration_arc_binomial(num,x,A,B,kn,budget,contextptr) ||
+       !integration_arc_binomial(den,x,C,D,kd,budget,contextptr) || kn!=k || kd!=k || B!=D)return false;
+    gen unit=(C-A)/2;
+    if(is_zero(unit) || B!=-d*unit)return false;
+    gen q=(A+C)/(4*unit);
+    if(!is_strictly_positive(q,contextptr) || !is_zero(ratnormal(pow(hi,k,contextptr)*d-q,contextptr)))return false;
+    res=c*integration_acos_circle_value(q,contextptr)/(k*sqrt(d,contextptr));return true;
+  }
+
   static bool integration_affine_cosine(const gen &g,const gen &x,gen &arg,gen &constant,gen &coefficient,GIAC_CONTEXT){
     gen core=g,scale=ratnormal(integration_coefficient(core,x,contextptr),contextptr);
     if (!integration_rational(scale)) return false;
@@ -4008,7 +4145,7 @@ namespace giac {
     }
     // t=tan(u/2) ranges from 0 to sqrt(q). Then 2q-t^2 >= q > 0,
     // so the acos argument stays in (-1,1) and its denominator is positive.
-    res=(2*cst_pi*h-2*h*h-2*cst_pi*atan(sqrt(1+2*q,contextptr),contextptr)+cst_pi*cst_pi/2)/a;
+    res=integration_acos_circle_value(q,contextptr)/a;
     if (reverse) res=-res;
     res=ratnormal(res,contextptr);return true;
   }
@@ -4036,12 +4173,15 @@ namespace giac {
     if(!inverse || !numerator.is_symb_of_sommet(at_plus) || numerator._SYMBptr->feuille.type!=_VECT)return false;
     const vecteur &terms=*numerator._SYMBptr->feuille._VECTptr;
     if(terms.size()<2 || terms.size()>8)return false;
-    gen sum=0,result=0,reference;
+    gen sum=0,result=0,reference,degree=0;
     for(unsigned j=0;j<terms.size();++j){
       gen term=terms[j],c=integration_coefficient(term,x,contextptr),a,b;
-      if(!integration_rational(c) || !term.is_symb_of_sommet(at_atan) ||
-         !is_linear_wrt(term._SYMBptr->feuille,x,a,b,contextptr) || !is_zero(b) ||
-         taille(a,33)>32 || is_inf(a) || !is_zero(im(a,contextptr)) ||
+      if(!integration_rational(c) || !term.is_symb_of_sommet(at_atan))return false;
+      gen argument=term._SYMBptr->feuille;
+      a=integration_coefficient(argument,x,contextptr);unsigned monomial_budget=16;gen multiplier;
+      if(!integration_mellin_monomial(argument,x,multiplier,b,monomial_budget,contextptr) || is_zero(b))return false;
+      a=a*multiplier;if(is_zero(degree))degree=b;else if(degree!=b)return false;
+      if(taille(a,33)>32 || is_inf(a) || !is_zero(im(a,contextptr)) ||
          !is_strictly_positive(a,contextptr))return false;
       if(!logs){
         if(!j)reference=a;
@@ -4054,7 +4194,9 @@ namespace giac {
       sum+=c;
     }
     if(!is_zero(sum))return false;
-    res=cst_pi*result/2;return true;
+    // A negative common power reverses both transformed endpoints; each
+    // log(x) contributes one further factor 1/degree.
+    res=cst_pi*result/(2*abs(degree,contextptr)*pow(degree,int(logs)));return true;
   }
 
   // t=x^q reduces this family to the derivative at s=1 of Gamma(s)*beta(s).
@@ -4199,7 +4341,7 @@ namespace giac {
     gen q=-(n0+d0)/(4*n2);
     if (!is_strictly_positive(q,contextptr) || !is_zero(ratnormal(ratnormal(hi*hi-q,contextptr),contextptr))) return false;
     gen h=atan(sqrt(q,contextptr),contextptr);
-    gen value=2*cst_pi*h-2*h*h-2*cst_pi*atan(sqrt(1+2*q,contextptr),contextptr)+cst_pi*cst_pi/2;
+    gen value=integration_acos_circle_value(q,contextptr);
     res=(sine?cst_pi*h-value:value)/(2*A);
     res=ratnormal(res,contextptr);return true;
   }
@@ -4309,12 +4451,14 @@ namespace giac {
   static bool integrate_exp_difference(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
     if(!is_zero(lo) || hi!=plus_inf || !e.is_symb_of_sommet(at_prod) || e._SYMBptr->feuille.type!=_VECT)return false;
     const vecteur &factors=*e._SYMBptr->feuille._VECTptr;
-    if(factors.size()<2 || factors.size()>3)return false;
-    gen numerator=1,envelope_rate=0,envelope_shift=0;bool envelope=false,have_numerator=false;unsigned inverse=0;
+    if(factors.size()<2 || factors.size()>6)return false;
+    gen numerator=1,envelope_rate=0,envelope_shift=0;bool envelope=false,have_numerator=false;unsigned inverse=0,logs=0;
     for(unsigned i=0;i<factors.size();++i){
       gen base,rate,shift;
       if(integration_power(factors[i],base,-1) && base==x){if(inverse)return false;inverse=1;}
       else if(integration_power(factors[i],base,-2) && base==x){if(inverse)return false;inverse=2;}
+      else if(factors[i].is_symb_of_sommet(at_ln) && factors[i]._SYMBptr->feuille==x){if(++logs>2)return false;}
+      else if(integration_power(factors[i],base,2) && base.is_symb_of_sommet(at_ln) && base._SYMBptr->feuille==x){logs+=2;if(logs>2)return false;}
       else if(integration_exp_affine(factors[i],x,rate,shift,contextptr)){
         if(envelope)return false;envelope=true;envelope_rate=rate;envelope_shift=shift;
       }
@@ -4333,16 +4477,198 @@ namespace giac {
       rates.push_back(rate);coefficients.push_back(c);sum+=c;first+=c*rate;
     }
     if(!is_zero(sum) || (inverse==2 && !is_zero(first)))return false;
-    gen answer=0;
-    for(unsigned i=0;i<rates.size();++i)
-      answer+=coefficients[i]*(inverse==2?rates[i]:gen(-1))*ln(rates[i],contextptr);
+    // Derivatives at the removable Mellin pole: Gamma(s) for 1/x,
+    // Gamma(s-1) for 1/x^2. The cancellation checks above justify all
+    // logarithmic moments without integrating divergent summands.
+    gen S1=0,S2=0,S3=0;
+    for(unsigned i=0;i<rates.size();++i){
+      gen L=ln(rates[i],contextptr),weight=coefficients[i]*(inverse==2?rates[i]:gen(1));
+      S1+=weight*L;if(logs)S2+=weight*L*L;if(logs==2)S3+=weight*L*L*L;
+    }
+    gen gamma=cst_euler_gamma,answer=inverse==2?S1:-S1;
+    if(logs==1)answer=inverse==2?(1-gamma)*S1-S2/2:S2/2+gamma*S1;
+    if(logs==2)answer=inverse==2?S3/3+(gamma-1)*S2+(2-2*gamma+gamma*gamma+cst_pi*cst_pi/6)*S1:
+      -S3/3-gamma*S2-(gamma*gamma+cst_pi*cst_pi/6)*S1;
     res=exp(common_shift,contextptr)*answer;return true;
+  }
+
+  static bool integration_chain_add(vecteur &powers,vecteur &coefficients,const gen &p,const gen &c){
+    // Enforce the same bound after convolution and differentiation as at
+    // leaves; inspecting canonical rational fields cannot expand an expression.
+    const gen &numerator=p.type==_FRAC?p._FRACptr->num:p;
+    if(numerator.type!=_INT_ || numerator.val < -64 || numerator.val>64)return false;
+    if(p.type==_FRAC && (p._FRACptr->den.type!=_INT_ || p._FRACptr->den.val<1 || p._FRACptr->den.val>8))return false;
+    if(is_zero(c))return true;
+    for(unsigned i=0;i<powers.size();++i)if(powers[i]==p){coefficients[i]+=c;return true;}
+    if(powers.size()>=32)return false;powers.push_back(p);coefficients.push_back(c);return true;
+  }
+
+  static bool integration_chain_terms(const gen &g,const gen &x,vecteur &powers,vecteur &coefficients,unsigned &budget,GIAC_CONTEXT){
+    if(!budget)return false;--budget;
+    if(integration_rational(g))return integration_chain_add(powers,coefficients,0,g);
+    if(g==x)return integration_chain_add(powers,coefficients,1,1);
+    if(g.is_symb_of_sommet(at_neg)){
+      vecteur p,c;if(!integration_chain_terms(g._SYMBptr->feuille,x,p,c,budget,contextptr))return false;
+      for(unsigned i=0;i<p.size();++i)if(!integration_chain_add(powers,coefficients,p[i],-c[i]))return false;return true;
+    }
+    gen base=g,power=1;
+    if(integration_outer_power(base,power) && base==x && integration_rational(power)){
+      return integration_chain_add(powers,coefficients,power,1);
+    }
+    if(g.type!=_SYMB || g._SYMBptr->feuille.type!=_VECT)return false;
+    const vecteur &v=*g._SYMBptr->feuille._VECTptr;
+    if(g.is_symb_of_sommet(at_plus)){
+      for(unsigned i=0;i<v.size();++i)if(!integration_chain_terms(v[i],x,powers,coefficients,budget,contextptr))return false;return true;
+    }
+    if(!g.is_symb_of_sommet(at_prod) || v.size()>8)return false;
+    vecteur rp(1,0),rc(1,1);
+    for(unsigned i=0;i<v.size();++i){
+      vecteur p,c,np,nc;if(!integration_chain_terms(v[i],x,p,c,budget,contextptr) || p.size()*rp.size()>64)return false;
+      for(unsigned j=0;j<p.size();++j)for(unsigned k=0;k<rp.size();++k)
+        if(!integration_chain_add(np,nc,p[j]+rp[k],c[j]*rc[k]))return false;
+      rp.swap(np);rc.swap(nc);
+    }
+    for(unsigned i=0;i<rp.size();++i)if(!integration_chain_add(powers,coefficients,rp[i],rc[i]))return false;return true;
+  }
+
+  static bool integration_chain_endpoint(const vecteur &powers,const vecteur &coefficients,const gen &bound,gen &value,GIAC_CONTEXT){
+    if(bound!=plus_inf && (!integration_rational(bound) || is_strictly_positive(-bound,contextptr)))return false;
+    if(!is_zero(bound) && bound!=plus_inf){
+      gen u=0;for(unsigned i=0;i<powers.size();++i)u+=coefficients[i]*pow(bound,powers[i],contextptr);
+      value=erf(u,contextptr);return true;
+    }
+    bool found=false;gen dominant=0,coefficient=0,constant=0;
+    for(unsigned i=0;i<powers.size();++i){
+      if(is_zero(coefficients[i]))continue;
+      if(is_zero(powers[i]))constant+=coefficients[i];
+      if(!found || (bound==plus_inf?is_strictly_greater(powers[i],dominant,contextptr):is_strictly_greater(dominant,powers[i],contextptr))){dominant=powers[i];coefficient=coefficients[i];found=true;}
+    }
+    if(found && (bound==plus_inf?is_strictly_positive(dominant,contextptr):is_strictly_positive(-dominant,contextptr)))value=is_strictly_positive(coefficient,contextptr)?1:-1;
+    else value=erf(constant,contextptr);
+    return true;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_erf_chain(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if(taille(e,129)>128)return false;
+    gen f=e,outside=integration_coefficient(f,x,contextptr);
+    if(!integration_rational(outside) || !f.is_symb_of_sommet(at_prod) || f._SYMBptr->feuille.type!=_VECT)return false;
+    if((!is_zero(lo) && (!integration_rational(lo) || !is_strictly_positive(lo,contextptr))) ||
+       (hi!=plus_inf && (!integration_rational(hi) || !is_strictly_greater(hi,lo,contextptr))))return false;
+    const vecteur &v=*f._SYMBptr->feuille._VECTptr;if(v.size()>8)return false;
+    gen u,exponent,weight=1;unsigned order=0;bool gaussian=false,found=false;
+    for(unsigned i=0;i<v.size();++i){
+      if(v[i].is_symb_of_sommet(at_exp)){if(gaussian)return false;gaussian=true;exponent=v[i]._SYMBptr->feuille;continue;}
+      gen base=v[i],power=1;
+      if(base.is_symb_of_sommet(at_pow) && base._SYMBptr->feuille.type==_VECT && base._SYMBptr->feuille._VECTptr->size()==2){power=base._SYMBptr->feuille[1];base=gen(base._SYMBptr->feuille[0]);}
+      if(base.is_symb_of_sommet(at_erf)){
+        if(found || power.type!=_INT_ || power.val<1 || power.val>16)return false;
+        found=true;order=power.val;u=base._SYMBptr->feuille;
+      }
+      else weight=weight*v[i];
+    }
+    if(!gaussian || !found)return false;
+    vecteur up,uc,wp,wc;unsigned budget=64;
+    if(!integration_chain_terms(u,x,up,uc,budget,contextptr) || up.size()>4 || !integration_chain_terms(weight,x,wp,wc,budget,contextptr))return false;
+    // Match exp(-u^2) structurally first, then allow its bounded expanded form.
+    gen square=exponent;gen scale=integration_coefficient(square,x,contextptr),inside;
+    bool matched=scale==-1 && integration_power(square,inside,2) && inside==u;
+    if(!matched){
+      vecteur ep,ec;if(!integration_chain_terms(exponent,x,ep,ec,budget,contextptr))return false;
+      for(unsigned i=0;i<up.size();++i)for(unsigned j=0;j<up.size();++j)
+        if(!integration_chain_add(ep,ec,up[i]+up[j],uc[i]*uc[j]))return false;
+      for(unsigned i=0;i<ec.size();++i)if(!is_zero(ec[i]))return false;
+    }
+    vecteur dp,dc;
+    for(unsigned i=0;i<up.size();++i)if(!integration_chain_add(dp,dc,up[i]-1,uc[i]*up[i]))return false;
+    gen multiplier=0;bool ratio=false;
+    for(unsigned i=0;i<dp.size();++i){
+      if(is_zero(dc[i]))continue;gen w=0;
+      for(unsigned j=0;j<wp.size();++j)if(wp[j]==dp[i])w+=wc[j];
+      if(!ratio){multiplier=w/dc[i];ratio=true;}
+      else if(w!=multiplier*dc[i])return false;
+    }
+    if(!ratio || is_zero(multiplier))return false;
+    for(unsigned j=0;j<wp.size();++j){gen d=0;for(unsigned i=0;i<dp.size();++i)if(wp[j]==dp[i])d+=dc[i];if(wc[j]!=multiplier*d)return false;}
+    gen a,b;if(!integration_chain_endpoint(up,uc,lo,a,contextptr) || !integration_chain_endpoint(up,uc,hi,b,contextptr))return false;
+    res=outside*multiplier*sqrt(cst_pi,contextptr)*(pow(b,int(order+1),contextptr)-pow(a,int(order+1),contextptr))/gen(2*int(order+1));return true;
+  }
+
+  static bool integration_rectangle_term(gen e,const gen &x,gen &side,gen &radial,gen &common,gen &factor,GIAC_CONTEXT){
+    gen coefficient=integration_coefficient(e,x,contextptr);
+    if(!integration_rational(coefficient) || !e.is_symb_of_sommet(at_prod) || e._SYMBptr->feuille.type!=_VECT)return false;
+    const vecteur &v=*e._SYMBptr->feuille._VECTptr;if(v.size()!=3)return false;
+    gen a=0,b=0,ra=0,rb=0,ta=0,tb=0;bool root=false,den=false,trig=false;
+    for(unsigned i=0;i<v.size();++i){
+      gen base,radical;
+      if(v[i].is_symb_of_sommet(at_atan)){
+        if(trig)return false;trig=true;base=v[i]._SYMBptr->feuille;side=integration_coefficient(base,x,contextptr);
+        if(!integration_rational(side) || !integration_power(base,radical,-1) || !integration_square_root(radical,base) || !integration_quadratic(base,x,ta,tb,contextptr))return false;
+      }
+      else {
+        if(!integration_power(v[i],base,-1))return false;
+        if(integration_square_root(base,radical)){
+          if(root || !integration_quadratic(radical,x,ra,rb,contextptr))return false;root=true;
+        }
+        else {if(den || !integration_quadratic(base,x,a,b,contextptr))return false;den=true;}
+      }
+    }
+    if(!root || !den || !trig || ta!=ra || tb!=rb || !is_strictly_positive(ra,contextptr) || !is_strictly_positive(rb,contextptr) || !is_strictly_positive(side,contextptr) || is_zero(a) || 2*b*ra!=a*rb)return false;
+    radial=ra;common=rb/2;factor=coefficient*sqrt(ra,contextptr)/a;return true;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_atan_rectangle_pair(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if(!angle_radian(contextptr) || !is_zero(lo) || !integration_rational(hi) || !is_strictly_positive(hi,contextptr) || !e.is_symb_of_sommet(at_plus) || e._SYMBptr->feuille.type!=_VECT || e._SYMBptr->feuille._VECTptr->size()!=2)return false;
+    gen s1,r1,c1,f1,s2,r2,c2,f2;
+    if(!integration_rectangle_term(e._SYMBptr->feuille[0],x,s1,r1,c1,f1,contextptr) || !integration_rectangle_term(e._SYMBptr->feuille[1],x,s2,r2,c2,f2,contextptr) || c1!=c2 || s1*s1!=r2*hi*hi || s2*s2!=r1*hi*hi || !is_zero(ratnormal(f1-f2,contextptr)))return false;
+    res=f1*atan(s1/sqrt(c1,contextptr),contextptr)*atan(s2/sqrt(c1,contextptr),contextptr)/c1;return true;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool integrate_gaussian_erf_exp(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    if(lo!=minus_inf || hi!=plus_inf || !e.is_symb_of_sommet(at_exp) || taille(e,97)>96)return false;
+    const gen &exponent=e._SYMBptr->feuille;
+    const vecteur *terms=exponent.is_symb_of_sommet(at_plus) && exponent._SYMBptr->feuille.type==_VECT?exponent._SYMBptr->feuille._VECTptr:0;
+    unsigned count=terms?terms->size():1;if(count>8)return false;
+    gen a=0,b=0,c=0,remainder=0;bool found=false;
+    for(unsigned i=0;i<count;++i){
+      gen t=terms?(*terms)[i]:exponent;
+      gen coefficient=integration_syntax(integration_coefficient(t,x,contextptr),contextptr);
+      if(t.is_symb_of_sommet(at_erf)){
+        if(found || !integration_rational(coefficient) || !is_linear_wrt(t._SYMBptr->feuille,x,a,b,contextptr) || !integration_rational(a) || !integration_rational(b) || is_zero(a))return false;
+        c=coefficient;found=true;
+      }
+      else remainder+=coefficient*t;
+    }
+    gen q,l,k;
+    if(!integration_gaussian_quadratic(remainder,x,q,l,k,contextptr) || !is_strictly_positive(-q,contextptr))return false;
+    if(!found){
+      // The c=0 limit contains no erf after arithmetic normalization.
+      res=exp(k-l*l/(4*q),contextptr)*sqrt(cst_pi/(-q),contextptr);return true;
+    }
+    if(q!=-a*a || l!=-2*a*b)return false;
+    gen scale=exp(k+b*b,contextptr)*sqrt(cst_pi,contextptr)/abs(a,contextptr);
+    res=is_zero(c)?scale:scale*sinh(c,contextptr)/c;return true;
   }
 
 #if defined(__GNUC__) && !defined(__clang__)
   __attribute__((noinline,optimize("Os")))
 #endif
   static bool integrate_compact_definite(const gen &e,const gen &x,const gen &lo,const gen &hi,gen &res,GIAC_CONTEXT){
+    // Whole-expression shortcuts must precede any linear sum decomposition.
+    if (integrate_gaussian_erf_exp(e,x,lo,hi,res,contextptr) ||
+        integrate_beta_affine_log(e,x,lo,hi,res,contextptr) ||
+        integrate_acos_monomial_pullback(e,x,lo,hi,res,contextptr) ||
+        integrate_erf_chain(e,x,lo,hi,res,contextptr) ||
+        integrate_atan_rectangle_pair(e,x,lo,hi,res,contextptr)) return true;
+
     if (integrate_reciprocal_trig_period(e,x,lo,hi,res,contextptr)) return true;
     if (integrate_exp_difference(e,x,lo,hi,res,contextptr)) return true;
     if (integrate_mellin_two_binomials(e,x,lo,hi,res,contextptr)) return true;

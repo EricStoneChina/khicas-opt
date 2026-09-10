@@ -12,7 +12,7 @@ for sig in ('  void decompose_prod(', '  gen extract_cst(', '  static bool integ
     text+=function(s,sig)
 if args.helpers:text+=args.helpers.read_text()
 else:
-    for sig in ('  static bool integration_affine_cosine(', '  static bool integrate_acos_circle('):text+=function(s,sig)
+    for sig in ('  static gen integration_acos_circle_value(', '  static bool integration_affine_cosine(', '  static bool integrate_acos_circle('):text+=function(s,sig)
 text+='''bool user_arc_rule(const gen &f,const gen &x,const gen &lo,const gen &hi,gen &r,GIAC_CONTEXT){
   return integrate_acos_circle(integration_syntax(f,contextptr),x,lo,hi,r,contextptr);
 }\n}\n'''
