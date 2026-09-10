@@ -30,6 +30,8 @@ function To-MarkedGB18030([string]$text) {
         foreach ($b in $cb) {
             if ($b -ge 0x80) {
                 [void]$sb.Append('""'); [void]$sb.Append('\x'); [void]$sb.Append($b.ToString('x2')); [void]$sb.Append('""')
+            } elseif ($b -eq 10) { [void]$sb.Append('\n')
+            } elseif ($b -eq 13) { [void]$sb.Append('\r')
             } elseif ($b -eq 0x22) { [void]$sb.Append('\"')
             } elseif ($b -eq 0x5C) { [void]$sb.Append('\\')
             } else { [void]$sb.Append([char]$b) }
