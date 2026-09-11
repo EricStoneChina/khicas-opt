@@ -77,6 +77,7 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"param2polar([X,Y],t,[r,theta])", 0, "Polar equation; omit [r,theta] for a polar pair. Retain domains.", "[cos(t),sin(t)],t,[r,theta]", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
   {"polar2cart(eq,[r,theta],[x,y])", 0, "Canonical polar chart: r>=0, principal angle; check origin separately.", "r=2,[r,theta],[x,y]", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
   {"polar2param(eq,[r,theta],t)", 0, "Polar to Cartesian parametric branches (radians).", "r=1+cos(theta),[r,theta],t", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
+  {"Li2(x)", 0, "Dilogarithm Li2(x). Use evalf for a numeric value; the principal complex branch is used.", "Li2(1/2)", "evalf(Li2(2))", CAT_CATEGORY_CALCULUS | (CAT_CATEGORY_COMPLEXNUM << 8)},
   {" loop for", "for ", "Defined loop.", "#\nfor ", 0, CAT_CATEGORY_PROG},
   {" loop in list", "for in", "Loop on all elements of a list.", "#\nfor in", 0, CAT_CATEGORY_PROG},
   {" loop while", "while ", "Undefined loop.", "#\nwhile ", 0, CAT_CATEGORY_PROG},
