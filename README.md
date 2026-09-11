@@ -18,7 +18,7 @@ The project name is **Khicas Opt**. It is a team project based on KhiCAS.
 - **Fadouse** works on the kernel and function implementation. This includes symbolic calculation, integrals, derivatives, domains, and resource bounds.
 - **The project team** maintains build configuration, command Help, the user interface, the website, CI, releases, and real-device validation.
 
-Both areas are maintained as one Khicas Opt project. Fadouse's work is part of the team project; it is not a separate product edition.
+Both areas are maintained as one Khicas Opt project. Fadouse's work is integrated into the shared Khicas Opt codebase.
 
 ## Supported devices
 
@@ -78,4 +78,5 @@ Khicas Opt is based on [KhiCAS](https://www-fourier.univ-grenoble-alpes.fr/~pari
 ## Contributing
 
 Please keep changes focused and explain the user-visible effect. Kernel and function changes should include a small regression case when possible. Build, Help, interface, and website changes should be checked by the relevant GitHub Actions workflow. Test calculator files on an fx-CG50 or a compatible emulator before a release.
+
 
