@@ -3,95 +3,157 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="KhiCAS ZH：面向 Casio fx-CG50 的中文计算机代数系统。">
-  <meta name="theme-color" content="#0b1733">
-  <title>KhiCAS ZH · fx-CG50 中文计算</title>
+  <meta name="description" content="KhiCAS 2026a：面向 Casio fx-CG50 的 EN/ZH 双版本符号计算发行版。">
+  <meta name="theme-color" content="#10151f">
+  <title>KhiCAS 2026a · EN / ZH for fx-CG50</title>
   <link rel="icon" href="assets/khicasio.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="KhiCAS ZH 首页">
-      <img src="assets/khicasio.png" alt="KhiCAS ZH 图标">
-      <span>KhiCAS <b>ZH</b></span>
-    </a>
-    <nav aria-label="主导航">
-      <a href="#features">功能</a>
-      <a href="#install">安装</a>
-      <a href="#examples">示例</a>
-      <a href="#about">关于</a>
-      <a href="https://github.com/EricStoneChina/khicas-opt" target="_blank" rel="noreferrer">源码 ↗</a>
-    </nav>
-  </header>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="KhiCAS 2026a 首页">
+        <img src="assets/khicasio.png" alt="">
+        <span>KhiCAS <b>2026a</b></span>
+      </a>
+      <nav class="main-nav" aria-label="主导航">
+        <a href="#packages">双版本</a>
+        <a href="#capabilities">能力</a>
+        <a href="#commands">命令帮助</a>
+        <a href="#install">安装</a>
+      </nav>
+      <a class="nav-action" href="https://github.com/KCISEastCampus/khicas-opt" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
+    </header>
 
-  <main id="top">
-    <section class="hero wrap">
-      <div class="hero-copy">
-        <p class="eyebrow">KhiCAS ZH · v1.8.0-zh.3</p>
-        <h1>把符号计算<br><em>带到中文界面。</em></h1>
-        <p class="lead">KhiCAS ZH 是运行在 Casio fx-CG50 上的中文 KhiCAS。它保留 Giac/Xcas 的符号计算能力，加入中文界面、中文帮助和可直接执行的命令示例。</p>
-        <div class="actions">
-          <a class="button primary" href="https://github.com/EricStoneChina/khicas-opt/actions" target="_blank" rel="noreferrer">下载最新构建 <span>↗</span></a>
-          <a class="button quiet" href="#install">查看安装方法</a>
+    <main id="top">
+      <section class="hero section-wrap">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="pulse"></span> Official 2026a baseline · fx-CG50</p>
+          <h1>同一套数学内核，<br><span>两个可安装版本。</span></h1>
+          <p class="hero-lead">KhiCAS 2026a 把官方数学内核、方程转换和积分优化整理成 EN / ZH 两个发行包。选择你熟悉的语言，保持相同的计算能力。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#packages">选择发行版 <span>↓</span></a>
+            <a class="button button-secondary" href="https://github.com/KCISEastCampus/khicas-opt/releases" target="_blank" rel="noreferrer">查看 Releases <span>↗</span></a>
+          </div>
+          <div class="hero-meta" aria-label="项目属性">
+            <span>Casio fx-CG50</span><i></i><span>GPL v2</span><i></i><span>EN / 中文</span>
+          </div>
         </div>
-        <p class="build-note"><span class="dot"></span>面向 Casio fx-CG50 · GPL v2 · 开源项目</p>
-      </div>
-      <div class="hero-card" aria-label="KhiCAS ZH 计算示例">
-        <div class="card-top"><span>中文帮助</span><span>fx-CG50</span></div>
-        <div class="formula">∫ sin(x) dx</div>
-        <div class="result">= -cos(x) + C</div>
-        <div class="card-caption">integrate(sin(x),x)</div>
-        <div class="card-lines"><i></i><i></i><i></i></div>
-      </div>
-    </section>
-
-    <section id="about" class="section about-section">
-      <div class="wrap">
-        <div class="section-heading"><p class="eyebrow">关于 KhiCAS ZH</p><h2>为中文用户整理的符号计算工具。</h2></div>
-        <div class="about-grid">
-          <div class="about-card about-intro"><span class="release-badge">v1.8.0-zh.3</span><h3>KhiCAS ZH</h3><p>在 fx-CG50 上使用中文界面、中文帮助和 Function Catalog。它基于 KhiCAS、Giac 与 Xcas，覆盖代数、微积分、矩阵、统计和绘图。</p><p class="about-meta">由 EricStoneChina 构建 · 2026</p></div>
-          <div class="about-card"><h3>项目链接</h3><a href="https://github.com/EricStoneChina/khicas-opt/releases" target="_blank" rel="noreferrer">发行版与下载 <span>↗</span></a><a href="https://github.com/EricStoneChina/khicas-opt" target="_blank" rel="noreferrer">GitHub 源码 <span>↗</span></a><a href="https://github.com/EricStoneChina/khicas-opt/issues" target="_blank" rel="noreferrer">反馈问题 <span>↗</span></a><p class="about-meta">GPL version 2</p></div>
+        <div class="terminal-card" aria-label="KhiCAS 命令帮助示例">
+          <div class="terminal-top"><span><i></i><i></i><i></i></span><span>COMMAND HELP / 2026a</span></div>
+          <div class="terminal-body">
+            <p class="terminal-label">NEW IN 2026A</p>
+            <p class="terminal-command">cart2polar(x²+y²=4,[x,y],[r,θ])</p>
+            <p class="terminal-result">→ 极坐标方程 · radians</p>
+            <div class="terminal-rule"></div>
+            <p class="terminal-small">中文帮助含可执行示例</p>
+            <div class="terminal-tags"><span>Li2</span><span>param2cart</span><span>polar2param</span></div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="features" class="section wrap">
-      <div class="section-heading"><p class="eyebrow">为计算而生</p><h2>熟悉的能力，清晰的中文。</h2></div>
-      <div class="feature-grid">
-        <article><span class="feature-icon">中</span><h3>中文界面与帮助</h3><p>菜单、分类、About 和帮助说明使用中文，GB18030 字库直接由计算器系统渲染。</p></article>
-        <article><span class="feature-icon">∑</span><h3>完整符号计算</h3><p>支持因式分解、积分、微分、方程、矩阵、概率统计和绘图等常用命令。</p></article>
-        <article><span class="feature-icon">▶</span><h3>示例可以直接执行</h3><p>Function Catalog 提供完整参数形式，F2/F3 可直接插入示例，减少查手册的来回切换。</p></article>
-      </div>
-    </section>
+      <section class="signal-strip section-wrap" aria-label="发行版状态">
+        <div><strong>2026a</strong><span>官方源码基线</span></div>
+        <div><strong>2</strong><span>成对安装包</span></div>
+        <div><strong>2082</strong><span>Command Help 条目</span></div>
+        <div><strong>155</strong><span>中文维护翻译</span></div>
+      </section>
 
-    <section id="install" class="section install-section">
-      <div class="wrap install-grid">
-        <div><p class="eyebrow">三分钟开始</p><h2>安装 KhiCAS ZH</h2><p class="muted">中文版主程序和第二段程序必须来自同一次构建，并且需要成对复制到计算器存储根目录。</p></div>
-        <ol class="steps">
-          <li><b>下载</b><span>打开 Actions 的 <strong>khicaszh-chinese</strong>，下载最新构建产物。</span></li>
-          <li><b>清理</b><span>删除计算器根目录中旧的 <code>khicas*</code> 文件。</span></li>
-          <li><b>复制</b><span>将 <code>khicaszh.g3a</code> 和 <code>khicaszh.ac2</code> 一起复制到根目录。</span></li>
-          <li><b>运行</b><span>从主菜单启动 KhiCAS ZH；出现错误时先检查两个文件是否配套。</span></li>
-        </ol>
-      </div>
-    </section>
+      <section id="packages" class="section section-wrap">
+        <div class="section-intro">
+          <p class="eyebrow">Choose your build</p>
+          <h2>语言不同，数学能力相同。</h2>
+          <p>每个版本都由同一份 2026a CAS 源码构建。下载对应的一对文件，不要混用不同构建的 G3A 和 AC2。</p>
+        </div>
+        <div class="package-grid">
+          <article class="package-card package-en">
+            <div class="package-head"><span class="language-mark">EN</span><span class="package-status">English release</span></div>
+            <h3>KhiCAS EN</h3>
+            <p>英文界面、英文 Function Catalog 和英文 Command Help。适合沿用官方资料与 Xcas 文档的工作流。</p>
+            <div class="file-pair"><code>khicas50.g3a</code><code>khicas50.ac2</code></div>
+            <ul class="package-list"><li>English UI and help</li><li>Official 2026a baseline</li><li>Optimized cross-build</li></ul>
+            <div class="card-actions"><a class="text-link" href="https://github.com/KCISEastCampus/khicas-opt/releases" target="_blank" rel="noreferrer">Releases <span>↗</span></a><a class="text-link" href="https://github.com/KCISEastCampus/khicas-opt/actions" target="_blank" rel="noreferrer">Actions <span>↗</span></a></div>
+          </article>
+          <article class="package-card package-zh">
+            <div class="package-head"><span class="language-mark">ZH</span><span class="package-status">中文发行版</span></div>
+            <h3>KhiCAS ZH</h3>
+            <p>中文 Function Catalog、中文 Command Help 和 GB18030 显示支持。命令示例可以直接插入计算器。</p>
+            <div class="file-pair"><code>khicaszh.g3a</code><code>khicaszh.ac2</code></div>
+            <ul class="package-list"><li>中文目录与帮助</li><li>长中文内容自动换行</li><li>与 EN 共用数学内核</li></ul>
+            <div class="card-actions"><a class="text-link" href="https://github.com/KCISEastCampus/khicas-opt/releases" target="_blank" rel="noreferrer">发行版 <span>↗</span></a><a class="text-link" href="https://github.com/KCISEastCampus/khicas-opt/actions" target="_blank" rel="noreferrer">构建产物 <span>↗</span></a></div>
+          </article>
+        </div>
+      </section>
 
-    <section id="examples" class="section wrap">
-      <div class="section-heading"><p class="eyebrow">从一个命令开始</p><h2>帮助里的例子，拿来就算。</h2></div>
-      <div class="example-grid">
-        <div class="code-card"><div class="code-label">代数</div><pre><span>factor</span>(x^4-1)
-<span>→</span> (x-1)(x+1)(x²+1)</pre><p>因式分解多项式</p></div>
-        <div class="code-card"><div class="code-label">矩阵</div><pre><span>det</span>([[1,2],[3,4]])
-<span>→</span> -2</pre><p>计算方阵行列式</p></div>
-        <div class="code-card"><div class="code-label">统计</div><pre><span>mean</span>([1,2,3,4,5])
-<span>→</span> 3</pre><p>求列表算术平均值</p></div>
-      </div>
-    </section>
+      <section id="capabilities" class="section section-dark">
+        <div class="section-wrap">
+          <div class="section-intro split-intro">
+            <div><p class="eyebrow">What changed</p><h2>为 2026a 整理的计算体验。</h2></div>
+            <p>这次网站不再只介绍中文界面，而是把数学能力、帮助系统和发行流程放在同一个项目视图里。</p>
+          </div>
+          <div class="capability-grid">
+            <article class="capability-card"><span class="capability-number">01</span><h3>六向方程转换</h3><p>笛卡尔、参数和极坐标之间互相转换，并在帮助中说明分支、定义域和弧度约定。</p><span class="capability-code">cart2param · polar2cart</span></article>
+            <article class="capability-card"><span class="capability-number">02</span><h3>主值与积分优化</h3><p>保留复参数和主值分支信息，优化积分、化简、求解与矩阵路径的资源使用。</p><span class="capability-code">Li2 · integrate · simplify</span></article>
+            <article class="capability-card"><span class="capability-number">03</span><h3>帮助就是工作流</h3><p>每个条目包含语法、相关命令和可以直接执行的示例，中文内容通过 GB18030 正确显示。</p><span class="capability-code">F2 / F3 · Function Catalog</span></article>
+          </div>
+        </div>
+      </section>
 
-    <section class="cta wrap"><div><p class="eyebrow">开放构建</p><h2>一起让计算器更好用。</h2><p>反馈中文显示、目录命令或真机兼容性问题，帮助项目继续完善。</p></div><a class="button primary" href="https://github.com/EricStoneChina/khicas-opt/issues" target="_blank" rel="noreferrer">提交反馈 <span>↗</span></a></section>
-  </main>
+      <section id="commands" class="section section-wrap">
+        <div class="section-intro command-intro">
+          <div><p class="eyebrow">Command Help</p><h2>先看命令，再开始计算。</h2><p>搜索 2026a 重点命令，查看中英文说明和可复制示例。</p></div>
+          <label class="search-box"><span aria-hidden="true">⌕</span><input id="command-search" type="search" placeholder="搜索命令或用途" autocomplete="off"></label>
+        </div>
+        <div class="command-filters" role="group" aria-label="命令语言筛选">
+          <button class="filter-button is-active" data-filter="all" type="button">全部</button>
+          <button class="filter-button" data-filter="zh" type="button">中文说明</button>
+          <button class="filter-button" data-filter="en" type="button">English</button>
+        </div>
+        <div class="command-grid" id="command-grid">
+          <article class="command-card" data-command="Li2" data-language="zh en"><div class="command-top"><code>Li2(z)</code><span>calculus</span></div><h3>二重对数 / Dilogarithm</h3><p>主值分支上的二重对数函数，支持实数和复数参数。</p><button class="copy-command" type="button" data-copy="Li2(1/2)">复制示例 <span>Li2(1/2)</span></button></article>
+          <article class="command-card" data-command="cart2param" data-language="zh en"><div class="command-top"><code>cart2param</code><span>conversion</span></div><h3>笛卡尔 → 参数</h3><p>将笛卡尔方程转换为参数分支，并保留实参数定义域。</p><button class="copy-command" type="button" data-copy="cart2param(y=x^2,[x,y],t)">复制示例 <span>cart2param(...)</span></button></article>
+          <article class="command-card" data-command="cart2polar" data-language="zh en"><div class="command-top"><code>cart2polar</code><span>conversion</span></div><h3>笛卡尔 → 极坐标</h3><p>将笛卡尔方程转换为弧度制极坐标方程。</p><button class="copy-command" type="button" data-copy="cart2polar(x^2+y^2=4,[x,y],[r,theta])">复制示例 <span>cart2polar(...)</span></button></article>
+          <article class="command-card" data-command="param2cart" data-language="zh en"><div class="command-top"><code>param2cart</code><span>conversion</span></div><h3>参数 → 笛卡尔</h3><p>消去参数并返回笛卡尔方程，同时保留定义域排除项。</p><button class="copy-command" type="button" data-copy="param2cart([cos(t),sin(t)],t,[x,y])">复制示例 <span>param2cart(...)</span></button></article>
+          <article class="command-card" data-command="param2polar" data-language="zh en"><div class="command-top"><code>param2polar</code><span>conversion</span></div><h3>参数 → 极坐标</h3><p>将参数曲线转换为极坐标；省略坐标列表时返回极坐标对。</p><button class="copy-command" type="button" data-copy="param2polar([cos(t),sin(t)],t,[r,theta])">复制示例 <span>param2polar(...)</span></button></article>
+          <article class="command-card" data-command="polar2cart" data-language="zh en"><div class="command-top"><code>polar2cart</code><span>conversion</span></div><h3>极坐标 → 笛卡尔</h3><p>使用 r≥0 和主值角度转换，原点需要单独检查。</p><button class="copy-command" type="button" data-copy="polar2cart(r=2,[r,theta],[x,y])">复制示例 <span>polar2cart(...)</span></button></article>
+          <article class="command-card" data-command="polar2param" data-language="zh en"><div class="command-top"><code>polar2param</code><span>conversion</span></div><h3>极坐标 → 参数</h3><p>把极坐标方程转换为弧度制笛卡尔参数分支。</p><button class="copy-command" type="button" data-copy="polar2param(r=1+cos(theta),[r,theta],t)">复制示例 <span>polar2param(...)</span></button></article>
+        </div>
+        <p class="empty-state" id="empty-state" hidden>没有找到匹配的命令。</p>
+      </section>
 
-  <footer class="footer wrap"><span>© 2026 EricStoneChina · KhiCAS ZH v1.8.0-zh.3</span><span><a href="https://github.com/EricStoneChina/khicas-opt" target="_blank" rel="noreferrer">GitHub</a> · GPL v2</span></footer>
+      <section id="install" class="section install-section">
+        <div class="section-wrap install-layout">
+          <div class="section-intro"><p class="eyebrow">Install once</p><h2>两个文件，必须成对。</h2><p>从同一次 Actions 构建中下载对应语言的 G3A 和 AC2，然后复制到 fx-CG50 存储根目录。</p><a class="text-link" href="https://github.com/KCISEastCampus/khicas-opt/actions" target="_blank" rel="noreferrer">打开最新 Actions <span>↗</span></a></div>
+          <ol class="install-steps">
+            <li><strong>下载</strong><span>选择 <code>khicas-en-baseline</code> 或 <code>khicas-zh</code> artifact。</span></li>
+            <li><strong>配对</strong><span>EN 使用 <code>khicas50.g3a</code> + <code>khicas50.ac2</code>；ZH 使用 <code>khicaszh.g3a</code> + <code>khicaszh.ac2</code>。</span></li>
+            <li><strong>复制</strong><span>把同一包的两个文件复制到计算器存储根目录，覆盖旧版本前先备份。</span></li>
+            <li><strong>启动</strong><span>从主菜单运行对应语言版本；如果出现加载错误，先检查两个文件是否来自同一次构建。</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section section-wrap resources">
+        <div class="section-intro"><p class="eyebrow">Open project</p><h2>从源码、文档到构建产物。</h2></div>
+        <div class="resource-grid">
+          <a class="resource-card" href="https://github.com/KCISEastCampus/khicas-opt/blob/main/README.md" target="_blank" rel="noreferrer"><span>01</span><strong>开发文档</strong><small>源码布局、工具链与测试</small><b>↗</b></a>
+          <a class="resource-card" href="https://github.com/KCISEastCampus/khicas-opt/blob/main/docs/CONVERSIONS.md" target="_blank" rel="noreferrer"><span>02</span><strong>方程转换</strong><small>分支、定义域与示例</small><b>↗</b></a>
+          <a class="resource-card" href="https://github.com/KCISEastCampus/khicas-opt/releases" target="_blank" rel="noreferrer"><span>03</span><strong>Releases</strong><small>正式版本与变更记录</small><b>↗</b></a>
+          <a class="resource-card" href="https://github.com/KCISEastCampus/khicas-opt/issues" target="_blank" rel="noreferrer"><span>04</span><strong>反馈问题</strong><small>报告乱码、兼容性或命令问题</small><b>↗</b></a>
+        </div>
+      </section>
+
+      <section class="closing section-wrap">
+        <div><p class="eyebrow">Built in the open</p><h2>让计算器上的数学工具，<br>跟上新的内核。</h2></div>
+        <a class="button button-primary" href="https://github.com/KCISEastCampus/khicas-opt" target="_blank" rel="noreferrer">查看源码 <span>↗</span></a>
+      </section>
+    </main>
+
+    <footer class="footer section-wrap">
+      <span>KhiCAS 2026a · EN / ZH · GPL v2</span>
+      <span>基于官方 2026a 源码基线，由 KCISEastCampus 社区维护</span>
+    </footer>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
