@@ -1,4 +1,4 @@
-name: Publish KhiCAS ZH website
+name: Publish Khicas Optimisation website
 
 on:
   push:
@@ -37,3 +37,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+

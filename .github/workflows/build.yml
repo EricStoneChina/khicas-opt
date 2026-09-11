@@ -1,4 +1,4 @@
-name: Build KhiCAS
+name: Build Khicas Optimisation
 
 # 编译方式说明:
 #   两种方式都支持 ——
@@ -71,3 +71,4 @@ jobs:
             giacbf/khicaszh.g3a
             giacbf/khicaszh.ac2
           if-no-files-found: error
+
