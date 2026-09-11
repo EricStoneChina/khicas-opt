@@ -1,0 +1,14 @@
+// Run in radian mode on the optimized firmware.
+// Compare equations mathematically; coefficient scale and branch order may differ.
+purge(x,y,t,r,theta);
+cart2param(y=x^2,[x,y],t);
+cart2param(x=3,[x,y],t);
+cart2param(x*y=0,[x,y],t);
+cart2param(x^2+y^2=4,[x,y],t);
+param2cart([t,t^2],t,[x,y]);
+param2cart([cos(t),sin(t)],t,[x,y]);
+cart2polar(x^2+y^2=4,[x,y],[r,theta]);
+polar2cart(r=2,[r,theta],[x,y]);
+polar2param(r=1+cos(theta),[r,theta],t);
+param2polar([cos(t),sin(t)],t,[r,theta]);
+param2polar([-3,4],t);

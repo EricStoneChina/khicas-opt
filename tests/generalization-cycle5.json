@@ -1,0 +1,135 @@
+{
+  "sources": {
+    "derivations": "docs/GENERALIZATION-CYCLE5.md",
+    "generator": "tests/generate-coverage-cycle5.py"
+  },
+  "notes": "Independent eight-case audit after f8af451, checkpoint/integration-cycle4-2026a. Frozen before engine evaluation. All ordinary integrals converge and have proved exact references; no PV or unknown-closed-form cases.",
+  "summary": {
+    "cases": 8,
+    "definite": 8,
+    "indefinite": 0,
+    "by_answer_class": {
+      "elementary-closed-form": 6,
+      "special-function-closed-form": 2
+    }
+  },
+  "cases": [
+    {
+      "id": "C5-gaussian-erf-exponential-01",
+      "family": "gaussian-erf-exponential",
+      "intent": "structural-composition",
+      "domain": "real line; Gaussian decay at both ends",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-x^2+erf(x))",
+      "expected": "sqrt(pi)*sinh(1)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C5-beta-affine-logit-01",
+      "family": "beta-affine-logit",
+      "intent": "structural-composition",
+      "domain": "-1<x<1; positive logarithm argument and integrable radical/log endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "ln((1+x)/(1-x))^2/sqrt(1-x^2)",
+      "expected": "pi^3",
+      "bounds": [
+        "-1",
+        "1"
+      ]
+    },
+    {
+      "id": "C5-frullani-root-log-01",
+      "family": "frullani-root-log",
+      "intent": "structural-composition",
+      "domain": "x>0; ordinary absolute convergence",
+      "answer_class": "elementary-closed-form",
+      "f": "(atan(2*sqrt(x))-atan(3*sqrt(x)))*ln(x)/x",
+      "expected": "pi*(ln(3)^2-ln(2)^2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "stable_f": "-atan(sqrt(x)/(1+6*x))*ln(x)/x"
+      }
+    },
+    {
+      "id": "C5-loglog-frullani-second-01",
+      "family": "loglog-frullani-second",
+      "intent": "structural-composition",
+      "domain": "0<x<1; both logarithms real; integrable endpoint singularities",
+      "answer_class": "special-function-closed-form",
+      "f": "(x-x^3)*ln(-ln(x))^2/(-ln(x))",
+      "expected": "7*ln(2)^3/3+3*euler_gamma*ln(2)^2+(euler_gamma^2+pi^2/6)*ln(2)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "verification": {
+        "alternate_f": "2*exp(-3*x)*sinh(x)*ln(x)^2/x",
+        "alternate_bounds": [
+          "0",
+          "+infinity"
+        ]
+      }
+    },
+    {
+      "id": "C5-laplace-second-log-01",
+      "family": "laplace-second-log",
+      "intent": "structural-composition",
+      "domain": "x>0; numerator vanishes to second order at zero",
+      "answer_class": "special-function-closed-form",
+      "f": "(exp(-x)-2*exp(-2*x)+exp(-3*x))*ln(x)/x^2",
+      "expected": "(1-euler_gamma)*(3*ln(3)-4*ln(2))-3*ln(3)^2/2+2*ln(2)^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "stable_f": "4*exp(-2*x)*sinh(x/2)^2*ln(x)/x^2"
+      }
+    },
+    {
+      "id": "C5-reciprocal-gaussian-erf-01",
+      "family": "reciprocal-gaussian-erf",
+      "intent": "structural-composition",
+      "domain": "x>0; reciprocal Gaussian suppresses both endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "(x+1)*exp(-(sqrt(x)-1/sqrt(x))^2)*erf((sqrt(x)-1/sqrt(x)))^2/x^(3/2)",
+      "expected": "2*sqrt(pi)/3",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C5-arc-quartic-pullback-01",
+      "family": "arc-quartic-pullback",
+      "intent": "structural-composition",
+      "domain": "0<=x<=2^(1/4); principal real acos with argument in [1/3,3/5]",
+      "answer_class": "elementary-closed-form",
+      "f": "4*x*acos((3-x^4)/(5-x^4))/(1+x^4)",
+      "expected": "2*pi*atan(sqrt(2))-2*atan(sqrt(2))^2-2*pi*atan(sqrt(5))+pi^2/2",
+      "bounds": [
+        "0",
+        "2^(1/4)"
+      ]
+    },
+    {
+      "id": "C5-atan-rectangle-pair-01",
+      "family": "atan-rectangle-pair",
+      "intent": "structural-composition",
+      "domain": "continuous positive integrand on [0,1]",
+      "answer_class": "elementary-closed-form",
+      "f": "2*atan(3/sqrt(4*x^2+2))/((1+4*x^2)*sqrt(4*x^2+2))+3*atan(2/sqrt(9*x^2+2))/((1+9*x^2)*sqrt(9*x^2+2))",
+      "expected": "atan(2)*atan(3)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    }
+  ]
+}

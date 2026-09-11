@@ -1,0 +1,16 @@
+// 2026a optimized build, radians, clean session, unchanged precision/clock.
+// Run individual lines if entering manually. time() can repeat short work.
+// Earlier firmware runs out of memory on 2025 Q9 and 2018 Q13.
+purge(x);
+assert(integrate(x^2024*(1-x^2025)^2025,x,0,1)==1/4102650);
+assert(integrate(sin(x)^2025*cos(x)^2026,x,-pi,pi)==0);
+assert(integrate(abs(sin(2018*x)),x,0,2018*pi)==4036);
+assert(simplify(integrate(abs(x-1)/(abs(x-2)+abs(x-3)),x,0,4)-2-9*ln(3)/4+3*ln(5)/4)==0);
+[["MIT 2025 Q3",time(simplify(integrate(surd(3*sin(x)-sin(3*x),3),x)))],
+ ["MIT 2025 Q9",time(integrate(x^2024*(1-x^2025)^2025,x,0,1))],
+ ["MIT 2026 Q1",time(integrate(sin(x)^2025*cos(x)^2026,x,-pi,pi))],
+ ["MIT 2018 Q3",time(integrate(abs(sin(2018*x)),x,0,2018*pi))],
+ ["MIT 2018 Q13",time(integrate((2017*x^2016+2018*x^2017)/(1+x^4034+2*x^4035+x^4036),x))],
+ ["MIT 2020 Q9",time(integrate(cos(x)^2020,x,0,2*pi))],
+ ["Princeton I10",time(integrate(x*sin(x^2)*exp(x^2),x))],
+ ["Princeton I47",time(integrate((exp(x)+1)^20*exp(x),x,0,1))]];

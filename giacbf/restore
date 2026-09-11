@@ -1,3 +1,0 @@
-#! /bin/bash
-scp malherbe:public_html/casio/khicas90.g3a /shared/tmp
-scp malherbe:public_html/casio/khicas90.ac2 /shared/tmp

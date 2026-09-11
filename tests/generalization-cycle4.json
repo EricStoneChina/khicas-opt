@@ -1,0 +1,284 @@
+{
+  "sources": {
+    "derivations": "docs/GENERALIZATION-CYCLE4.md",
+    "generator": "tests/generate-coverage-cycle4.py",
+    "prior-independent-proofs": "docs/USER-CHALLENGE-INTEGRALS.md"
+  },
+  "notes": "Fixed independent corpus after checkpoint 0e5ed65, before querying the tested engine. All sixteen ordinary integrals converge and have proved exact references. No principal-value or unknown-closed-form placeholders.",
+  "summary": {
+    "cases": 16,
+    "definite": 16,
+    "indefinite": 0,
+    "by_family": {
+      "arc-affine": 1,
+      "arc-complement-rational": 1,
+      "atan-square-symmetry": 1,
+      "beta-mixed-third": 1,
+      "beta-skew-logit": 1,
+      "frullani-log-weight": 2,
+      "gaussian-erf-product": 1,
+      "gaussian-erf-shift": 1,
+      "inverse-gaussian-square": 1,
+      "laplace-decay-difference": 1,
+      "laplace-squared-cancellation": 1,
+      "loglog-fractional-scale": 1,
+      "loglog-frullani": 1,
+      "mellin-distinct-factors": 1,
+      "mellin-unmatched-log-scale": 1
+    },
+    "by_intent": {
+      "near-miss: asymmetric weight has a nonzero odd logit moment": 1,
+      "near-miss: distinct denominator factors need partial fractions": 1,
+      "near-miss: inverse sine complement changes the arc value": 1,
+      "near-miss: scaling denominator does not scale the logarithm": 1,
+      "near-miss: shifted product of two error functions is not an odd Gaussian": 1,
+      "parameter-variant: affine phase and nonunit disk radius": 1,
+      "parameter-variant: rational power and loglog scaling": 1,
+      "structural-generalization": 7,
+      "structural-generalization: reciprocal angle and larger symmetry square": 1,
+      "syntax-composition: reciprocal radical square in exponent": 1
+    },
+    "by_answer_class": {
+      "elementary-closed-form": 12,
+      "special-function-closed-form": 4
+    }
+  },
+  "cases": [
+    {
+      "id": "C4-beta-mixed-third-01",
+      "family": "beta-mixed-third",
+      "intent": "structural-generalization",
+      "domain": "0<x<1",
+      "answer_class": "special-function-closed-form",
+      "f": "ln(x)*ln(1-x)*ln(x*(1-x))/sqrt(x*(1-x))",
+      "expected": "pi*(4*Zeta(3)-16*ln(2)^3)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C4-beta-skew-logit-01",
+      "family": "beta-skew-logit",
+      "intent": "near-miss: asymmetric weight has a nonzero odd logit moment",
+      "domain": "0<x<1",
+      "answer_class": "elementary-closed-form",
+      "f": "sqrt(x/(1-x))*ln(x/(1-x))^3",
+      "expected": "3*pi^3",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C4-mellin-distinct-factors-01",
+      "family": "mellin-distinct-factors",
+      "intent": "near-miss: distinct denominator factors need partial fractions",
+      "domain": "x>0; principal powers are positive real",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(-1/3)/((1+x^(2/3))*(1+4*x^(2/3)))",
+      "expected": "ln(2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C4-mellin-unmatched-log-scale-01",
+      "family": "mellin-unmatched-log-scale",
+      "intent": "near-miss: scaling denominator does not scale the logarithm",
+      "domain": "x>0",
+      "answer_class": "elementary-closed-form",
+      "f": "ln(x)^2/(1+9*x^2)^2",
+      "expected": "pi^3/48+pi*ln(3)/6+pi*ln(3)^2/12",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C4-laplace-squared-cancellation-01",
+      "family": "laplace-squared-cancellation",
+      "intent": "structural-generalization",
+      "domain": "real continuous integrand in the interior; convergent endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-x)*(1-cos(2*x))^2/x^2",
+      "expected": "4*atan(2)-2*atan(4)-ln(5)+ln(17)/4",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "stable_f": "4*exp(-x)*sin(x)^4/x^2",
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C4-laplace-decay-difference-01",
+      "family": "laplace-decay-difference",
+      "intent": "structural-generalization",
+      "domain": "real continuous integrand in the interior; convergent endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "(exp(-x)-2*exp(-2*x)+exp(-3*x))/x^2",
+      "expected": "3*ln(3)-4*ln(2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "stable_f": "4*exp(-2*x)*sinh(x/2)^2/x^2",
+        "removable_zero": "1"
+      }
+    },
+    {
+      "id": "C4-gaussian-erf-shift-01",
+      "family": "gaussian-erf-shift",
+      "intent": "structural-generalization",
+      "domain": "real continuous integrand in the interior; convergent endpoints",
+      "answer_class": "special-function-closed-form",
+      "f": "exp(-2*x^2)*erf(x+1)",
+      "expected": "sqrt(pi/2)*erf(sqrt(2/3))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C4-gaussian-erf-product-01",
+      "family": "gaussian-erf-product",
+      "intent": "near-miss: shifted product of two error functions is not an odd Gaussian",
+      "domain": "real continuous integrand in the interior; convergent endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-(x-1)^2)*erf(x-1)*erf(2*x-2)",
+      "expected": "2*asin(2/sqrt(10))/sqrt(pi)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C4-inverse-gaussian-square-01",
+      "family": "inverse-gaussian-square",
+      "intent": "syntax-composition: reciprocal radical square in exponent",
+      "domain": "x>0",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-(sqrt(x)-2/sqrt(x))^2)/sqrt(x)",
+      "expected": "sqrt(pi)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C4-arc-affine-01",
+      "family": "arc-affine",
+      "intent": "parameter-variant: affine phase and nonunit disk radius",
+      "domain": "-1/2<=x<=atan(sqrt(2))-1/2; principal real acos",
+      "answer_class": "elementary-closed-form",
+      "f": "acos((1+2*cos(2*x+1))/(2+3*cos(2*x+1)))",
+      "expected": "pi*atan(sqrt(2))-atan(sqrt(2))^2-pi*atan(sqrt(5))+pi^2/4",
+      "bounds": [
+        "-1/2",
+        "atan(sqrt(2))-1/2"
+      ]
+    },
+    {
+      "id": "C4-arc-complement-rational-01",
+      "family": "arc-complement-rational",
+      "intent": "near-miss: inverse sine complement changes the arc value",
+      "domain": "0<=x<=sqrt(2); argument in [1/3,3/5]",
+      "answer_class": "elementary-closed-form",
+      "f": "2*asin((3-x^2)/(5-x^2))/(1+x^2)",
+      "expected": "-pi*atan(sqrt(2))+2*atan(sqrt(2))^2+2*pi*atan(sqrt(5))-pi^2/2",
+      "bounds": [
+        "0",
+        "sqrt(2)"
+      ]
+    },
+    {
+      "id": "C4-atan-square-symmetry-01",
+      "family": "atan-square-symmetry",
+      "intent": "structural-generalization: reciprocal angle and larger symmetry square",
+      "domain": "real continuous integrand in the interior; convergent endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "atan(2/sqrt(x^2+2))/((1+x^2)*sqrt(x^2+2))",
+      "expected": "atan(2)^2/2",
+      "bounds": [
+        "0",
+        "2"
+      ]
+    },
+    {
+      "id": "C4-frullani-log-weight-01",
+      "family": "frullani-log-weight",
+      "intent": "structural-generalization",
+      "domain": "x>0; logarithmic endpoint and absolutely convergent tail",
+      "answer_class": "elementary-closed-form",
+      "f": "(atan(2*x)-atan(3*x))*ln(x)/x",
+      "expected": "pi*(ln(3)^2-ln(2)^2)/4",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "stable_f": "-atan(x/(1+6*x^2))*ln(x)/x"
+      }
+    },
+    {
+      "id": "C4-frullani-log-weight-02",
+      "family": "frullani-log-weight",
+      "intent": "structural-generalization",
+      "domain": "x>0; logarithmic endpoint and absolutely convergent tail",
+      "answer_class": "elementary-closed-form",
+      "f": "(atan(2*x)-atan(x))*ln(x)^2/x",
+      "expected": "pi^3*ln(2)/8+pi*ln(2)^3/6",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "stable_f": "atan(x/(1+2*x^2))*ln(x)^2/x"
+      }
+    },
+    {
+      "id": "C4-loglog-fractional-scale-01",
+      "family": "loglog-fractional-scale",
+      "intent": "parameter-variant: rational power and loglog scaling",
+      "domain": "0<x<1; both logarithms real",
+      "answer_class": "special-function-closed-form",
+      "f": "sqrt(x)*ln(-ln(x))/(1+x^3)",
+      "expected": "(2/3)*((pi*ln(2*pi)/4+pi*ln(Gamma(3/4)/Gamma(1/4))/2)-pi*ln(3/2)/4)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "verification": {
+        "alternate_f": "ln(x)/(2*cosh(3*x/2))",
+        "alternate_bounds": [
+          "0",
+          "+infinity"
+        ]
+      }
+    },
+    {
+      "id": "C4-loglog-frullani-01",
+      "family": "loglog-frullani",
+      "intent": "structural-generalization",
+      "domain": "0<x<1; logarithmic singularity at one is integrable",
+      "answer_class": "special-function-closed-form",
+      "f": "(x-x^3)*ln(-ln(x))/(-ln(x))",
+      "expected": "-3*ln(2)^2/2-euler_gamma*ln(2)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "verification": {
+        "alternate_f": "(exp(-2*x)-exp(-4*x))*ln(x)/x",
+        "alternate_bounds": [
+          "0",
+          "+infinity"
+        ]
+      }
+    }
+  ]
+}

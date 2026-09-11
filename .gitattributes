@@ -1,9 +1,2 @@
-# 上游源码为 Linux 环境,强制 LF 行尾,禁止 CRLF 转换
-* text=auto eol=lf
-
-# 二进制文件
-*.png binary
-*.g3a binary
-*.elf binary
-*.a binary
-*.tgz binary
+# Preserve the exact bytes of the pinned upstream snapshot.
+* -text

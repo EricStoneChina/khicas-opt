@@ -1,0 +1,10 @@
+// After loading once, use cv(1) through cv(5).
+cv(n):={
+ local x,y,t,r,theta;
+ if (n==1) return cart2param(x^3+y^3=3*x*y,[x,y],t);
+ if (n==2) return cart2polar(x^3+y^3=3*x*y,[x,y],[r,theta]);
+ if (n==3) return cart2param((x^2+y^2)^2=x^2-y^2,[x,y],t);
+ if (n==4) return cart2polar((x^2+y^2)^2=x^2-y^2,[x,y],[r,theta]);
+ if (n==5) return simplify(-27*x^3+81*x*y-27*y^3=0);
+ return "cv(1) to cv(5)";
+};
