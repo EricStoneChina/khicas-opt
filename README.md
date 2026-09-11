@@ -1,67 +1,81 @@
 # Khicas Opt
 
-Khicas Opt 是基于 KhiCAS 的团队协作项目，面向 fx-CG50 / Graph 90+E 提供 Giac/Xcas 优化构建。
+Khicas Opt is a team-maintained KhiCAS project for Casio fx-CG50 and Graph 90+E calculators. It combines upstream KhiCAS with practical kernel, function, build, Help, interface, and release improvements.
 
-## 目标
+The project name is **Khicas Opt**. It is a team project based on KhiCAS.
 
-以 Bernard Parisse 的 KhiCAS 源码为基础,研究并实施**更优化的编译配置**——
-在保证功能完整的前提下,从**代码尺寸**和**运行速度**两个维度改进构建。
+## What it provides
 
-## 团队分工
+- A calculator-ready Giac/KhiCAS build for symbolic and numeric mathematics.
+- Kernel and function improvements for calculus, algebra, domains, and resource limits.
+- A smaller and faster build tuned for the fx-CG50 memory layout.
+- Clear command Help and examples for calculator users.
+- Repeatable GitHub Actions builds and downloadable release artifacts.
+- A project website with installation and usage information.
 
-- Fadouse：负责内核和函数优化，包括符号计算、积分、导数、定义域和资源边界。
-- 项目团队：共同维护构建配置、Help、界面、网站、CI、发布和设备验证。
+## Team work
 
-项目统一称为 **Khicas Opt**，所有成员都基于 KhiCAS 协作。
-## 源码来源
+- **Fadouse** works on the kernel and function implementation. This includes symbolic calculation, integrals, derivatives, domains, and resource bounds.
+- **The project team** maintains build configuration, command Help, the user interface, the website, CI, releases, and real-device validation.
 
-- 上游:KhiCAS © B. Parisse,Université Grenoble Alpes(作者服务器 `~parisse/casio/giacbf.tgz`)
-- 许可证:GPL2(部分 MIT;MicroPython 1.12;QR 码生成器 MIT)
-- 本仓库 `giacbf/` 为上游源码的**干净导入**(已移除 .o/elf/g3a 等构建产物)
+Both areas are maintained as one Khicas Opt project. Fadouse's work is part of the team project; it is not a separate product edition.
 
-## 目录结构
+## Supported devices
 
+The main target is the Casio fx-CG50. The build also follows the Graph 90+E KhiCAS layout where the upstream toolchain supports it.
+
+The main calculator package produces:
+
+- `khicas50.g3a` — the main add-in
+- `khicas50.ac2` — the second program segment used by the add-in
+
+## Build locally
+
+The supplied toolchain is a Linux binary. Use Linux or WSL2 on Windows.
+
+```sh
+chmod +x build.sh
+./build.sh
 ```
-giacbf/          # KhiCAS 源码(上游导入,勿直接修改,通过 patch 维护改动)
-build.sh         # 一键构建脚本(拉取工具链依赖 + 构建)
-docs/            # 优化分析与决策记录
+
+The script downloads the required Casio toolchain and libraries, applies `Makefile.opt`, and builds the calculator files under `giacbf/`.
+
+To remove generated objects and start a clean build:
+
+```sh
+./build.sh clean
 ```
 
-## 构建依赖
+The first build downloads about 231 MB of toolchain data. Set `TOOLS_DIR` to choose another toolchain directory and `JOBS` to control parallel build jobs:
 
-| 依赖 | 来源 | 说明 |
-|---|---|---|
-| sh3eb-elf 工具链 | casiolocal.tgz(作者服务器) | gcc/g++/binutils,SuperH 大端 |
-| libfxcg | 作者服务器 libfxcg.tgz | Casio OS syscall 封装 |
-| mkg3a | 作者服务器 mkg3a.tgz | .g3a 打包器 |
-| uSTL / tommath / micropy 库 | casiolocal.tgz 内 | 预编译静态库 |
+```sh
+TOOLS_DIR=$HOME/khicas-toolchain JOBS=4 ./build.sh
+```
 
-构建环境:**Linux**(工具链为 Linux 二进制,Windows 下需 WSL2)。
+## Continuous builds and releases
 
-## 优化方向(初步)
+GitHub Actions builds changes pushed to `main` and changes opened as pull requests. Each successful build uploads the calculator artifacts for testing. Release packages are published from the repository's GitHub Releases page.
 
-- 编译标志:当前 `-Os`(尺寸优先),可评估 `-O3` 与 `-Os` 的速度/尺寸权衡
-- 链接:`-flto`(LTO 全程序优化,作者注明"2 addins 模式不可用"需验证)
-- `-ffunction-sections`/`-fdata-sections` + `--gc-sections` 进一步裁剪
-- 大数库 `libbf.c` 的算法级优化空间
-- 内存:prizm_heap 192KB 的调整
+The project website is available at [khicas.kcisec.site](https://khicas.kcisec.site/).
 
-## 状态
+## Repository layout
 
-- [x] 源码导入(提交 d4806dd)
-- [x] 优化方案制定(docs/优化方案.md)
-- [x] 优化配置实施(Makefile.opt + build.sh)
-- [x] 帮助法语残留修复(12 条 → 0;help-fix.ts + help-fr-audit.ts)
-- [x] 图标替换为官方风格(generate-icons.ts + analyze-icons.ts)
-- [x] 画图操作速查表(docs/画图操作速查.md)
-- [x] AC Break 防御补丁(patch/03-ac-break-hardening.patch)
-- [x] GitHub Actions CI(.github/workflows/build.yml)
-- [x] ✅ 构建成功!产物 khicas50.g3a(1.9MB)+ khicas50.ac2(2.4MB)
-      可下载:GitHub Actions → 最新 run → Artifacts → khicas50-optimized
-      或运行 CI 时 build 步骤自动上传
-- [x] 图标重绘为 2048 风格(未选中:白底+橙红 χ;选中:蓝渐变+白 χ;留边充足、不超限位)
-- [x] 中文帮助阶段一:数据管道(help-zh-gen.ps1)+ GB18030 渲染接入 + `khicaszh` 构建目标
-      产物:CI Artifacts → `khicaszh-chinese`(khicaszh.g3a + khicaszh.ac2)
-      说明见 docs/中文翻译方案.md 第 12 节(含待真机验证清单)
+| Path | Purpose |
+| --- | --- |
+| `giacbf/` | KhiCAS engine and calculator integration source |
+| `Makefile.opt` | Khicas Opt compiler and linker settings |
+| `build.sh` | Linux/WSL2 build entry point |
+| `bench/` | Calculator benchmark and regression material |
+| `docs/` | Design notes, Help work, and release records |
+| `patch/` | Small, reviewable source patches |
+| `site/` | Source for the project website |
+| `.github/workflows/` | Build and Pages automation |
 
+## Upstream and licensing
+
+Khicas Opt is based on [KhiCAS](https://www-fourier.univ-grenoble-alpes.fr/~parisse/casio/khicasio.html) by Bernard Parisse. Upstream and bundled components keep their own license terms. Read the source headers and upstream notices before redistributing modified builds.
+
+## Contributing
+
+Please keep changes focused and explain the user-visible effect. Kernel and function changes should include a small regression case when possible. Build, Help, interface, and website changes should be checked by the relevant GitHub Actions workflow. Test calculator files on an fx-CG50 or a compatible emulator before a release.
 
