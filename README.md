@@ -1,6 +1,6 @@
-# Khicas Optimisation
+# Khicas Opt
 
-Khicas Optimisation 是基于 KhiCAS 的团队协作项目，面向 fx-CG50 / Graph 90+E 提供 Giac/Xcas 优化构建。
+Khicas Opt 是基于 KhiCAS 的团队协作项目，面向 fx-CG50 / Graph 90+E 提供 Giac/Xcas 优化构建。
 
 ## 目标
 
@@ -12,7 +12,7 @@ Khicas Optimisation 是基于 KhiCAS 的团队协作项目，面向 fx-CG50 / Gr
 - Fadouse：负责内核和函数优化，包括符号计算、积分、导数、定义域和资源边界。
 - 项目团队：共同维护构建配置、Help、界面、网站、CI、发布和设备验证。
 
-项目统一称为 **Khicas Optimisation**，所有成员都基于 KhiCAS 协作。
+项目统一称为 **Khicas Opt**，所有成员都基于 KhiCAS 协作。
 ## 源码来源
 
 - 上游:KhiCAS © B. Parisse,Université Grenoble Alpes(作者服务器 `~parisse/casio/giacbf.tgz`)
@@ -63,4 +63,5 @@ docs/            # 优化分析与决策记录
 - [x] 中文帮助阶段一:数据管道(help-zh-gen.ps1)+ GB18030 渲染接入 + `khicaszh` 构建目标
       产物:CI Artifacts → `khicaszh-chinese`(khicaszh.g3a + khicaszh.ac2)
       说明见 docs/中文翻译方案.md 第 12 节(含待真机验证清单)
+
 
