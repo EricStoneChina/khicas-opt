@@ -1,0 +1,1789 @@
+{
+  "sources": {
+    "2025-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2025_answers.pdf",
+    "2026-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2026_answers.pdf",
+    "2026-F": "https://math.mit.edu/~yyao1/pdf/2026_finals.pdf",
+    "Princeton-I": "https://web.math.princeton.edu/~nelson/104/Integrals.pdf",
+    "Princeton-I-answers": "https://web.math.princeton.edu/~nelson/104/IntegralAns.pdf",
+    "Princeton-Imp": "https://web.math.princeton.edu/~nelson/104/ImproperInt.pdf",
+    "Princeton-Imp-answers": "https://web.math.princeton.edu/~nelson/104/ImpIntSolns.pdf",
+    "2010-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2010_answers.pdf",
+    "2010-Q-test": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2010_test.pdf",
+    "2011-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2011_answers.pdf",
+    "2011-Q-test": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2011_test.pdf",
+    "2012-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2012_answers.pdf",
+    "2012-Q-test": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2012_test.pdf",
+    "2013-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2013_answers.pdf",
+    "2014-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2014_answers.pdf",
+    "2015-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2015_answers.pdf",
+    "2016-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2016_answers.pdf",
+    "2017-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2017_answers.pdf",
+    "2018-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2018_answers.pdf",
+    "2019-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2019_answers.pdf",
+    "2020-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2020_answers.pdf",
+    "2022-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2022_answers.pdf",
+    "2023-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2023_answers.pdf",
+    "2024-Q": "https://math.mit.edu/~yyao1/pdf/qualifying_round_2024_answers.pdf"
+  },
+  "notes": "Selected official MIT problems across available years and Princeton MAT104 exercises. ln is natural log; surd denotes the real cube root. Variables are renamed x. Samples avoid real-domain boundaries and poles. Sampled agreement is not proof. Infinite nesting is omitted. This is not a complete archive.",
+  "cases": [
+    {
+      "id": "2025-Q2",
+      "f": "exp(x+1)/(exp(x)+1)",
+      "expected": "exp(1)*ln(exp(x)+1)"
+    },
+    {
+      "id": "2025-Q3",
+      "f": "surd(3*sin(x)-sin(3*x),3)",
+      "expected": "-surd(4,3)*cos(x)",
+      "samples": [
+        "-2",
+        "-1",
+        "1/3",
+        "1",
+        "2",
+        "4"
+      ]
+    },
+    {
+      "id": "2025-Q5",
+      "f": "cos(20*x)*sin(25*x)",
+      "bounds": [
+        "-pi/2",
+        "pi/2"
+      ],
+      "expected": "0"
+    },
+    {
+      "id": "2025-Q7",
+      "f": "(x*ln(x)*cos(x)-sin(x))/(x*ln(x)^2)",
+      "expected": "sin(x)/ln(x)",
+      "samples": [
+        "1/3",
+        "1/2",
+        "2",
+        "3",
+        "5"
+      ]
+    },
+    {
+      "id": "2025-Q9",
+      "f": "x^2024*(1-x^2025)^2025",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "1/(2025*2026)"
+    },
+    {
+      "id": "2025-Q11",
+      "f": "ceil(floor(x)/2)",
+      "bounds": [
+        "0",
+        "20"
+      ],
+      "expected": "100"
+    },
+    {
+      "id": "2025-Q13",
+      "f": "exp(2*x)*(x^2+x)/((x*exp(x))^4+1)",
+      "expected": "atan(x^2*exp(2*x))/2"
+    },
+    {
+      "id": "2025-Q14",
+      "f": "sec(x)^4-tan(x)^4",
+      "expected": "2*tan(x)-x"
+    },
+    {
+      "id": "2025-Q15",
+      "f": "sqrt(x*(1-x))",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "pi/8"
+    },
+    {
+      "id": "2025-Q16",
+      "f": "sin(4*x)*cos(x)/(cos(2*x)*sin(x))",
+      "expected": "2*x+sin(2*x)"
+    },
+    {
+      "id": "2025-Q17",
+      "f": "sin(x)*sinh(x)",
+      "expected": "(sin(x)*cosh(x)-cos(x)*sinh(x))/2"
+    },
+    {
+      "id": "2025-Q19",
+      "f": "(cos(x)+cos(x+2*pi/3)+cos(x-2*pi/3))^2",
+      "expected": "0"
+    },
+    {
+      "id": "2026-Q1",
+      "f": "sin(x)^2025*cos(x)^2026",
+      "bounds": [
+        "-pi",
+        "pi"
+      ],
+      "expected": "0"
+    },
+    {
+      "id": "2026-Q2",
+      "f": "exp(2026*exp(x)+x)",
+      "expected": "exp(2026*exp(x))/2026",
+      "samples": [
+        "-8",
+        "-7",
+        "-6",
+        "-5",
+        "-4"
+      ]
+    },
+    {
+      "id": "2026-Q3",
+      "f": "floor(x)/3-floor(floor(x)/3)",
+      "bounds": [
+        "0",
+        "2026"
+      ],
+      "expected": "675"
+    },
+    {
+      "id": "2026-Q5",
+      "f": "1/(sqrt(x+1)-sqrt(x-1))",
+      "expected": "((x+1)^(3/2)+(x-1)^(3/2))/3",
+      "samples": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "9"
+      ]
+    },
+    {
+      "id": "2026-Q6",
+      "f": "sqrt(1+cosh(x))",
+      "expected": "2*sqrt(2)*sinh(x/2)",
+      "samples": [
+        "-2",
+        "-1",
+        "0",
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "2026-Q7",
+      "f": "2^(ln(x))/x^2",
+      "expected": "x^(ln(2)-1)/(ln(2)-1)",
+      "samples": [
+        "1/3",
+        "1/2",
+        "2",
+        "3",
+        "5"
+      ]
+    },
+    {
+      "id": "2026-Q9",
+      "f": "x^2*sin(x)",
+      "expected": "2*x*sin(x)-(x^2-2)*cos(x)"
+    },
+    {
+      "id": "2026-Q10",
+      "f": "(x-1)^2/(2*exp(x)+x^2+1)",
+      "expected": "x-ln(2*exp(x)+x^2+1)"
+    },
+    {
+      "id": "2026-Q13",
+      "f": "cos(x)^5-10*cos(x)^3*sin(x)^2+5*cos(x)*sin(x)^4",
+      "expected": "sin(5*x)/5"
+    },
+    {
+      "id": "2026-Q14",
+      "f": "atan(sqrt(x))",
+      "expected": "(x+1)*atan(sqrt(x))-sqrt(x)",
+      "samples": [
+        "1/3",
+        "1/2",
+        "2",
+        "3",
+        "5"
+      ]
+    },
+    {
+      "id": "2026-Q17",
+      "f": "exp(-x^2)/(1+exp(2*x))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "expected": "sqrt(pi)/2"
+    },
+    {
+      "id": "2026-Q18",
+      "f": "sin(x)^2/x^2-sin(2*x)/x",
+      "expected": "-sin(x)^2/x"
+    },
+    {
+      "id": "2026-Q19",
+      "f": "ln(ln(x))*ln(ln(ln(x)))/(x*ln(x))",
+      "expected": "ln(ln(x))^2*(2*ln(ln(ln(x)))-1)/4",
+      "samples": [
+        "3",
+        "4",
+        "5",
+        "7",
+        "10"
+      ]
+    },
+    {
+      "id": "2026-F5",
+      "f": "1/((1/(x-2)+3/(x-4)+5/(x-6))^(-2)+1)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "expected": "9*pi"
+    },
+    {
+      "id": "Princeton-I1",
+      "f": "sin(x)^5/cos(x)",
+      "expected": "cos(x)^2-cos(x)^4/4+ln(abs(sec(x)))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I2",
+      "f": "1/(4+x^2)^(5/2)",
+      "expected": "x/(16*sqrt(4+x^2))-x^3/(48*(4+x^2)^(3/2))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I3",
+      "f": "sin(sqrt(1+x))",
+      "expected": "-2*sqrt(1+x)*cos(sqrt(1+x))+2*sin(sqrt(1+x))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I4",
+      "f": "atan(x)",
+      "expected": "x*atan(x)-ln(1+x^2)/2",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I5",
+      "f": "cos(x)^4",
+      "expected": "3*x/8+sin(2*x)/4+sin(4*x)/32",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I6",
+      "f": "cos(x)/(4-sin(x)^2)",
+      "expected": "ln(3)/4",
+      "bounds": [
+        "0",
+        "pi/2"
+      ]
+    },
+    {
+      "id": "Princeton-I7",
+      "f": "ln(1+ln(x))/x",
+      "expected": "(1+ln(x))*ln(1+ln(x))-ln(x)",
+      "samples": [
+        "1/2",
+        "1",
+        "2",
+        "3",
+        "5"
+      ]
+    },
+    {
+      "id": "Princeton-I8",
+      "f": "x^2*atan(x)",
+      "expected": "x^3*atan(x)/3-x^2/6+ln(1+x^2)/6",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I9",
+      "f": "1/(4+2*x+x^2)^(5/2)",
+      "expected": "1/(8*sqrt(3))",
+      "bounds": [
+        "-1",
+        "2"
+      ]
+    },
+    {
+      "id": "Princeton-I10",
+      "f": "x*sin(x^2)*exp(x^2)",
+      "expected": "exp(x^2)*(sin(x^2)-cos(x^2))/4",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I11",
+      "f": "1/sqrt(x^2+25)",
+      "expected": "ln(x+sqrt(x^2+25))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I12",
+      "f": "(2+x)/(surd(x+2,3)+x)",
+      "expected": "surd(x+2,3)^3-3*surd(x+2,3)+3/4*ln(abs(surd(x+2,3)-1))+21/8*ln(surd(x+2,3)^2+surd(x+2,3)+2)+39/(4*sqrt(7))*atan((2*surd(x+2,3)+1)/sqrt(7))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I13",
+      "f": "3*x^2/(x^2+x-2)",
+      "expected": "3*x-4*ln(abs(x+2))+ln(abs(x-1))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I14",
+      "f": "cos(surd(x,3))/surd(x,3)",
+      "expected": "3*surd(x,3)*sin(surd(x,3))+3*cos(surd(x,3))",
+      "samples": [
+        "-8",
+        "-2",
+        "-1/3",
+        "1/3",
+        "2",
+        "8"
+      ]
+    },
+    {
+      "id": "Princeton-I15",
+      "f": "1/sqrt(x^2+2*x)",
+      "expected": "ln(x+1+sqrt(x^2+2*x))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I16",
+      "f": "(x^2+3*x-3)/((x+1)*(x^2+6*x+10))",
+      "expected": "ln(x^2+6*x+10)+atan(x+3)-ln(abs(x+1))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I17",
+      "f": "1/(x*sqrt(1-x^2))",
+      "expected": "-ln(abs((1+sqrt(1-x^2))/x))",
+      "samples": [
+        "-3/4",
+        "-1/2",
+        "1/4",
+        "1/2",
+        "3/4"
+      ]
+    },
+    {
+      "id": "Princeton-I18",
+      "f": "x^3*exp(x^2)",
+      "expected": "(x^2-1)*exp(x^2)/2",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I19",
+      "f": "x^2*ln(x)",
+      "expected": "x^3*ln(x)/3-x^3/9",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I20",
+      "f": "x^3/sqrt(1-x^2)",
+      "expected": "(1-x^2)^(3/2)/3-sqrt(1-x^2)",
+      "samples": [
+        "-3/4",
+        "-1/2",
+        "1/4",
+        "1/2",
+        "3/4"
+      ]
+    },
+    {
+      "id": "Princeton-I21",
+      "f": "tan(x)^4",
+      "expected": "tan(x)^3/3-tan(x)+x",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I22",
+      "f": "(x+1)/(x^2+4*x+13)",
+      "expected": "ln(x^2+4*x+13)/2-atan((x+2)/3)/3",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I23",
+      "f": "cos(x)/(sin(x)^2+5*sin(x)+6)",
+      "expected": "ln(9/8)",
+      "bounds": [
+        "0",
+        "pi/2"
+      ]
+    },
+    {
+      "id": "Princeton-I24",
+      "f": "exp(x/2)/(1+exp(x))",
+      "expected": "2*atan(exp(x/2))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I25",
+      "f": "(2*x^2+5*x+10)/(x^3+2*x^2+10*x)",
+      "expected": "ln(abs(x))+ln(x^2+2*x+10)/2+2*atan((x+1)/3)/3",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I26",
+      "f": "(x-2)*sqrt(9-x^2)",
+      "expected": "-(9-x^2)^(3/2)/3-9*asin(x/3)-x*sqrt(9-x^2)",
+      "samples": [
+        "-2",
+        "-1",
+        "0",
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "Princeton-I27",
+      "f": "asin(ln(x))/x",
+      "expected": "pi/12+sqrt(3)/2-1",
+      "bounds": [
+        "1",
+        "sqrt(exp(1))"
+      ]
+    },
+    {
+      "id": "Princeton-I28",
+      "f": "x*exp(-x)",
+      "expected": "1-2/exp(1)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "Princeton-I29",
+      "f": "ln(x)^2",
+      "expected": "x*ln(x)^2-2*x*ln(x)+2*x",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I30",
+      "f": "sin(x)/sqrt(1+cos(x))",
+      "expected": "-2*sqrt(1+cos(x))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I31",
+      "f": "x^2/(x^6-1)",
+      "expected": "ln(abs((x^3-1)/(x^3+1)))/6",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I32",
+      "f": "sin(x)^5*cos(x)^2",
+      "expected": "2*cos(x)^5/5-cos(x)^7/7-cos(x)^3/3",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I33",
+      "f": "(1+exp(x))/(1-exp(x))",
+      "expected": "x-2*ln(abs(1-exp(x)))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I34",
+      "f": "sin(ln(x))",
+      "expected": "exp(1)*(sin(1)-cos(1))/2+1/2",
+      "bounds": [
+        "1",
+        "exp(1)"
+      ]
+    },
+    {
+      "id": "Princeton-I35",
+      "f": "exp(sqrt(x))",
+      "expected": "2*(sqrt(x)-1)*exp(sqrt(x))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I36",
+      "f": "1/(4-x^2)^(3/2)",
+      "expected": "x/(4*sqrt(4-x^2))",
+      "samples": [
+        "-1",
+        "-1/2",
+        "0",
+        "1/2",
+        "1"
+      ]
+    },
+    {
+      "id": "Princeton-I37",
+      "f": "exp(1/x)/x^2",
+      "expected": "sqrt(exp(1))-exp(1/3)",
+      "bounds": [
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I38",
+      "f": "sqrt(x^2-4)/x^3",
+      "expected": "acos(2/x)/4-sqrt(x^2-4)/(2*x^2)",
+      "samples": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "9"
+      ]
+    },
+    {
+      "id": "Princeton-I39",
+      "f": "(x-1)/(x^3+x)",
+      "expected": "-ln(abs(x))+ln(x^2+1)/2+atan(x)",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I40",
+      "f": "1/(x^2*sqrt(x^2+4))",
+      "expected": "-sqrt(x^2+4)/(4*x)",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I41",
+      "f": "sin(sqrt(x))",
+      "expected": "-2*sqrt(x)*cos(sqrt(x))+2*sin(sqrt(x))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I42",
+      "f": "1/(x*(1-x)^2)",
+      "expected": "ln(abs(x))-ln(abs(x-1))-1/(x-1)",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I43",
+      "f": "(x-5)*(sqrt(x-1)+3)/(sqrt(x-1)+2)",
+      "expected": "x^2/2-7*x+2*(x-1)^(3/2)/3",
+      "samples": [
+        "2",
+        "3",
+        "4",
+        "6",
+        "9"
+      ]
+    },
+    {
+      "id": "Princeton-I44",
+      "f": "(2*x+3)*ln(x)",
+      "expected": "(x^2+3*x)*ln(x)-x^2/2-3*x",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I45",
+      "f": "sqrt(9+x^2)/x^2",
+      "expected": "-sqrt(9+x^2)/x+ln(abs((sqrt(9+x^2)+x)/3))",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I46",
+      "f": "x/((x^2+1)*(x+1))",
+      "expected": "ln(x^2+1)/4+atan(x)/2-ln(abs(x+1))/2",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I47",
+      "f": "(exp(x)+1)^20*exp(x)",
+      "expected": "((1+exp(1))^21-2^21)/21",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "Princeton-I48",
+      "f": "x^2/(x^2+4*x+5)",
+      "expected": "x-2*ln(x^2+4*x+5)+3*atan(x+2)",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-I49",
+      "f": "(x+1)/(x^2+2*x+3)",
+      "expected": "ln(x^2+2*x+3)/2",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "Princeton-Imp1",
+      "f": "1/(x^3+2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "2*pi/(3*sqrt(3)*2^(2/3))",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp2",
+      "f": "1/(x+sqrt(x))",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "2*ln(2)",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp4",
+      "f": "x^2/(x^3+1)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp5",
+      "f": "ln(x)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "-1",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp6",
+      "f": "1/(exp(x)-1)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp7",
+      "f": "1/(x^2+2*x+2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "pi/4",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp10",
+      "f": "1/(1-cos(x))",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp11",
+      "f": "exp(-x)*cos(x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "1/2",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp12",
+      "f": "exp(-x^2)/x^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp15",
+      "f": "exp(x)/x",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp18",
+      "f": "(1-x)^(-2/3)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "3",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp20",
+      "f": "tan(x)",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp21",
+      "f": "(exp(x)-1)/(exp(2*x)+1)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "pi/4-ln(2)/2",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp25",
+      "f": "1/abs(x-1)",
+      "bounds": [
+        "0",
+        "2"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp26",
+      "f": "x^(-99/100)",
+      "bounds": [
+        "1",
+        "+infinity"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp28",
+      "f": "x^3*exp(-x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "6",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp30",
+      "f": "1/(x^2*ln(x))",
+      "bounds": [
+        "1",
+        "+infinity"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp32",
+      "f": "exp(x)*(1+exp(-2*x))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp33",
+      "f": "sqrt(x)*ln(x)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "-4/9",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp35",
+      "f": "(1+cos(x))/x",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "expected": "+infinity",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-Imp37",
+      "f": "1/((1+x)*sqrt(x))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "pi",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-ImpOther2",
+      "f": "x*exp(-x)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "1",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "Princeton-ImpOther4",
+      "f": "1/(x^2+1)",
+      "bounds": [
+        "1",
+        "+infinity"
+      ],
+      "expected": "pi/4",
+      "answer_origin": "Convergence from official solutions; exact value derived for this regression."
+    },
+    {
+      "id": "2010-Q5",
+      "f": "sin(ln(x))^2",
+      "expected": "2/5",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "2010-Q8",
+      "f": "1/(x*sqrt(x^4-1))",
+      "expected": "pi/4",
+      "bounds": [
+        "1",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2010-Q11",
+      "f": "ln(1+x)/(1+x^2)",
+      "expected": "pi*ln(2)/8",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "2010-Q19",
+      "f": "(cos(x)+x*sin(x))/(x*(x+cos(x)))",
+      "expected": "ln(abs(x))-ln(abs(x+cos(x)))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2010-Q24",
+      "f": "1/ln(x)-1/ln(x)^2",
+      "expected": "x/ln(x)",
+      "samples": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "7"
+      ]
+    },
+    {
+      "id": "2011-Q1",
+      "f": "(x^6-1)/(x^4+x^3-x-1)",
+      "expected": "x^3/3-x^2/2+x",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2011-Q7",
+      "f": "sec(x)^4*tan(x)^2",
+      "expected": "tan(x)^5/5+tan(x)^3/3",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2011-Q10",
+      "f": "1/(1+2*x^2+x^4)",
+      "expected": "atan(x)/2+x/(2+2*x^2)",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2011-Q11",
+      "f": "cos(ln(x))",
+      "expected": "x*(cos(ln(x))+sin(ln(x)))/2",
+      "samples": [
+        "1/4",
+        "1/2",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "id": "2011-Q22",
+      "f": "sin(101*x)*sin(x)^99",
+      "expected": "sin(100*x)*sin(x)^100/100",
+      "samples": [
+        "5/4",
+        "7/5",
+        "8/5",
+        "7/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2012-Q2",
+      "f": "x^(1/4)*ln(x)",
+      "expected": "4*x^(5/4)*ln(x)/5-16*x^(5/4)/25",
+      "samples": [
+        "1/4",
+        "1/2",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "id": "2012-Q8",
+      "f": "1/(1+sin(x))",
+      "expected": "1",
+      "bounds": [
+        "0",
+        "pi/2"
+      ]
+    },
+    {
+      "id": "2012-Q15",
+      "f": "x*(1-x)^99",
+      "expected": "1/10100",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "2012-Q20",
+      "f": "x/(x^4+4)",
+      "expected": "atan(x^2/2)/4",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2012-Q24",
+      "f": "(x^7-1)/ln(x)",
+      "expected": "ln(8)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "2013-Q2",
+      "f": "exp(abs(x))",
+      "expected": "exp(3)+exp(1)-2",
+      "bounds": [
+        "-1",
+        "3"
+      ]
+    },
+    {
+      "id": "2013-Q8",
+      "f": "(x^5-x^3+x^2-1)/(x^4-x^3+x-1)",
+      "expected": "x^2/2+x",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2013-Q12",
+      "f": "pi*sin(pi*sqrt(x))/sqrt(x)",
+      "expected": "4",
+      "bounds": [
+        "0",
+        "441"
+      ]
+    },
+    {
+      "id": "2013-Q14",
+      "f": "(x-floor(x))^2",
+      "expected": "256/3",
+      "bounds": [
+        "0",
+        "256"
+      ]
+    },
+    {
+      "id": "2013-Q23",
+      "f": "sec(x)^5*tan(x)^3",
+      "expected": "sec(x)^5*(5*sec(x)^2-7)/35",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2014-Q5",
+      "f": "sqrt(x)*exp(sqrt(x))",
+      "expected": "2*exp(sqrt(x))*(x-2*sqrt(x)+2)",
+      "samples": [
+        "1/4",
+        "1/2",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "id": "2014-Q7",
+      "f": "abs(1+2*sin(x))",
+      "expected": "2*pi/3+4*sqrt(3)",
+      "bounds": [
+        "0",
+        "2*pi"
+      ]
+    },
+    {
+      "id": "2014-Q8",
+      "f": "x*(1-x)^2014",
+      "expected": "(1-x)^2016/2016-(1-x)^2015/2015",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2014-Q13",
+      "f": "exp(x)*(ln(1+x^2)-2*(1+x)*atan(x))",
+      "expected": "exp(x)*(ln(1+x^2)-2*x*atan(x))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2014-Q20",
+      "f": "1/(2+cos(x))",
+      "expected": "7*sqrt(3)*pi/9",
+      "bounds": [
+        "0",
+        "5*pi/2"
+      ]
+    },
+    {
+      "id": "2015-Q7",
+      "f": "1/(5+4*sqrt(x)+x)",
+      "expected": "ln(x+4*sqrt(x)+5)-4*atan(sqrt(x)+2)",
+      "samples": [
+        "1/4",
+        "1/2",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "id": "2015-Q9",
+      "f": "x/((x-3)*(x+5)^2)",
+      "expected": "1/28-3*ln(21/5)/64",
+      "bounds": [
+        "0",
+        "2"
+      ]
+    },
+    {
+      "id": "2015-Q14",
+      "f": "exp(3*x)*atan(exp(x))",
+      "expected": "exp(3*x)*atan(exp(x))/3-exp(2*x)/6+ln(1+exp(2*x))/6",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2015-Q15",
+      "f": "abs(x-1)/(abs(x-2)+abs(x-3))",
+      "expected": "2+9*ln(3)/4-3*ln(5)/4",
+      "bounds": [
+        "0",
+        "4"
+      ]
+    },
+    {
+      "id": "2015-Q16",
+      "f": "1/(sin(x)^4+cos(x)^4)",
+      "expected": "2*pi*sqrt(2)",
+      "bounds": [
+        "0",
+        "2*pi"
+      ]
+    },
+    {
+      "id": "2016-Q2",
+      "f": "abs(x^3-x)",
+      "expected": "113",
+      "bounds": [
+        "-4",
+        "4"
+      ]
+    },
+    {
+      "id": "2016-Q5",
+      "f": "ln(ln(x))/(x*ln(x))",
+      "expected": "ln(ln(x))^2/2",
+      "samples": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "7"
+      ]
+    },
+    {
+      "id": "2016-Q10",
+      "f": "x^3*exp(-x^2)",
+      "expected": "1/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2016-Q16",
+      "f": "x/(x^4+x^2+1)",
+      "expected": "atan((2*x^2+1)/sqrt(3))/sqrt(3)",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2016-Q20",
+      "f": "1/(2+cosh(x))",
+      "expected": "ln(2+sqrt(3))/sqrt(3)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2017-Q2",
+      "f": "ln(x)/x^2",
+      "expected": "1",
+      "bounds": [
+        "1",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2017-Q3",
+      "f": "1/cosh(x)",
+      "expected": "2*atan(exp(x))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2017-Q5",
+      "f": "1/(x*sqrt(x^2-1))",
+      "expected": "pi/3",
+      "bounds": [
+        "1",
+        "2"
+      ]
+    },
+    {
+      "id": "2017-Q6",
+      "f": "1/(x*(x^2+1))",
+      "expected": "ln(2)/2",
+      "bounds": [
+        "1",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2017-Q8",
+      "f": "exp(-2*x^2-5*x-3)",
+      "expected": "exp(1/8)*sqrt(pi/2)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2018-Q3",
+      "f": "abs(sin(2018*x))",
+      "expected": "4036",
+      "bounds": [
+        "0",
+        "2018*pi"
+      ]
+    },
+    {
+      "id": "2018-Q5",
+      "f": "x^5/(2+x^12)",
+      "expected": "atan(x^6/sqrt(2))/(6*sqrt(2))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2018-Q8",
+      "f": "sin(cos(sin(x)))*sin(sin(x))*cos(x)",
+      "expected": "cos(cos(sin(x)))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2018-Q13",
+      "f": "(2017*x^2016+2018*x^2017)/(1+x^4034+2*x^4035+x^4036)",
+      "expected": "atan(x^2018+x^2017)",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2018-Q18",
+      "f": "1/sqrt(x*sqrt(x)-x^2)",
+      "expected": "4*asin(x^(1/4))",
+      "samples": [
+        "1/16",
+        "1/8",
+        "1/4",
+        "1/2",
+        "3/4"
+      ]
+    },
+    {
+      "id": "2019-Q1",
+      "f": "tan(cos(x))",
+      "expected": "0",
+      "bounds": [
+        "0",
+        "2*pi"
+      ]
+    },
+    {
+      "id": "2019-Q6",
+      "f": "(cos(3*x)+sin(2*x))*(-sin(2019*x)+cos(3*x))",
+      "expected": "2*pi",
+      "bounds": [
+        "-2*pi",
+        "2*pi"
+      ]
+    },
+    {
+      "id": "2019-Q7",
+      "f": "cos(x)*cos(sin(x))*cos(sin(sin(x)))",
+      "expected": "sin(sin(sin(x)))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2019-Q8",
+      "f": "exp(-2019/(4*x^2))/x^2",
+      "expected": "sqrt(pi/2019)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2019-Q17",
+      "f": "1/(x+surd(x,3))",
+      "expected": "3*ln(1+surd(x,3)^2)/2",
+      "samples": [
+        "-8",
+        "-2",
+        "1/4",
+        "2",
+        "8"
+      ]
+    },
+    {
+      "id": "2020-Q2",
+      "f": "1/(exp(x)+1)",
+      "expected": "ln(2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2020-Q9",
+      "f": "cos(x)^2020",
+      "expected": "2^(-2019)*pi*comb(2020,1010)",
+      "bounds": [
+        "0",
+        "2*pi"
+      ]
+    },
+    {
+      "id": "2020-Q15",
+      "f": "1/(tan(x)^sqrt(2020)+1)",
+      "expected": "pi/4",
+      "bounds": [
+        "0",
+        "pi/2"
+      ]
+    },
+    {
+      "id": "2020-Q16",
+      "f": "x*(1-x)^2020",
+      "expected": "(1-x)^2022/2022-(1-x)^2021/2021",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2020-Q20",
+      "f": "x^5*exp(-x^4)",
+      "expected": "sqrt(pi)/8",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2022-Q5",
+      "f": "x/(sqrt(x-1)+sqrt(x+1))",
+      "expected": "(x+1)^(5/2)/5-(x+1)^(3/2)/3-(x-1)^(5/2)/5-(x-1)^(3/2)/3",
+      "samples": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "7"
+      ]
+    },
+    {
+      "id": "2022-Q7",
+      "f": "x^3*sin(x^2)",
+      "expected": "(sin(x^2)-x^2*cos(x^2))/2",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2022-Q12",
+      "f": "sqrt(1-sqrt(x))",
+      "expected": "8/15",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "2022-Q14",
+      "f": "sin(x+sin(x))-sin(x-sin(x))",
+      "expected": "-2*cos(sin(x))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2022-Q17",
+      "f": "1/(1+sin(x))+1/(1+cos(x))+1/(1+tan(x))+1/(1+cot(x))+1/(1+sec(x))+1/(1+csc(x))",
+      "expected": "3*x",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2023-Q3",
+      "f": "exp(x)/((1+exp(x))*ln(1+exp(x)))",
+      "expected": "ln(ln(1+exp(x)))",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2023-Q9",
+      "f": "(2*ln(x)+1)*exp(ln(x)^2)",
+      "expected": "x*exp(ln(x)^2)",
+      "samples": [
+        "1/4",
+        "1/2",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "id": "2023-Q15",
+      "f": "(1+2*x^2022)/(x+x^2023)",
+      "expected": "ln(abs(x^2022+x^4044))/2022",
+      "samples": [
+        "1/4",
+        "1/2",
+        "3/4",
+        "4/5",
+        "9/10"
+      ]
+    },
+    {
+      "id": "2023-Q16",
+      "f": "3*sin(20*x)*cos(23*x)+20*sin(43*x)",
+      "expected": "sin(20*x)*sin(23*x)",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2023-Q18",
+      "f": "sin(x)/(2*exp(x)+cos(x)+sin(x))",
+      "expected": "(x-ln(abs(2*exp(x)+cos(x)+sin(x))))/2",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2024-Q5",
+      "f": "acos(sin(x))",
+      "expected": "pi^2",
+      "bounds": [
+        "0",
+        "2*pi"
+      ]
+    },
+    {
+      "id": "2024-Q7",
+      "f": "(x^2024-1)/(x^506-1)",
+      "expected": "x+x^507/507+x^1013/1013+x^1519/1519",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    },
+    {
+      "id": "2024-Q11",
+      "f": "csc(x)^2*tan(x)^2024",
+      "expected": "tan(x)^2023/2023",
+      "samples": [
+        "-1/2",
+        "-1/4",
+        "1/4",
+        "1/2",
+        "3/4"
+      ]
+    },
+    {
+      "id": "2024-Q13",
+      "f": "exp(-(x-2024)^2/4)",
+      "expected": "2*sqrt(pi)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "2024-Q19",
+      "f": "x^4/(3-6*x+6*x^2-4*x^3+2*x^4)",
+      "expected": "x/2+ln(3-6*x+6*x^2-4*x^3+2*x^4)/4",
+      "samples": [
+        "-2",
+        "-1/2",
+        "1/3",
+        "3/4",
+        "2"
+      ]
+    }
+  ]
+}

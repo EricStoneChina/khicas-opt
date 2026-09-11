@@ -1,0 +1,932 @@
+{
+  "sources": {
+    "derivations": "docs/GENERALIZATION-CYCLE2.md",
+    "generator": "tests/generate-coverage-cycle2.py"
+  },
+  "notes": "Independent second-cycle examples. All have known closed-form references; no numerical-only or unknown-closed-form cases are silently assigned an exact reference. Principal powers and real surd remain distinct. No principal-value-only integrals.",
+  "summary": {
+    "cases": 61,
+    "indefinite": 12,
+    "definite": 49,
+    "family_labels": 24,
+    "by_family": {
+      "absolute-exponential": 1,
+      "beta-log-weight": 3,
+      "bose-moment": 3,
+      "cauchy-convolution": 5,
+      "cauchy-fourier": 4,
+      "conditional-cosine-difference": 2,
+      "cosine-frullani": 2,
+      "cross-sinc": 2,
+      "exponential-trig": 1,
+      "fermi-moment": 3,
+      "fractional-beta": 4,
+      "fractional-log-parts": 2,
+      "gaussian-convolution": 4,
+      "hyperbolic-parts": 1,
+      "inverse-gaussian": 2,
+      "logistic-high-moment": 2,
+      "logistic-shifted-moment": 2,
+      "mellin-log-weight": 4,
+      "mellin-rational": 4,
+      "nested-log": 2,
+      "phase-laplace": 3,
+      "rational-power": 3,
+      "real-root-rational": 1,
+      "shifted-gaussian-primitive": 1
+    },
+    "by_answer_class": {
+      "elementary-closed-form": 50,
+      "special-function-closed-form": 11
+    },
+    "by_intent": {
+      "near-miss: Mellin logarithmic weight changes value": 4,
+      "near-miss: odd numerator loses parity after shift": 2,
+      "near-miss: phase requires cancellation at zero": 3,
+      "near-miss: shift destroys centered moment": 2,
+      "new-family": 34,
+      "new-family: Fourier transform and translation": 4,
+      "new-family: convolution and noncentral high moments": 4,
+      "parameter-variant: higher dispatch degree": 2,
+      "parameter-variant: scaled high moment": 6
+    }
+  },
+  "cases": [
+    {
+      "id": "C2-gaussian-convolution-01",
+      "family": "gaussian-convolution",
+      "intent": "new-family: convolution and noncentral high moments",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^0*exp(-(1)*(x-(1))^2-(2)*(x-(-2))^2)",
+      "expected": "(1)*sqrt(pi/(3))*exp(-(6))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-gaussian-convolution-02",
+      "family": "gaussian-convolution",
+      "intent": "new-family: convolution and noncentral high moments",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^1*exp(-(2)*(x-(-1))^2-(3)*(x-(2))^2)",
+      "expected": "(4/5)*sqrt(pi/(5))*exp(-(54/5))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-gaussian-convolution-03",
+      "family": "gaussian-convolution",
+      "intent": "new-family: convolution and noncentral high moments",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^6*exp(-(1/2)*(x-(2))^2-(3/2)*(x-(-1))^2)",
+      "expected": "(1741/4096)*sqrt(pi/(2))*exp(-(27/8))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-gaussian-convolution-04",
+      "family": "gaussian-convolution",
+      "intent": "new-family: convolution and noncentral high moments",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^12*exp(-(1)*(x-(0))^2-(1)*(x-(1))^2)",
+      "expected": "(17519/512)*sqrt(pi/(2))*exp(-(1/2))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-cauchy-convolution-01",
+      "family": "cauchy-convolution",
+      "intent": "new-family",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "1/((x^2+(1)^2)*((x-(3))^2+(2)^2))",
+      "expected": "(1/12)*pi",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-cauchy-convolution-02",
+      "family": "cauchy-convolution",
+      "intent": "new-family",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "1/((x^2+(2)^2)*((x-(-1))^2+(3)^2))",
+      "expected": "(5/156)*pi",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-cauchy-convolution-03",
+      "family": "cauchy-convolution",
+      "intent": "new-family",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "1/((x^2+(1/2)^2)*((x-(2))^2+(3/2)^2))",
+      "expected": "(1/3)*pi",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-cauchy-convolution-04",
+      "family": "cauchy-convolution",
+      "intent": "near-miss: odd numerator loses parity after shift",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x/((x^2+1)*((x-(3))^2+4))",
+      "expected": "(1/12)*pi",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-cauchy-convolution-05",
+      "family": "cauchy-convolution",
+      "intent": "near-miss: odd numerator loses parity after shift",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x/((x^2+9)*((x-(-2))^2+1))",
+      "expected": "(-1/10)*pi",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-rational-01",
+      "family": "mellin-rational",
+      "intent": "new-family",
+      "domain": "x>0; 0<p<q; principal powers are positive real",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(1/2-1)/(1+x^(2))",
+      "expected": "pi/((2)*sin(pi*(1/2)/(2)))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-rational-02",
+      "family": "mellin-rational",
+      "intent": "new-family",
+      "domain": "x>0; 0<p<q; principal powers are positive real",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(2/3-1)/(1+x^(5/3))",
+      "expected": "pi/((5/3)*sin(pi*(2/3)/(5/3)))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-rational-03",
+      "family": "mellin-rational",
+      "intent": "new-family",
+      "domain": "x>0; 0<p<q; principal powers are positive real",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(5/4-1)/(1+x^(3))",
+      "expected": "pi/((3)*sin(pi*(5/4)/(3)))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-rational-04",
+      "family": "mellin-rational",
+      "intent": "new-family",
+      "domain": "x>0; 0<p<q; principal powers are positive real",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(2-1)/(1+x^(5))",
+      "expected": "pi/((5)*sin(pi*(2)/(5)))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-log-weight-01",
+      "family": "mellin-log-weight",
+      "intent": "near-miss: Mellin logarithmic weight changes value",
+      "domain": "x>0; 0<p<q",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(1-1)*ln(x)^1/(1+x^(3))",
+      "expected": "-pi^2/(3)^2*cos((pi*(1)/(3)))/sin((pi*(1)/(3)))^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-log-weight-02",
+      "family": "mellin-log-weight",
+      "intent": "near-miss: Mellin logarithmic weight changes value",
+      "domain": "x>0; 0<p<q",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(2-1)*ln(x)^1/(1+x^(3))",
+      "expected": "-pi^2/(3)^2*cos((pi*(2)/(3)))/sin((pi*(2)/(3)))^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-log-weight-03",
+      "family": "mellin-log-weight",
+      "intent": "near-miss: Mellin logarithmic weight changes value",
+      "domain": "x>0; 0<p<q",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(1/2-1)*ln(x)^1/(1+x^(2))",
+      "expected": "-pi^2/(2)^2*cos((pi*(1/2)/(2)))/sin((pi*(1/2)/(2)))^2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-mellin-log-weight-04",
+      "family": "mellin-log-weight",
+      "intent": "near-miss: Mellin logarithmic weight changes value",
+      "domain": "x>0; 0<p<q",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(1-1)*ln(x)^2/(1+x^(4))",
+      "expected": "pi^3/(4)^3*(1+2*(cos((pi*(1)/(4)))/sin((pi*(1)/(4))))^2)/sin((pi*(1)/(4)))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-fractional-beta-01",
+      "family": "fractional-beta",
+      "intent": "new-family",
+      "domain": "0<x<1; integrable endpoint singularities",
+      "answer_class": "special-function-closed-form",
+      "f": "x^(1/3-1)*(1-x)^(2/3-1)",
+      "expected": "Gamma(1/3)*Gamma(2/3)/Gamma(1)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C2-fractional-beta-02",
+      "family": "fractional-beta",
+      "intent": "new-family",
+      "domain": "0<x<1; integrable endpoint singularities",
+      "answer_class": "special-function-closed-form",
+      "f": "x^(2/3-1)*(1-x)^(4/3-1)",
+      "expected": "Gamma(2/3)*Gamma(4/3)/Gamma(2)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C2-fractional-beta-03",
+      "family": "fractional-beta",
+      "intent": "new-family",
+      "domain": "0<x<1; integrable endpoint singularities",
+      "answer_class": "special-function-closed-form",
+      "f": "x^(3/4-1)*(1-x)^(1/4-1)",
+      "expected": "Gamma(3/4)*Gamma(1/4)/Gamma(1)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C2-fractional-beta-04",
+      "family": "fractional-beta",
+      "intent": "new-family",
+      "domain": "0<x<1; integrable endpoint singularities",
+      "answer_class": "special-function-closed-form",
+      "f": "x^(3/2-1)*(1-x)^(5/3-1)",
+      "expected": "Gamma(3/2)*Gamma(5/3)/Gamma(19/6)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C2-beta-log-weight-01",
+      "family": "beta-log-weight",
+      "intent": "new-family",
+      "domain": "0<x<1; logarithmic endpoint singularities",
+      "answer_class": "elementary-closed-form",
+      "f": "(ln(x))/sqrt(x*(1-x))",
+      "expected": "-2*pi*ln(2)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C2-beta-log-weight-02",
+      "family": "beta-log-weight",
+      "intent": "new-family",
+      "domain": "0<x<1; logarithmic endpoint singularities",
+      "answer_class": "elementary-closed-form",
+      "f": "(ln(x)^2)/sqrt(x*(1-x))",
+      "expected": "pi*(4*ln(2)^2+pi^2/3)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C2-beta-log-weight-03",
+      "family": "beta-log-weight",
+      "intent": "new-family",
+      "domain": "0<x<1; logarithmic endpoint singularities",
+      "answer_class": "elementary-closed-form",
+      "f": "(ln(x)*ln(1-x))/sqrt(x*(1-x))",
+      "expected": "pi*(4*ln(2)^2-pi^2/6)",
+      "bounds": [
+        "0",
+        "1"
+      ]
+    },
+    {
+      "id": "C2-bose-moment-01",
+      "family": "bose-moment",
+      "intent": "parameter-variant: scaled high moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "special-function-closed-form",
+      "f": "x^2/(exp((2)*x)-1)",
+      "expected": "(1/4)*Zeta(3)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C2-bose-moment-02",
+      "family": "bose-moment",
+      "intent": "parameter-variant: scaled high moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "special-function-closed-form",
+      "f": "x^4/(exp((1/2)*x)-1)",
+      "expected": "(768)*Zeta(5)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C2-bose-moment-03",
+      "family": "bose-moment",
+      "intent": "parameter-variant: scaled high moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "special-function-closed-form",
+      "f": "x^9/(exp((3)*x)-1)",
+      "expected": "(4480/729)*Zeta(10)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C2-fermi-moment-01",
+      "family": "fermi-moment",
+      "intent": "parameter-variant: scaled high moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "special-function-closed-form",
+      "f": "x^3/(exp((2)*x)+1)",
+      "expected": "(21/64)*Zeta(4)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": null
+      }
+    },
+    {
+      "id": "C2-fermi-moment-02",
+      "family": "fermi-moment",
+      "intent": "parameter-variant: scaled high moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "special-function-closed-form",
+      "f": "x^6/(exp((3/2)*x)+1)",
+      "expected": "(1120/27)*Zeta(7)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": null
+      }
+    },
+    {
+      "id": "C2-fermi-moment-03",
+      "family": "fermi-moment",
+      "intent": "parameter-variant: scaled high moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "special-function-closed-form",
+      "f": "x^11/(exp((1)*x)+1)",
+      "expected": "(319178475/8)*Zeta(12)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": null
+      }
+    },
+    {
+      "id": "C2-logistic-high-moment-01",
+      "family": "logistic-high-moment",
+      "intent": "parameter-variant: higher dispatch degree",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^12/(exp((3/2)*x)+exp(-(3/2)*x)+2)",
+      "expected": "(11587395584/2176250895)*pi^12",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-logistic-high-moment-02",
+      "family": "logistic-high-moment",
+      "intent": "parameter-variant: higher dispatch degree",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^14/(exp((2)*x)+exp(-(2)*x)+2)",
+      "expected": "(57337/98304)*pi^14",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-logistic-shifted-moment-01",
+      "family": "logistic-shifted-moment",
+      "intent": "near-miss: shift destroys centered moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^4/(exp((2)*(x-(3)))+exp(-(2)*(x-(3)))+2)",
+      "expected": "(81/2)*(1)+(27/4)*(pi^2/3)+(1/32)*(7*pi^4/15)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-logistic-shifted-moment-02",
+      "family": "logistic-shifted-moment",
+      "intent": "near-miss: shift destroys centered moment",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "x^6/(exp((1/2)*(x-(-2)))+exp(-(1/2)*(x-(-2)))+2)",
+      "expected": "(128)*(1)+(1920)*(pi^2/3)+(1920)*(7*pi^4/15)+(128)*(31*pi^6/21)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-phase-laplace-01",
+      "family": "phase-laplace",
+      "intent": "near-miss: phase requires cancellation at zero",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-3*x)*(sin((2)*x+(pi/3))-sin(pi/3))/x",
+      "expected": "cos(pi/3)*atan((2)/3)-sin(pi/3)*ln(1+((2)/3)^2)/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "(2)*cos(pi/3)"
+      }
+    },
+    {
+      "id": "C2-phase-laplace-02",
+      "family": "phase-laplace",
+      "intent": "near-miss: phase requires cancellation at zero",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-2*x)*(sin((-3)*x+(pi/4))-sin(pi/4))/x",
+      "expected": "cos(pi/4)*atan((-3)/2)-sin(pi/4)*ln(1+((-3)/2)^2)/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "(-3)*cos(pi/4)"
+      }
+    },
+    {
+      "id": "C2-phase-laplace-03",
+      "family": "phase-laplace",
+      "intent": "near-miss: phase requires cancellation at zero",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-1*x)*(sin((1/2)*x+(-pi/6))-sin(-pi/6))/x",
+      "expected": "cos(-pi/6)*atan((1/2)/1)-sin(-pi/6)*ln(1+((1/2)/1)^2)/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "(1/2)*cos(-pi/6)"
+      }
+    },
+    {
+      "id": "C2-cosine-frullani-01",
+      "family": "cosine-frullani",
+      "intent": "new-family",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-2*x)*(cos((1)*x)-cos((3)*x))/x",
+      "expected": "ln((4+(3)^2)/(4+(1)^2))/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C2-cosine-frullani-02",
+      "family": "cosine-frullani",
+      "intent": "new-family",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-3*x)*(cos((1/2)*x)-cos((2)*x))/x",
+      "expected": "ln((9+(2)^2)/(9+(1/2)^2))/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C2-conditional-cosine-difference-01",
+      "family": "conditional-cosine-difference",
+      "intent": "new-family",
+      "domain": "removable at zero; ordinary conditionally convergent integral",
+      "answer_class": "elementary-closed-form",
+      "f": "(cos(1*x)-cos(2*x))/x",
+      "expected": "ln(2/1)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C2-conditional-cosine-difference-02",
+      "family": "conditional-cosine-difference",
+      "intent": "new-family",
+      "domain": "removable at zero; ordinary conditionally convergent integral",
+      "answer_class": "elementary-closed-form",
+      "f": "(cos(3*x)-cos(1*x))/x",
+      "expected": "ln(1/3)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "0"
+      }
+    },
+    {
+      "id": "C2-cross-sinc-01",
+      "family": "cross-sinc",
+      "intent": "new-family",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "sin(1*x)*sin(3*x)/x^2",
+      "expected": "1*pi/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "3"
+      }
+    },
+    {
+      "id": "C2-cross-sinc-02",
+      "family": "cross-sinc",
+      "intent": "new-family",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "sin(2*x)*sin(5*x)/x^2",
+      "expected": "2*pi/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "10"
+      }
+    },
+    {
+      "id": "C2-cauchy-fourier-01",
+      "family": "cauchy-fourier",
+      "intent": "new-family: Fourier transform and translation",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "cos(2*x)/((x-(0))^2+(1)^2)",
+      "expected": "pi/(1)*exp(-(1)*2)*cos(2*(0))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "2"
+      }
+    },
+    {
+      "id": "C2-cauchy-fourier-02",
+      "family": "cauchy-fourier",
+      "intent": "new-family: Fourier transform and translation",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "cos(3*x)/((x-(0))^2+(2)^2)",
+      "expected": "pi/(2)*exp(-(2)*3)*cos(3*(0))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "3"
+      }
+    },
+    {
+      "id": "C2-cauchy-fourier-03",
+      "family": "cauchy-fourier",
+      "intent": "new-family: Fourier transform and translation",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "cos(1*x)/((x-(3))^2+(2)^2)",
+      "expected": "pi/(2)*exp(-(2)*1)*cos(1*(3))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1"
+      }
+    },
+    {
+      "id": "C2-cauchy-fourier-04",
+      "family": "cauchy-fourier",
+      "intent": "new-family: Fourier transform and translation",
+      "domain": "real integrand on the stated interval",
+      "answer_class": "elementary-closed-form",
+      "f": "cos(2*x)/((x-(-1))^2+(1/2)^2)",
+      "expected": "pi/(1/2)*exp(-(1/2)*2)*cos(2*(-1))",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "2"
+      }
+    },
+    {
+      "id": "C2-rational-power-01",
+      "family": "rational-power",
+      "intent": "new-family",
+      "domain": "x>0",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(-2/3)/(1+x^(1/3))",
+      "expected": "3*ln(1+x^(1/3))",
+      "samples": [
+        "1/8",
+        "1",
+        "8"
+      ]
+    },
+    {
+      "id": "C2-real-root-rational-01",
+      "family": "real-root-rational",
+      "intent": "new-family",
+      "domain": "real x excluding -1 and 0",
+      "answer_class": "elementary-closed-form",
+      "f": "1/(surd(x,3)^2*(1+surd(x,3))^2)",
+      "expected": "-3/(1+surd(x,3))",
+      "samples": [
+        "-8",
+        "-1/8",
+        "1/8",
+        "8"
+      ]
+    },
+    {
+      "id": "C2-rational-power-02",
+      "family": "rational-power",
+      "intent": "new-family",
+      "domain": "x>0",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(-1/3)*sqrt(2+3*x^(2/3))",
+      "expected": "(2+3*x^(2/3))^(3/2)/3",
+      "samples": [
+        "1/8",
+        "1",
+        "8"
+      ]
+    },
+    {
+      "id": "C2-rational-power-03",
+      "family": "rational-power",
+      "intent": "new-family",
+      "domain": "x>0",
+      "answer_class": "elementary-closed-form",
+      "f": "x^(-1/2)/(1+sqrt(x))^2",
+      "expected": "-2/(1+sqrt(x))",
+      "samples": [
+        "1/4",
+        "1",
+        "4"
+      ]
+    },
+    {
+      "id": "C2-shifted-gaussian-primitive-01",
+      "family": "shifted-gaussian-primitive",
+      "intent": "new-family",
+      "domain": "real line",
+      "answer_class": "special-function-closed-form",
+      "f": "exp(-2*x^2+3*x)",
+      "expected": "sqrt(pi)*exp(9/8)*erf(sqrt(2)*x-3/(2*sqrt(2)))/(2*sqrt(2))",
+      "samples": [
+        "-3/2",
+        "1/3",
+        "5/2"
+      ]
+    },
+    {
+      "id": "C2-hyperbolic-parts-01",
+      "family": "hyperbolic-parts",
+      "intent": "new-family",
+      "domain": "real line",
+      "answer_class": "elementary-closed-form",
+      "f": "asinh(x)",
+      "expected": "x*asinh(x)-sqrt(1+x^2)",
+      "samples": [
+        "-3/2",
+        "1/3",
+        "5/2"
+      ]
+    },
+    {
+      "id": "C2-exponential-trig-01",
+      "family": "exponential-trig",
+      "intent": "new-family",
+      "domain": "real line",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(x)*cos(2*x)",
+      "expected": "exp(x)*(cos(2*x)+2*sin(2*x))/5",
+      "samples": [
+        "-3/2",
+        "1/3",
+        "5/2"
+      ]
+    },
+    {
+      "id": "C2-nested-log-01",
+      "family": "nested-log",
+      "intent": "new-family",
+      "domain": "x>exp(1)",
+      "answer_class": "elementary-closed-form",
+      "f": "1/(x*ln(x)*ln(ln(x)))",
+      "expected": "ln(abs(ln(ln(x))))",
+      "samples": [
+        "exp(2)",
+        "exp(3)",
+        "exp(4)"
+      ]
+    },
+    {
+      "id": "C2-nested-log-02",
+      "family": "nested-log",
+      "intent": "new-family",
+      "domain": "x>1",
+      "answer_class": "elementary-closed-form",
+      "f": "1/(x*sqrt(ln(x)))",
+      "expected": "2*sqrt(ln(x))",
+      "samples": [
+        "2",
+        "3",
+        "5"
+      ]
+    },
+    {
+      "id": "C2-fractional-log-parts-01",
+      "family": "fractional-log-parts",
+      "intent": "new-family",
+      "domain": "x>0",
+      "answer_class": "elementary-closed-form",
+      "f": "sqrt(x)*ln(x)",
+      "expected": "x^(3/2)*(2*ln(x)/3-4/9)",
+      "samples": [
+        "1/4",
+        "1",
+        "4"
+      ]
+    },
+    {
+      "id": "C2-fractional-log-parts-02",
+      "family": "fractional-log-parts",
+      "intent": "new-family",
+      "domain": "x>0",
+      "answer_class": "elementary-closed-form",
+      "f": "ln(x)/x^(3/2)",
+      "expected": "-(2*ln(x)+4)/sqrt(x)",
+      "samples": [
+        "1/4",
+        "1",
+        "4"
+      ]
+    },
+    {
+      "id": "C2-absolute-exponential-01",
+      "family": "absolute-exponential",
+      "intent": "new-family",
+      "domain": "real line; continuous primitive at x=2",
+      "answer_class": "elementary-closed-form",
+      "f": "abs(x-2)*exp(abs(x-2))",
+      "expected": "sign(x-2)*((abs(x-2)-1)*exp(abs(x-2))+1)",
+      "samples": [
+        "-1",
+        "1",
+        "3",
+        "5"
+      ]
+    },
+    {
+      "id": "C2-inverse-gaussian-01",
+      "family": "inverse-gaussian",
+      "intent": "new-family",
+      "domain": "x>0; exponential suppression at both endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-1*x-1/x)/sqrt(x)",
+      "expected": "sqrt(pi/1)*exp(-2*sqrt(1))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C2-inverse-gaussian-02",
+      "family": "inverse-gaussian",
+      "intent": "new-family",
+      "domain": "x>0; exponential suppression at both endpoints",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-2*x-3/x)/sqrt(x)",
+      "expected": "sqrt(pi/2)*exp(-2*sqrt(6))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    }
+  ]
+}

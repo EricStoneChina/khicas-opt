@@ -1,0 +1,157 @@
+{
+  "sources": {
+    "derivations": "docs/GENERALIZATION-CYCLE7.md",
+    "generator": "tests/generate-coverage-cycle7.py"
+  },
+  "notes": "Independent audit frozen after c977aa0, checkpoint/integration-cycle6-2026a, before tested-engine evaluation. Two proved primitives, six ordinarily absolutely convergent definite integrals, two explicit resource-growth probes. No unknown-closed-form or PV placeholders.",
+  "summary": {
+    "cases": 8,
+    "definite": 6,
+    "indefinite": 2,
+    "resource_growth": 2,
+    "by_answer_class": {
+      "elementary-closed-form": 7,
+      "special-function-closed-form": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "C7-quadratic-radical-atan-parts-01",
+      "family": "quadratic-radical-atan-parts",
+      "intent": "structural-composition",
+      "domain": "all real x; x^2+x+1>=3/4; principal positive square root",
+      "answer_class": "elementary-closed-form",
+      "f": "(2*x+1)*atan(sqrt(x^2+x+1))/sqrt(x^2+x+1)",
+      "expected": "2*sqrt(x^2+x+1)*atan(sqrt(x^2+x+1))-ln(x^2+x+2)",
+      "samples": [
+        "-3",
+        "-1/2",
+        "1/5",
+        "1",
+        "4"
+      ]
+    },
+    {
+      "id": "C7-nested-root-degree-boundary-01",
+      "family": "nested-root-degree-boundary",
+      "intent": "resource-expression-growth",
+      "domain": "x>0; all fractional-power bases positive",
+      "answer_class": "elementary-closed-form",
+      "f": "(1+x^(1/17))^(1/19)/x^(16/17)",
+      "expected": "323*(1+x^(1/17))^(20/19)/20",
+      "samples": [
+        "1/1000",
+        "1/7",
+        "1",
+        "17",
+        "1000"
+      ],
+      "verification": {
+        "resource_note": "Keep two nested radicals compact; a generic algebraic extension can have degree 17*19=323."
+      }
+    },
+    {
+      "id": "C7-composed-high-power-beta-boundary-01",
+      "family": "composed-high-power-beta-boundary",
+      "intent": "resource-expression-growth",
+      "domain": "0<=x<=(sqrt(5)-1)/2; x^2+x increases from 0 to 1",
+      "answer_class": "elementary-closed-form",
+      "f": "(2*x+1)*(x^2+x)^15*(1-(x^2+x)^16)^2048",
+      "expected": "1/32784",
+      "bounds": [
+        "0",
+        "(sqrt(5)-1)/2"
+      ],
+      "verification": {
+        "alternate_f": "(1-x)^2048/16",
+        "alternate_bounds": [
+          "0",
+          "1"
+        ],
+        "resource_note": "Nested expansion has degree 65567; substitution gives a short exact rational result."
+      }
+    },
+    {
+      "id": "C7-erf-erfc-product-01",
+      "family": "erf-erfc-product",
+      "intent": "structural-composition",
+      "domain": "x>=0; O(x) at zero and Gaussian decay at infinity",
+      "answer_class": "elementary-closed-form",
+      "f": "erf(x)*erfc(x)",
+      "expected": "(sqrt(2)-1)/sqrt(pi)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    },
+    {
+      "id": "C7-radical-cauchy-log-moment-01",
+      "family": "radical-cauchy-log-moment",
+      "intent": "structural-composition",
+      "domain": "x>=0; O(x^2) at zero and O(ln(x)/x^3) at infinity",
+      "answer_class": "elementary-closed-form",
+      "f": "ln(1+x^2)/(1+x^2)^(3/2)",
+      "expected": "2-2*ln(2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "alternate_f": "-ln(1-x^2)",
+        "alternate_bounds": [
+          "0",
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "C7-damped-sine-linear-cancellation-01",
+      "family": "damped-sine-linear-cancellation",
+      "intent": "structural-composition",
+      "domain": "x>0; numerator cancels to third order; ordinary absolute convergence",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-x)*(sin(2*x)-2*x)/x^2",
+      "expected": "2-atan(2)-ln(5)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "stable_near_zero": "sine-minus-linear-series"
+      }
+    },
+    {
+      "id": "C7-mobius-logit-cauchy-01",
+      "family": "mobius-logit-cauchy",
+      "intent": "structural-composition",
+      "domain": "0<x<1; real logarithm; squared logarithmic singularity at 1 is integrable",
+      "answer_class": "elementary-closed-form",
+      "f": "ln((1+x)/(1-x))^2/(1+x^2)",
+      "expected": "pi^3/16",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "verification": {
+        "alternate_f": "ln(x)^2/(1+x^2)",
+        "alternate_bounds": [
+          "1",
+          "+infinity"
+        ]
+      }
+    },
+    {
+      "id": "C7-log-sine-cosine-sum-01",
+      "family": "log-sine-cosine-sum",
+      "intent": "structural-composition",
+      "domain": "0<=x<=pi/2; sin(x)+cos(x)>=1",
+      "answer_class": "special-function-closed-form",
+      "f": "ln(sin(x)+cos(x))",
+      "expected": "(Psi(1/4,1)-Psi(3/4,1))/16-pi*ln(2)/4",
+      "bounds": [
+        "0",
+        "pi/2"
+      ]
+    }
+  ]
+}

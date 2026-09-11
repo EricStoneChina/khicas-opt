@@ -1,0 +1,77 @@
+{
+  "scope": "Non-integration simplification regression fixtures; expressions may be parsed on the main stack then passed directly to _simplify on a guarded worker stack. Expected identities use only already-compact unary compositions and x+x=2*x or3*x-2*x=x.",
+  "cases": [
+    {
+      "id": "sin-depth-14",
+      "expression": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x))))))))))))))",
+      "expected": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x))))))))))))))",
+      "purpose": "A pure unary composition is already compact and must not crash."
+    },
+    {
+      "id": "sin-depth-15",
+      "expression": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x)))))))))))))))",
+      "expected": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x)))))))))))))))",
+      "purpose": "A pure unary composition is already compact and must not crash."
+    },
+    {
+      "id": "sin-depth-16",
+      "expression": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x))))))))))))))))",
+      "expected": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x))))))))))))))))",
+      "purpose": "A pure unary composition is already compact and must not crash."
+    },
+    {
+      "id": "sin-depth-24",
+      "expression": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x))))))))))))))))))))))))",
+      "expected": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x))))))))))))))))))))))))",
+      "purpose": "A pure unary composition is already compact and must not crash."
+    },
+    {
+      "id": "sin-depth-33",
+      "expression": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x)))))))))))))))))))))))))))))))))",
+      "expected": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x)))))))))))))))))))))))))))))))))",
+      "purpose": "A pure unary composition is already compact and must not crash."
+    },
+    {
+      "id": "erf-depth-16",
+      "expression": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(x))))))))))))))))",
+      "expected": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(x))))))))))))))))",
+      "purpose": "A pure unary composition is already compact and must not crash."
+    },
+    {
+      "id": "erf-depth-24",
+      "expression": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(x))))))))))))))))))))))))",
+      "expected": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(x))))))))))))))))))))))))",
+      "purpose": "A pure unary composition is already compact and must not crash."
+    },
+    {
+      "id": "sin-depth-16-cheap-inner-algebra",
+      "expression": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x+x))))))))))))))))",
+      "expected": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(2*x))))))))))))))))",
+      "purpose": "Preserve cheap inner rational simplification while avoiding deep global heuristic recursion."
+    },
+    {
+      "id": "sin-depth-24-cheap-inner-algebra",
+      "expression": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(x+x))))))))))))))))))))))))",
+      "expected": "sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(sin(2*x))))))))))))))))))))))))",
+      "purpose": "Preserve cheap inner rational simplification while avoiding deep global heuristic recursion."
+    },
+    {
+      "id": "erf-depth-16-cheap-inner-algebra",
+      "expression": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(3*x-2*x))))))))))))))))",
+      "expected": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(x))))))))))))))))",
+      "purpose": "Preserve cheap inner rational simplification while avoiding deep global heuristic recursion."
+    },
+    {
+      "id": "erf-depth-24-cheap-inner-algebra",
+      "expression": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(3*x-2*x))))))))))))))))))))))))",
+      "expected": "erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(erf(x))))))))))))))))))))))))",
+      "purpose": "Preserve cheap inner rational simplification while avoiding deep global heuristic recursion."
+    },
+    {
+      "id": "nested-vector-40",
+      "expression": "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[x+x]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+      "expected": "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[2*x]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+      "purpose": "Exercise _simplify vector dispatch before the old internal guard."
+    }
+  ]
+}

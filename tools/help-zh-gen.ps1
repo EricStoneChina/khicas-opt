@@ -1,6 +1,6 @@
-# help-zh-gen.ps1 - generate giacbf/static_helpzh.h (Chinese help)
-# Input : giacbf/static_help.h (UTF-8 master) + tools/help-zh.json (translations)
-# Output: giacbf/static_helpzh.h (pure-ASCII C source)
+# help-zh-gen.ps1 - generate static_helpzh.h (Chinese help)
+# Input : static_helpen.h (UTF-8 English master) + tools/help-zh.json
+# Output: static_helpzh.h (pure-ASCII C source)
 #
 # JSON schema (both forms accepted):
 #   "cmd": "中文说明"                                        (howto only)
@@ -13,9 +13,10 @@
 # ASCII-only script body (PS 5.1 reads scripts as ANSI). File IO is explicit.
 $ErrorActionPreference = 'Stop'
 
-$masterPath = 'D:\GitHub\khicas-opt\giacbf\static_help.h'
-$jsonPath   = 'D:\GitHub\khicas-opt\tools\help-zh.json'
-$outPath    = 'D:\GitHub\khicas-opt\giacbf\static_helpzh.h'
+$root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$masterPath = Join-Path $root 'static_helpen.h'
+$jsonPath   = Join-Path $root 'tools\help-zh.json'
+$outPath    = Join-Path $root 'static_helpzh.h'
 
 $utf8 = New-Object System.Text.UTF8Encoding($false)   # no BOM
 # master read as Latin-1 (1 byte == 1 char) so byte-wise C-literal parsing is safe
@@ -93,6 +94,8 @@ function To-MarkedGB18030([string]$text) {
             [void]$sb.Append('\x')
             [void]$sb.Append($b.ToString('x2'))
             [void]$sb.Append('""')
+        } elseif ($b -eq 10) { [void]$sb.Append('\n')
+        } elseif ($b -eq 13) { [void]$sb.Append('\r')
         } elseif ($b -eq 0x22) { [void]$sb.Append('\"')
         } elseif ($b -eq 0x5C) { [void]$sb.Append('\\')
         } else { [void]$sb.Append([char]$b) }
@@ -114,9 +117,9 @@ function To-PlainCString([string]$text) {
     return $sb.ToString()
 }
 
-# data field order in static_help.h is: name,{howto*5},syntax,EXAMPLES,RELATED
-# (the struct in khelpfr.cc names the last two the other way round)
-$linePat = '^\{(?<name>"(?:[^"\\]|\\.)*"|0),\{(?<h0>(?:"(?:[^"\\]|\\.)*"|0)),(?<h1>(?:"(?:[^"\\]|\\.)*"|0)),(?<h2>(?:"(?:[^"\\]|\\.)*"|0)),(?<h3>(?:"(?:[^"\\]|\\.)*"|0)),(?<h4>(?:"(?:[^"\\]|\\.)*"|0))\},(?<syntax>(?:"(?:[^"\\]|\\.)*"|0)),(?<examples>(?:"(?:[^"\\]|\\.)*"|0)),(?<related>(?:"(?:[^"\\]|\\.)*"|0))\},?$'
+# static_helpen.h fields are: name,HOWTO,SYNTAX,EXAMPLES,RELATED.
+$literal = '(?:"(?:[^"\\]|\\.)*"|0)'
+$linePat = '^\{(?<name>' + $literal + '),(?<howto>' + $literal + '),(?<syntax>' + $literal + '),(?<examples>' + $literal + '),(?<related>' + $literal + ')\},?$'
 $re = New-Object System.Text.RegularExpressions.Regex($linePat)
 
 $out = New-Object System.Text.StringBuilder
@@ -130,7 +133,7 @@ foreach ($line in $master -split "`n") {
     $total++
 
     $nameLit  = $m.Groups['name'].Value
-    $h1       = $m.Groups['h1'].Value
+    $masterHowto = $m.Groups['howto'].Value
     $syntax   = $m.Groups['syntax'].Value
     $examples = $m.Groups['examples'].Value   # 4th data field = real examples
     $related  = $m.Groups['related'].Value    # 5th data field = real related
@@ -154,7 +157,7 @@ foreach ($line in $master -split "`n") {
     }
 
     if ($zhHowto) { $howto = To-MarkedGB18030 $zhHowto; $translated++ }
-    else { $howto = $h1 }
+    else { $howto = $masterHowto }
 
     $exField = $examples
     if ($zhEx1) {

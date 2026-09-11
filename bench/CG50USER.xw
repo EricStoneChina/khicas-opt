@@ -1,0 +1,10 @@
+// After loading once, use ct(1) through ct(5).
+ct(n):={
+ local x;
+ if (n==1) return time(simplify(integrate(atan(sqrt(x^2+2))/((x^2+1)*sqrt(x^2+2)),x,0,1)),"resources");
+ if (n==2) return time(simplify(integrate(1/(5-3*cos(x)),x,0,2*pi)),"resources");
+ if (n==3) return time(simplify(integrate(acos(cos(x)/(1+2*cos(x))),x,0,pi/2)),"resources");
+ if (n==4) return time(simplify(integrate((atan(pi*x)-atan(x))/x,x,0,+infinity)),"resources");
+ if (n==5) return time(simplify(integrate(ln(ln(1/x))/(1+x^2),x,0,1)),"resources");
+ return "ct(1) to ct(5)";
+};

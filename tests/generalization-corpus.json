@@ -1,0 +1,2287 @@
+{
+  "sources": {
+    "generated-identities": "docs/GENERALIZATION-CORPUS.md",
+    "generator": "tests/generate-coverage.py"
+  },
+  "notes": "Original deterministic identity-based examples, not a contest answer archive. Family labels distinguish mathematical structures from parameter variants. All expected fields are actual reference values or primitives; unresolved engine output is not success. ln is natural logarithm; ^ uses principal powers; surd is a real odd root; infinity has explicit sign. Indefinite sampled differentiation does not prove global continuity.",
+  "summary": {
+    "cases": 152,
+    "definite": 71,
+    "indefinite": 81,
+    "family_labels": 53,
+    "mathematical_groups": 17,
+    "by_mathematical_group": {
+      "absolute-values": 6,
+      "algebraic-substitution": 30,
+      "elementary-composition": 7,
+      "endpoint-improper": 5,
+      "gaussian": 7,
+      "infinite-decay": 7,
+      "integration-by-parts": 8,
+      "log-integral-identities": 5,
+      "logistic-density": 13,
+      "oscillatory-dirichlet": 15,
+      "periodic-trig-reciprocal": 11,
+      "quadratic-radicals": 5,
+      "rational-functions": 6,
+      "reciprocal-quartic": 12,
+      "special-primitives": 2,
+      "trig-hyperbolic-identities": 5,
+      "weighted-reflection": 8
+    },
+    "by_family": {
+      "absolute-trig": 2,
+      "absolute-value": 4,
+      "binomial-chain": 18,
+      "binomial-neighbor": 4,
+      "composition": 3,
+      "damped-dirichlet": 2,
+      "endpoint-beta": 2,
+      "endpoint-log": 3,
+      "exponential-substitution": 2,
+      "frullani": 1,
+      "gamma-decay": 2,
+      "gaussian-fourier": 1,
+      "gaussian-moment": 4,
+      "gaussian-neighbor": 1,
+      "gaussian-shift": 1,
+      "hyperbolic-product": 1,
+      "hyperbolic-substitution": 2,
+      "inverse-function-parts": 2,
+      "log-trig": 2,
+      "logarithmic-substitution": 2,
+      "logistic-moment": 10,
+      "logistic-neighbor": 1,
+      "logistic-shift": 2,
+      "mellin-log": 2,
+      "parts-exponential": 2,
+      "parts-logarithmic": 2,
+      "parts-trigonometric": 2,
+      "polynomial-expansion": 4,
+      "principal-power": 1,
+      "quartic-neighbor": 6,
+      "quartic-trig": 8,
+      "radical-logarithm": 1,
+      "rational-division": 1,
+      "rational-exponential": 2,
+      "rational-irreducible": 2,
+      "rational-log-derivative": 1,
+      "rational-repeated-pole": 1,
+      "rational-simple-poles": 1,
+      "rational-tail": 3,
+      "real-odd-root": 2,
+      "reciprocal-quartic": 6,
+      "root-substitution": 1,
+      "shifted-dirichlet": 1,
+      "sine-dirichlet": 9,
+      "special-function": 2,
+      "squared-sinc": 3,
+      "trig-identity-neighbor": 3,
+      "trig-logarithm": 1,
+      "trig-power": 2,
+      "trig-product": 1,
+      "trig-substitution": 2,
+      "weighted-reflection": 5,
+      "weighted-reflection-neighbor": 3
+    },
+    "by_intent": {
+      "coverage": 62,
+      "near-miss: binomial q outside dispatch": 4,
+      "near-miss: d negative, local real domain": 1,
+      "near-miss: degree exceeds dispatch": 1,
+      "near-miss: denominator changes": 3,
+      "near-miss: denominator constant removed": 1,
+      "near-miss: even power requires different decay": 3,
+      "near-miss: exponential phases change moment": 2,
+      "near-miss: interval lacks reflection symmetry": 1,
+      "near-miss: negative cosine-square coefficient": 1,
+      "near-miss: negative exponent or third term": 4,
+      "near-miss: nonconstant multiplier": 2,
+      "near-miss: nonlinear weight": 1,
+      "near-miss: numerator identity fails": 3,
+      "near-miss: odd power exceeds dispatch": 1,
+      "near-miss: phase and lower bound change value": 1,
+      "near-miss: quartic exponential": 1,
+      "near-miss: radical constant identity fails": 2,
+      "parameter-variant": 58
+    }
+  },
+  "cases": [
+    {
+      "id": "GEN-binomial-chain-01",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^1*(2+(3)*x^2)^(7)",
+      "expected": "(1/48)*(2+(3)*x^2)^(8)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-02",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^5*(1+(2)*x^3)^(9)",
+      "expected": "(-1/120)*(1+(2)*x^3)^(10)+(1/132)*(1+(2)*x^3)^(11)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-03",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^5*(3+(1)*x^2)^(4)",
+      "expected": "(9/10)*(3+(1)*x^2)^(5)+(-1/2)*(3+(1)*x^2)^(6)+(1/14)*(3+(1)*x^2)^(7)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-04",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^15*(2+(1)*x^4)^(3)",
+      "expected": "(-1/2)*(2+(1)*x^4)^(4)+(3/5)*(2+(1)*x^4)^(5)+(-1/4)*(2+(1)*x^4)^(6)+(1/28)*(2+(1)*x^4)^(7)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-05",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^9*(1+(1)*x^2)^(2)",
+      "expected": "(1/6)*(1+(1)*x^2)^(3)+(-1/2)*(1+(1)*x^2)^(4)+(3/5)*(1+(1)*x^2)^(5)+(-1/3)*(1+(1)*x^2)^(6)+(1/14)*(1+(1)*x^2)^(7)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-06",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^11*(2+(1)*x^2)^(3)",
+      "expected": "(-4)*(2+(1)*x^2)^(4)+(8)*(2+(1)*x^2)^(5)+(-20/3)*(2+(1)*x^2)^(6)+(20/7)*(2+(1)*x^2)^(7)+(-5/8)*(2+(1)*x^2)^(8)+(1/18)*(2+(1)*x^2)^(9)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-07",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^13*(1+(2)*x^2)^(2)",
+      "expected": "(1/768)*(1+(2)*x^2)^(3)+(-3/512)*(1+(2)*x^2)^(4)+(3/256)*(1+(2)*x^2)^(5)+(-5/384)*(1+(2)*x^2)^(6)+(15/1792)*(1+(2)*x^2)^(7)+(-3/1024)*(1+(2)*x^2)^(8)+(1/2304)*(1+(2)*x^2)^(9)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-08",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^15*(3+(1)*x^2)^(1)",
+      "expected": "(-2187/4)*(3+(1)*x^2)^(2)+(1701/2)*(3+(1)*x^2)^(3)+(-5103/8)*(3+(1)*x^2)^(4)+(567/2)*(3+(1)*x^2)^(5)+(-315/4)*(3+(1)*x^2)^(6)+(27/2)*(3+(1)*x^2)^(7)+(-21/16)*(3+(1)*x^2)^(8)+(1/18)*(3+(1)*x^2)^(9)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-09",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^4*(3+(-1)*x^5)^(11)",
+      "expected": "(-1/60)*(3+(-1)*x^5)^(12)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-10",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^8*(-2+(3)*x^3)^(5)",
+      "expected": "(2/243)*(-2+(3)*x^3)^(6)+(4/567)*(-2+(3)*x^3)^(7)+(1/648)*(-2+(3)*x^3)^(8)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-11",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^3*(1+(3)*x^2)^(1/2)",
+      "expected": "(-1/27)*(1+(3)*x^2)^(3/2)+(1/45)*(1+(3)*x^2)^(5/2)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-12",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^5*(2+(1)*x^3)^(2/3)",
+      "expected": "(-2/5)*(2+(1)*x^3)^(5/3)+(1/8)*(2+(1)*x^3)^(8/3)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-13",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^3*(1+(2)*x^4)^(3/2)",
+      "expected": "(1/20)*(1+(2)*x^4)^(5/2)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-14",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^1*(1+(1)*x^2)^(257)",
+      "expected": "(1/516)*(1+(1)*x^2)^(258)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-15",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "0<x<1; fractional bases positive",
+      "f": "x^5*(1+(-1)*x^3)^(4096)",
+      "expected": "(-1/12291)*(1+(-1)*x^3)^(4097)+(1/12294)*(1+(-1)*x^3)^(4098)",
+      "samples": [
+        "1/10",
+        "1/3",
+        "3/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-16",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^5*(1-x^3)^17",
+      "expected": "1/1026",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-17",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^7*(1-x^2)^9",
+      "expected": "-1/5720",
+      "bounds": [
+        "1",
+        "0"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-chain-18",
+      "family": "binomial-chain",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^4*(1-x^5)^23",
+      "expected": "1118481/8",
+      "bounds": [
+        "-1",
+        "0"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-polynomial-expansion-01",
+      "family": "polynomial-expansion",
+      "intent": "near-miss: binomial q outside dispatch",
+      "domain": "real line",
+      "f": "x^2*(1+2*x^2)^5",
+      "expected": "(1/3)*x^3+(2)*x^5+(40/7)*x^7+(80/9)*x^9+(80/11)*x^11+(32/13)*x^13",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-polynomial-expansion-02",
+      "family": "polynomial-expansion",
+      "intent": "near-miss: binomial q outside dispatch",
+      "domain": "real line",
+      "f": "x^4*(1+2*x^3)^4",
+      "expected": "(1/5)*x^5+(1)*x^8+(24/11)*x^11+(16/7)*x^14+(16/17)*x^17",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-polynomial-expansion-03",
+      "family": "polynomial-expansion",
+      "intent": "near-miss: binomial q outside dispatch",
+      "domain": "real line",
+      "f": "x^17*(1+2*x^2)^3",
+      "expected": "(1/18)*x^18+(3/10)*x^20+(6/11)*x^22+(1/3)*x^24",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-polynomial-expansion-04",
+      "family": "polynomial-expansion",
+      "intent": "near-miss: binomial q outside dispatch",
+      "domain": "real line",
+      "f": "x^26*(1+2*x^3)^2",
+      "expected": "(1/27)*x^27+(2/15)*x^30+(4/33)*x^33",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-neighbor-01",
+      "family": "binomial-neighbor",
+      "intent": "near-miss: negative exponent or third term",
+      "domain": "real line",
+      "f": "x/(1+x^2)",
+      "expected": "ln(1+x^2)/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-neighbor-02",
+      "family": "binomial-neighbor",
+      "intent": "near-miss: negative exponent or third term",
+      "domain": "real line",
+      "f": "x^3/(1+x^2)",
+      "expected": "(x^2-ln(1+x^2))/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-neighbor-03",
+      "family": "binomial-neighbor",
+      "intent": "near-miss: negative exponent or third term",
+      "domain": "real line",
+      "f": "x/(1+x^2)^2",
+      "expected": "-1/(2*(1+x^2))",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-binomial-neighbor-04",
+      "family": "binomial-neighbor",
+      "intent": "near-miss: negative exponent or third term",
+      "domain": "real line",
+      "f": "x*(1+x^2+x^4)^2",
+      "expected": "x^2/2+x^4/2+x^6/2+x^8/4+x^10/10",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-reciprocal-quartic-01",
+      "family": "reciprocal-quartic",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "(1)*(x^2-1)/((x^2+1)*sqrt(x^4+(0)*x^2+1))",
+      "expected": "-(1)*asin(sqrt(2)*x/(x^2+1))/sqrt(2)",
+      "samples": [
+        "-3",
+        "-1/3",
+        "1/2",
+        "4"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-reciprocal-quartic-02",
+      "family": "reciprocal-quartic",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "(3)*(x^2-2)/((x^2+2)*sqrt(x^4+(1)*x^2+4))",
+      "expected": "-(3)*asin(sqrt(3)*x/(x^2+2))/sqrt(3)",
+      "samples": [
+        "-3",
+        "-1/3",
+        "1/2",
+        "4"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-reciprocal-quartic-03",
+      "family": "reciprocal-quartic",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "(1)*(x^2-3)/((x^2+3)*sqrt(x^4+(6)*x^2+9))",
+      "expected": "-(1)*x/(x^2+3)",
+      "samples": [
+        "-3",
+        "-1/3",
+        "1/2",
+        "4"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-reciprocal-quartic-04",
+      "family": "reciprocal-quartic",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "(-2)*(x^2-2)/((x^2+2)*sqrt(x^4+(7)*x^2+4))",
+      "expected": "-(-2)*asinh(sqrt(3)*x/(x^2+2))/sqrt(3)",
+      "samples": [
+        "-3",
+        "-1/3",
+        "1/2",
+        "4"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-reciprocal-quartic-05",
+      "family": "reciprocal-quartic",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "(2)*(x^2-1)/((x^2+1)*sqrt(x^4+(-1)*x^2+1))",
+      "expected": "-(2)*asin(sqrt(3)*x/(x^2+1))/sqrt(3)",
+      "samples": [
+        "-3",
+        "-1/3",
+        "1/2",
+        "4"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-reciprocal-quartic-06",
+      "family": "reciprocal-quartic",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "(1)*(x^2-4)/((x^2+4)*sqrt(x^4+(12)*x^2+16))",
+      "expected": "-(1)*asinh(sqrt(4)*x/(x^2+4))/sqrt(4)",
+      "samples": [
+        "-3",
+        "-1/3",
+        "1/2",
+        "4"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-quartic-neighbor-01",
+      "family": "quartic-neighbor",
+      "intent": "near-miss: numerator identity fails",
+      "domain": "real line",
+      "f": "(x^2+(1))/((x^2+1)*sqrt(x^4+2*x^2+1))",
+      "expected": "(1)*atan(x/sqrt(1))/sqrt(1)+(0)*x/(x^2+1)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-quartic-neighbor-02",
+      "family": "quartic-neighbor",
+      "intent": "near-miss: numerator identity fails",
+      "domain": "real line",
+      "f": "(x^2+(3))/((x^2+2)*sqrt(x^4+4*x^2+4))",
+      "expected": "(5/4)*atan(x/sqrt(2))/sqrt(2)+(1/4)*x/(x^2+2)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-quartic-neighbor-03",
+      "family": "quartic-neighbor",
+      "intent": "near-miss: numerator identity fails",
+      "domain": "real line",
+      "f": "(x^2+(-2))/((x^2+3)*sqrt(x^4+6*x^2+9))",
+      "expected": "(1/6)*atan(x/sqrt(3))/sqrt(3)+(-5/6)*x/(x^2+3)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-quartic-neighbor-04",
+      "family": "quartic-neighbor",
+      "intent": "near-miss: radical constant identity fails",
+      "domain": "real line",
+      "f": "(x^2-1)/((x^2+1)*sqrt(x^4+4*x^2+4))",
+      "expected": "(-2)*atan(x/sqrt(1))/sqrt(1)+(3)*atan(x/sqrt(2))/sqrt(2)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-quartic-neighbor-05",
+      "family": "quartic-neighbor",
+      "intent": "near-miss: radical constant identity fails",
+      "domain": "real line",
+      "f": "(x^2-3)/((x^2+3)*sqrt(x^4+2*x^2+1))",
+      "expected": "(3)*atan(x/sqrt(3))/sqrt(3)+(-2)*atan(x/sqrt(1))/sqrt(1)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-quartic-neighbor-06",
+      "family": "quartic-neighbor",
+      "intent": "near-miss: d negative, local real domain",
+      "domain": "x>1",
+      "f": "(x^2+1)/((x^2-1)*sqrt(x^4-2*x^2+1))",
+      "expected": "-x/(x^2-1)",
+      "samples": [
+        "3/2",
+        "2",
+        "4"
+      ],
+      "mathematical_group": "reciprocal-quartic"
+    },
+    {
+      "id": "GEN-quartic-trig-01",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin(((1)*x+(0)))^4+cos(((1)*x+(0)))^4)",
+      "expected": "(sqrt(2)*((1)*x+(0))-atan(sin(4*((1)*x+(0)))/(3+2*sqrt(2)+cos(4*((1)*x+(0)))))/sqrt(2))/(1)",
+      "samples": [
+        "-7",
+        "-pi/2",
+        "0",
+        "pi/2",
+        "8"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-quartic-trig-02",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin(((2)*x+(1)))^4+cos(((2)*x+(1)))^4)",
+      "expected": "(sqrt(2)*((2)*x+(1))-atan(sin(4*((2)*x+(1)))/(3+2*sqrt(2)+cos(4*((2)*x+(1)))))/sqrt(2))/(2)",
+      "samples": [
+        "-7",
+        "-pi/2",
+        "0",
+        "pi/2",
+        "8"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-quartic-trig-03",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin(((-3)*x+(2)))^4+cos(((-3)*x+(2)))^4)",
+      "expected": "(sqrt(2)*((-3)*x+(2))-atan(sin(4*((-3)*x+(2)))/(3+2*sqrt(2)+cos(4*((-3)*x+(2)))))/sqrt(2))/(-3)",
+      "samples": [
+        "-7",
+        "-pi/2",
+        "0",
+        "pi/2",
+        "8"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-quartic-trig-04",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin(((1/2)*x+(-1)))^4+cos(((1/2)*x+(-1)))^4)",
+      "expected": "(sqrt(2)*((1/2)*x+(-1))-atan(sin(4*((1/2)*x+(-1)))/(3+2*sqrt(2)+cos(4*((1/2)*x+(-1)))))/sqrt(2))/(1/2)",
+      "samples": [
+        "-7",
+        "-pi/2",
+        "0",
+        "pi/2",
+        "8"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-quartic-trig-05",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin(((-2/3)*x+(1/3)))^4+cos(((-2/3)*x+(1/3)))^4)",
+      "expected": "(sqrt(2)*((-2/3)*x+(1/3))-atan(sin(4*((-2/3)*x+(1/3)))/(3+2*sqrt(2)+cos(4*((-2/3)*x+(1/3)))))/sqrt(2))/(-2/3)",
+      "samples": [
+        "-7",
+        "-pi/2",
+        "0",
+        "pi/2",
+        "8"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-quartic-trig-06",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin((1*x+0))^4+cos((1*x+0))^4)",
+      "expected": "sqrt(2)*((pi)-(-pi))",
+      "bounds": [
+        "-pi",
+        "pi"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-quartic-trig-07",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin((2*x+1))^4+cos((2*x+1))^4)",
+      "expected": "sqrt(2)*((pi)-(0))",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-quartic-trig-08",
+      "family": "quartic-trig",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "1/(sin((-2*x+0))^4+cos((-2*x+0))^4)",
+      "expected": "sqrt(2)*((0)-(pi))",
+      "bounds": [
+        "pi",
+        "0"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-trig-identity-neighbor-01",
+      "family": "trig-identity-neighbor",
+      "intent": "near-miss: denominator changes",
+      "domain": "-pi/4<x<pi/4",
+      "f": "1/(sin(x)^2+cos(x)^2)",
+      "expected": "x",
+      "samples": [
+        "-1/5",
+        "1/10",
+        "3/10"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-trig-identity-neighbor-02",
+      "family": "trig-identity-neighbor",
+      "intent": "near-miss: denominator changes",
+      "domain": "-pi/4<x<pi/4",
+      "f": "1/(sin(x)^4-cos(x)^4)",
+      "expected": "-ln(abs(1/cos(2*x)+tan(2*x)))/2",
+      "samples": [
+        "-1/5",
+        "1/10",
+        "3/10"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-trig-identity-neighbor-03",
+      "family": "trig-identity-neighbor",
+      "intent": "near-miss: denominator changes",
+      "domain": "-pi/4<x<pi/4",
+      "f": "1/(sin(x)^4+cos(x)^4+2*sin(x)^2*cos(x)^2)",
+      "expected": "x",
+      "samples": [
+        "-1/5",
+        "1/10",
+        "3/10"
+      ],
+      "mathematical_group": "periodic-trig-reciprocal"
+    },
+    {
+      "id": "GEN-sine-dirichlet-01",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((1)*x)^1/x",
+      "expected": "(1/2)*pi",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "1"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-02",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((2)*x)^3/x",
+      "expected": "(1/4)*pi",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "2",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-03",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((-3)*x)^5/x",
+      "expected": "(-3/16)*pi",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "3",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-04",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((1/2)*x)^7/x",
+      "expected": "(5/32)*pi",
+      "bounds": [
+        "-infinity",
+        "0"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1/2",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-05",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((2)*x)^9/x",
+      "expected": "(35/128)*pi",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "2",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-06",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((-1)*x)^11/x",
+      "expected": "(63/512)*pi",
+      "bounds": [
+        "+infinity",
+        "0"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-07",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((3)*x)^15/x",
+      "expected": "(429/4096)*pi",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "3",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-08",
+      "family": "sine-dirichlet",
+      "intent": "parameter-variant",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((1)*x)^31/x",
+      "expected": "(9694845/134217728)*pi",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-sine-dirichlet-09",
+      "family": "sine-dirichlet",
+      "intent": "near-miss: odd power exceeds dispatch",
+      "domain": "removable at zero; conditionally convergent at infinity",
+      "f": "sin((2)*x)^33/x",
+      "expected": "(300540195/4294967296)*pi",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "2",
+        "removable_zero": "0"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-squared-sinc-01",
+      "family": "squared-sinc",
+      "intent": "near-miss: even power requires different decay",
+      "domain": "real line",
+      "f": "sin(1*x)^2/x^2",
+      "expected": "1*pi/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1",
+        "removable_zero": "1"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-squared-sinc-02",
+      "family": "squared-sinc",
+      "intent": "near-miss: even power requires different decay",
+      "domain": "real line",
+      "f": "sin(2*x)^2/x^2",
+      "expected": "2*pi/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "2",
+        "removable_zero": "4"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-squared-sinc-03",
+      "family": "squared-sinc",
+      "intent": "near-miss: even power requires different decay",
+      "domain": "real line",
+      "f": "sin(3*x)^2/x^2",
+      "expected": "3*pi/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "3",
+        "removable_zero": "9"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-damped-dirichlet-01",
+      "family": "damped-dirichlet",
+      "intent": "near-miss: nonconstant multiplier",
+      "domain": "real line",
+      "f": "exp(-2*x)*sin(1*x)/x",
+      "expected": "atan(1/2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "1"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-damped-dirichlet-02",
+      "family": "damped-dirichlet",
+      "intent": "near-miss: nonconstant multiplier",
+      "domain": "real line",
+      "f": "exp(-1*x)*sin(3*x)/x",
+      "expected": "atan(3/1)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "3"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-shifted-dirichlet-01",
+      "family": "shifted-dirichlet",
+      "intent": "near-miss: phase and lower bound change value",
+      "domain": "x>=1; conditionally convergent at infinity",
+      "f": "sin(x+pi/2)/x",
+      "expected": "-Ci(1)",
+      "bounds": [
+        "1",
+        "+infinity"
+      ],
+      "verification": {
+        "method": "quadosc",
+        "omega": "1"
+      },
+      "mathematical_group": "oscillatory-dirichlet"
+    },
+    {
+      "id": "GEN-logistic-moment-01",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^0/(exp((1)*x)+exp(-(1)*x)+2)",
+      "expected": "(1)/(1)^1",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-02",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^2/(exp((2)*x)+exp(-(2)*x)+2)",
+      "expected": "(pi^2/3)/(2)^3",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-03",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^4/(exp((3)*x)+exp(-(3)*x)+2)",
+      "expected": "(7*pi^4/15)/(3)^5",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-04",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^6/(exp((1/2)*x)+exp(-(1/2)*x)+2)",
+      "expected": "(31*pi^6/21)/(1/2)^7",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-05",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^8/(exp((-2)*x)+exp(-(-2)*x)+2)",
+      "expected": "(127*pi^8/15)/(2)^9",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-06",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^1/(exp((3)*x)+exp(-(3)*x)+2)",
+      "expected": "0",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-07",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^3/(exp((-1)*x)+exp(-(-1)*x)+2)",
+      "expected": "0",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-08",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^7/(exp((2)*x)+exp(-(2)*x)+2)",
+      "expected": "0",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-09",
+      "family": "logistic-moment",
+      "intent": "near-miss: degree exceeds dispatch",
+      "domain": "real line",
+      "f": "x^10/(exp((1)*x)+exp(-(1)*x)+2)",
+      "expected": "(2555*pi^10/33)/(1)^11",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-moment-10",
+      "family": "logistic-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^2/(exp(2*x)+exp(-2*x)+2)",
+      "expected": "-pi^2/24",
+      "bounds": [
+        "+infinity",
+        "-infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-shift-01",
+      "family": "logistic-shift",
+      "intent": "near-miss: exponential phases change moment",
+      "domain": "real line",
+      "f": "x^2/(exp(x-(1/2))+exp(-x+(1/2))+2)",
+      "expected": "pi^2/3+(1/2)^2",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-shift-02",
+      "family": "logistic-shift",
+      "intent": "near-miss: exponential phases change moment",
+      "domain": "real line",
+      "f": "x^2/(exp(x-(2))+exp(-x+(2))+2)",
+      "expected": "pi^2/3+(2)^2",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-logistic-neighbor-01",
+      "family": "logistic-neighbor",
+      "intent": "near-miss: denominator constant removed",
+      "domain": "real line",
+      "f": "1/(exp(x)+exp(-x))",
+      "expected": "pi/2",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "logistic-density"
+    },
+    {
+      "id": "GEN-weighted-reflection-01",
+      "family": "weighted-reflection",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "((1)*x+(0))*sin(((1)*x+(0)))/(1+1*cos(((1)*x+(0)))^2)",
+      "expected": "((1)*(((-(0)/(1))+((pi-(0))/(1)))/2)+(0))*2*atan(sqrt(1/1))/((1)*sqrt(1))",
+      "bounds": [
+        "-(0)/(1)",
+        "(pi-(0))/(1)"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-weighted-reflection-02",
+      "family": "weighted-reflection",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "((3)*x+(2))*sin(((2)*x+(1)))/(2+3*cos(((2)*x+(1)))^2)",
+      "expected": "((3)*(((-(1)/(2))+((pi-(1))/(2)))/2)+(2))*2*atan(sqrt(3/2))/((2)*sqrt(6))",
+      "bounds": [
+        "-(1)/(2)",
+        "(pi-(1))/(2)"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-weighted-reflection-03",
+      "family": "weighted-reflection",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "((1)*x+(-1))*sin(((-2)*x+(1)))/(3+2*cos(((-2)*x+(1)))^2)",
+      "expected": "((1)*(((-(1)/(-2))+((pi-(1))/(-2)))/2)+(-1))*2*atan(sqrt(2/3))/((-2)*sqrt(6))",
+      "bounds": [
+        "-(1)/(-2)",
+        "(pi-(1))/(-2)"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-weighted-reflection-04",
+      "family": "weighted-reflection",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "((-1)*x+(4))*sin(((3)*x+(-2)))/(1+4*cos(((3)*x+(-2)))^2)",
+      "expected": "-(((-1)*(((-(-2)/(3))+((pi-(-2))/(3)))/2)+(4))*2*atan(sqrt(4/1))/((3)*sqrt(4)))",
+      "bounds": [
+        "(pi-(-2))/(3)",
+        "-(-2)/(3)"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-weighted-reflection-05",
+      "family": "weighted-reflection",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "((2)*x+(1))*sin(((1/2)*x+(0)))/(4+1*cos(((1/2)*x+(0)))^2)",
+      "expected": "((2)*(((-(0)/(1/2))+((pi-(0))/(1/2)))/2)+(1))*2*atan(sqrt(1/4))/((1/2)*sqrt(4))",
+      "bounds": [
+        "-(0)/(1/2)",
+        "(pi-(0))/(1/2)"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-weighted-reflection-neighbor-01",
+      "family": "weighted-reflection-neighbor",
+      "intent": "near-miss: nonlinear weight",
+      "domain": "real line",
+      "f": "x^2*sin(x)",
+      "expected": "pi^2-4",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-weighted-reflection-neighbor-02",
+      "family": "weighted-reflection-neighbor",
+      "intent": "near-miss: negative cosine-square coefficient",
+      "domain": "real line",
+      "f": "x*sin(x)/(2-cos(x)^2)",
+      "expected": "pi*atanh(1/sqrt(2))/sqrt(2)",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-weighted-reflection-neighbor-03",
+      "family": "weighted-reflection-neighbor",
+      "intent": "near-miss: interval lacks reflection symmetry",
+      "domain": "real line",
+      "f": "x*sin(x)",
+      "expected": "1",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "mathematical_group": "weighted-reflection"
+    },
+    {
+      "id": "GEN-gaussian-moment-01",
+      "family": "gaussian-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^0*exp(-(1)*x^2)",
+      "expected": "(1)*sqrt(pi)/(1)^(1/2)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "gaussian"
+    },
+    {
+      "id": "GEN-gaussian-moment-02",
+      "family": "gaussian-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^2*exp(-(2)*x^2)",
+      "expected": "(1/2)*sqrt(pi)/(2)^(3/2)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "gaussian"
+    },
+    {
+      "id": "GEN-gaussian-moment-03",
+      "family": "gaussian-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^4*exp(-(3)*x^2)",
+      "expected": "(3/4)*sqrt(pi)/(3)^(5/2)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "gaussian"
+    },
+    {
+      "id": "GEN-gaussian-moment-04",
+      "family": "gaussian-moment",
+      "intent": "parameter-variant",
+      "domain": "real line",
+      "f": "x^6*exp(-(1/2)*x^2)",
+      "expected": "(15/8)*sqrt(pi)/(1/2)^(7/2)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "gaussian"
+    },
+    {
+      "id": "GEN-gaussian-shift-01",
+      "family": "gaussian-shift",
+      "intent": "coverage",
+      "domain": "real line",
+      "f": "x^2*exp(-2*(x-3)^2)",
+      "expected": "(37/4)*sqrt(pi/2)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "gaussian"
+    },
+    {
+      "id": "GEN-gaussian-fourier-01",
+      "family": "gaussian-fourier",
+      "intent": "coverage",
+      "domain": "real line",
+      "f": "exp(-x^2)*cos(3*x)",
+      "expected": "sqrt(pi)*exp(-9/4)",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "gaussian"
+    },
+    {
+      "id": "GEN-gaussian-neighbor-01",
+      "family": "gaussian-neighbor",
+      "intent": "near-miss: quartic exponential",
+      "domain": "real line",
+      "f": "exp(-x^4)",
+      "expected": "Gamma(1/4)/2",
+      "bounds": [
+        "-infinity",
+        "+infinity"
+      ],
+      "mathematical_group": "gaussian"
+    },
+    {
+      "id": "GEN-parts-exponential-01",
+      "family": "parts-exponential",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "x*exp(2*x)",
+      "expected": "exp(2*x)*(2*x-1)/4",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-parts-exponential-02",
+      "family": "parts-exponential",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "x^2*exp(-x)",
+      "expected": "-exp(-x)*(x^2+2*x+2)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-parts-trigonometric-01",
+      "family": "parts-trigonometric",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "x*cos(3*x)",
+      "expected": "x*sin(3*x)/3+cos(3*x)/9",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-parts-trigonometric-02",
+      "family": "parts-trigonometric",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "x^2*sin(x)",
+      "expected": "-x^2*cos(x)+2*x*sin(x)+2*cos(x)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-parts-logarithmic-01",
+      "family": "parts-logarithmic",
+      "intent": "coverage",
+      "domain": "x>0",
+      "f": "ln(x)",
+      "expected": "x*ln(x)-x",
+      "samples": [
+        "1/4",
+        "3/2",
+        "3"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-parts-logarithmic-02",
+      "family": "parts-logarithmic",
+      "intent": "coverage",
+      "domain": "x>0",
+      "f": "x*ln(x)^2",
+      "expected": "x^2*(ln(x)^2-ln(x)+1/2)/2",
+      "samples": [
+        "1/4",
+        "3/2",
+        "3"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-inverse-function-parts-01",
+      "family": "inverse-function-parts",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "atan(x)",
+      "expected": "x*atan(x)-ln(1+x^2)/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-inverse-function-parts-02",
+      "family": "inverse-function-parts",
+      "intent": "coverage",
+      "domain": "-1<x<1",
+      "f": "asin(x)",
+      "expected": "x*asin(x)+sqrt(1-x^2)",
+      "samples": [
+        "-3/5",
+        "1/5",
+        "4/5"
+      ],
+      "mathematical_group": "integration-by-parts"
+    },
+    {
+      "id": "GEN-rational-simple-poles-01",
+      "family": "rational-simple-poles",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "1/((x+1)*(x+3))",
+      "expected": "(ln(abs(x+1))-ln(abs(x+3)))/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "rational-functions"
+    },
+    {
+      "id": "GEN-rational-repeated-pole-01",
+      "family": "rational-repeated-pole",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "1/(x+2)^3",
+      "expected": "-1/(2*(x+2)^2)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "rational-functions"
+    },
+    {
+      "id": "GEN-rational-irreducible-01",
+      "family": "rational-irreducible",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "1/(x^2+4)",
+      "expected": "atan(x/2)/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "rational-functions"
+    },
+    {
+      "id": "GEN-rational-irreducible-02",
+      "family": "rational-irreducible",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "1/(x^2+1)^2",
+      "expected": "x/(2*(x^2+1))+atan(x)/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "rational-functions"
+    },
+    {
+      "id": "GEN-rational-division-01",
+      "family": "rational-division",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "x^4/(1+x^2)",
+      "expected": "x^3/3-x+atan(x)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "rational-functions"
+    },
+    {
+      "id": "GEN-rational-log-derivative-01",
+      "family": "rational-log-derivative",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "(3*x^2+2)/(x^3+2*x+5)",
+      "expected": "ln(abs(x^3+2*x+5))",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "rational-functions"
+    },
+    {
+      "id": "GEN-trig-substitution-01",
+      "family": "trig-substitution",
+      "intent": "coverage",
+      "domain": "-1<x<1",
+      "f": "sqrt(4-x^2)",
+      "expected": "x*sqrt(4-x^2)/2+2*asin(x/2)",
+      "samples": [
+        "-3/5",
+        "1/5",
+        "4/5"
+      ],
+      "mathematical_group": "quadratic-radicals"
+    },
+    {
+      "id": "GEN-trig-substitution-02",
+      "family": "trig-substitution",
+      "intent": "coverage",
+      "domain": "-1<x<1",
+      "f": "1/sqrt(9-x^2)",
+      "expected": "asin(x/3)",
+      "samples": [
+        "-3/5",
+        "1/5",
+        "4/5"
+      ],
+      "mathematical_group": "quadratic-radicals"
+    },
+    {
+      "id": "GEN-hyperbolic-substitution-01",
+      "family": "hyperbolic-substitution",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "sqrt(x^2+4)",
+      "expected": "x*sqrt(x^2+4)/2+2*asinh(x/2)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "quadratic-radicals"
+    },
+    {
+      "id": "GEN-hyperbolic-substitution-02",
+      "family": "hyperbolic-substitution",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "1/sqrt(x^2+9)",
+      "expected": "asinh(x/3)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "quadratic-radicals"
+    },
+    {
+      "id": "GEN-radical-logarithm-01",
+      "family": "radical-logarithm",
+      "intent": "coverage",
+      "domain": "x>1",
+      "f": "1/sqrt(x^2-1)",
+      "expected": "ln(x+sqrt(x^2-1))",
+      "samples": [
+        "3/2",
+        "2",
+        "4"
+      ],
+      "mathematical_group": "quadratic-radicals"
+    },
+    {
+      "id": "GEN-exponential-substitution-01",
+      "family": "exponential-substitution",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "exp(x)/(1+exp(2*x))",
+      "expected": "atan(exp(x))",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "elementary-composition"
+    },
+    {
+      "id": "GEN-exponential-substitution-02",
+      "family": "exponential-substitution",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "exp(2*x)/(1+exp(x))",
+      "expected": "exp(x)-ln(1+exp(x))",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "elementary-composition"
+    },
+    {
+      "id": "GEN-logarithmic-substitution-01",
+      "family": "logarithmic-substitution",
+      "intent": "coverage",
+      "domain": "x>0",
+      "f": "ln(x)^3/x",
+      "expected": "ln(x)^4/4",
+      "samples": [
+        "1/4",
+        "3/2",
+        "3"
+      ],
+      "mathematical_group": "elementary-composition"
+    },
+    {
+      "id": "GEN-logarithmic-substitution-02",
+      "family": "logarithmic-substitution",
+      "intent": "coverage",
+      "domain": "x>0",
+      "f": "1/(x*(1+ln(x)^2))",
+      "expected": "atan(ln(x))",
+      "samples": [
+        "1/4",
+        "3/2",
+        "3"
+      ],
+      "mathematical_group": "elementary-composition"
+    },
+    {
+      "id": "GEN-trig-product-01",
+      "family": "trig-product",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "sin(2*x)*cos(3*x)",
+      "expected": "-cos(5*x)/10+cos(x)/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "trig-hyperbolic-identities"
+    },
+    {
+      "id": "GEN-trig-power-01",
+      "family": "trig-power",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "sin(x)^3",
+      "expected": "-cos(x)+cos(x)^3/3",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "trig-hyperbolic-identities"
+    },
+    {
+      "id": "GEN-trig-power-02",
+      "family": "trig-power",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "cos(x)^4",
+      "expected": "3*x/8+sin(2*x)/4+sin(4*x)/32",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "trig-hyperbolic-identities"
+    },
+    {
+      "id": "GEN-trig-logarithm-01",
+      "family": "trig-logarithm",
+      "intent": "coverage",
+      "domain": "-pi/2<x<pi/2",
+      "f": "tan(x)",
+      "expected": "-ln(abs(cos(x)))",
+      "samples": [
+        "-1/2",
+        "1/5",
+        "1"
+      ],
+      "mathematical_group": "trig-hyperbolic-identities"
+    },
+    {
+      "id": "GEN-hyperbolic-product-01",
+      "family": "hyperbolic-product",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "sinh(x)*cosh(x)^3",
+      "expected": "cosh(x)^4/4",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "trig-hyperbolic-identities"
+    },
+    {
+      "id": "GEN-absolute-value-01",
+      "family": "absolute-value",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "abs(x)",
+      "expected": "x*abs(x)/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "absolute-values"
+    },
+    {
+      "id": "GEN-absolute-value-02",
+      "family": "absolute-value",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "abs(2*x-1)",
+      "expected": "(2*x-1)*abs(2*x-1)/4",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "absolute-values"
+    },
+    {
+      "id": "GEN-real-odd-root-01",
+      "family": "real-odd-root",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "surd(x,3)",
+      "expected": "3*x*surd(x,3)/4",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-real-odd-root-02",
+      "family": "real-odd-root",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "1/surd(x,3)",
+      "expected": "3*surd(x,3)^2/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-principal-power-01",
+      "family": "principal-power",
+      "intent": "coverage",
+      "domain": "principal complex power; real x!=0",
+      "f": "x^(1/3)",
+      "expected": "3*x^(4/3)/4",
+      "samples": [
+        "-3",
+        "-1",
+        "1/3",
+        "2"
+      ],
+      "mathematical_group": "algebraic-substitution"
+    },
+    {
+      "id": "GEN-composition-01",
+      "family": "composition",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "2*x*exp(x^2)/(1+exp(x^2))",
+      "expected": "ln(1+exp(x^2))",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "elementary-composition"
+    },
+    {
+      "id": "GEN-composition-02",
+      "family": "composition",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "cos(x)*ln(2+sin(x))",
+      "expected": "(2+sin(x))*ln(2+sin(x))-(2+sin(x))",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "elementary-composition"
+    },
+    {
+      "id": "GEN-composition-03",
+      "family": "composition",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "x*cos(x^2)*exp(sin(x^2))",
+      "expected": "exp(sin(x^2))/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "elementary-composition"
+    },
+    {
+      "id": "GEN-special-function-01",
+      "family": "special-function",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "exp(-x^2)",
+      "expected": "sqrt(pi)*erf(x)/2",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "special-primitives"
+    },
+    {
+      "id": "GEN-special-function-02",
+      "family": "special-function",
+      "intent": "coverage",
+      "domain": "real line away from poles",
+      "f": "sin(x)/x",
+      "expected": "Si(x)",
+      "samples": [
+        "-7/5",
+        "1/5",
+        "11/5"
+      ],
+      "mathematical_group": "special-primitives"
+    },
+    {
+      "id": "GEN-endpoint-beta-01",
+      "family": "endpoint-beta",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "1/sqrt(x*(1-x))",
+      "expected": "pi",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "mathematical_group": "endpoint-improper"
+    },
+    {
+      "id": "GEN-endpoint-beta-02",
+      "family": "endpoint-beta",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "sqrt(x)*(1-x)^2",
+      "expected": "16/105",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "mathematical_group": "endpoint-improper"
+    },
+    {
+      "id": "GEN-endpoint-log-01",
+      "family": "endpoint-log",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "ln(x)",
+      "expected": "-1",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "mathematical_group": "endpoint-improper"
+    },
+    {
+      "id": "GEN-endpoint-log-02",
+      "family": "endpoint-log",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "ln(x)^2",
+      "expected": "2",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "mathematical_group": "endpoint-improper"
+    },
+    {
+      "id": "GEN-endpoint-log-03",
+      "family": "endpoint-log",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "ln(x)/sqrt(x)",
+      "expected": "-4",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "mathematical_group": "endpoint-improper"
+    },
+    {
+      "id": "GEN-gamma-decay-01",
+      "family": "gamma-decay",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "x^4*exp(-2*x)",
+      "expected": "3/4",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "infinite-decay"
+    },
+    {
+      "id": "GEN-gamma-decay-02",
+      "family": "gamma-decay",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "sqrt(x)*exp(-x)",
+      "expected": "sqrt(pi)/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "infinite-decay"
+    },
+    {
+      "id": "GEN-rational-tail-01",
+      "family": "rational-tail",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "1/(1+x^2)",
+      "expected": "pi/2",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "infinite-decay"
+    },
+    {
+      "id": "GEN-rational-tail-02",
+      "family": "rational-tail",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "1/(1+x^4)",
+      "expected": "pi/(2*sqrt(2))",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "infinite-decay"
+    },
+    {
+      "id": "GEN-rational-tail-03",
+      "family": "rational-tail",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "x/(1+x^4)",
+      "expected": "pi/4",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "infinite-decay"
+    },
+    {
+      "id": "GEN-mellin-log-01",
+      "family": "mellin-log",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "ln(x)/(1+x^2)",
+      "expected": "0",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "log-integral-identities"
+    },
+    {
+      "id": "GEN-mellin-log-02",
+      "family": "mellin-log",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "ln(x)^2/(1+x^2)",
+      "expected": "pi^3/8",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "log-integral-identities"
+    },
+    {
+      "id": "GEN-absolute-value-03",
+      "family": "absolute-value",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "abs(x-1)",
+      "expected": "13/2",
+      "bounds": [
+        "-2",
+        "3"
+      ],
+      "verification": {
+        "split": [
+          "1"
+        ]
+      },
+      "mathematical_group": "absolute-values"
+    },
+    {
+      "id": "GEN-absolute-value-04",
+      "family": "absolute-value",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "abs(x^2-1)",
+      "expected": "4",
+      "bounds": [
+        "-2",
+        "2"
+      ],
+      "verification": {
+        "split": [
+          "-1",
+          "1"
+        ]
+      },
+      "mathematical_group": "absolute-values"
+    },
+    {
+      "id": "GEN-absolute-trig-01",
+      "family": "absolute-trig",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "abs(sin(x))",
+      "expected": "4",
+      "bounds": [
+        "0",
+        "2*pi"
+      ],
+      "verification": {
+        "split": [
+          "pi"
+        ]
+      },
+      "mathematical_group": "absolute-values"
+    },
+    {
+      "id": "GEN-absolute-trig-02",
+      "family": "absolute-trig",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "abs(cos(2*x))",
+      "expected": "4",
+      "bounds": [
+        "-pi",
+        "pi"
+      ],
+      "verification": {
+        "split": [
+          "-3*pi/4",
+          "-pi/4",
+          "pi/4",
+          "3*pi/4"
+        ]
+      },
+      "mathematical_group": "absolute-values"
+    },
+    {
+      "id": "GEN-log-trig-01",
+      "family": "log-trig",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "ln(sin(x))",
+      "expected": "-pi*ln(2)",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "mathematical_group": "log-integral-identities"
+    },
+    {
+      "id": "GEN-log-trig-02",
+      "family": "log-trig",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "ln(cos(x))",
+      "expected": "-pi*ln(2)/2",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "mathematical_group": "log-integral-identities"
+    },
+    {
+      "id": "GEN-frullani-01",
+      "family": "frullani",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "(exp(-2*x)-exp(-5*x))/x",
+      "expected": "ln(5/2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "removable_zero": "3"
+      },
+      "mathematical_group": "log-integral-identities"
+    },
+    {
+      "id": "GEN-rational-exponential-01",
+      "family": "rational-exponential",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "1/(exp(x)+1)",
+      "expected": "ln(2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "infinite-decay"
+    },
+    {
+      "id": "GEN-rational-exponential-02",
+      "family": "rational-exponential",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "x/(exp(x)+1)",
+      "expected": "pi^2/12",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "mathematical_group": "infinite-decay"
+    },
+    {
+      "id": "GEN-root-substitution-01",
+      "family": "root-substitution",
+      "intent": "coverage",
+      "domain": "ordinary convergent improper integral where needed",
+      "f": "surd(x,3)^2",
+      "expected": "99/5",
+      "bounds": [
+        "-8",
+        "1"
+      ],
+      "verification": {
+        "split": [
+          "0"
+        ]
+      },
+      "mathematical_group": "algebraic-substitution"
+    }
+  ]
+}

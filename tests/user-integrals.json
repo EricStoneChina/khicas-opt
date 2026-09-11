@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "input": "integrate(x^5*(1-x^3)^50, x, 0, 1)",
+    "reference": "1/7956",
+    "mode": "definite",
+    "integrand": "x^5*(1-x^3)^50",
+    "samples": [
+      "-3",
+      "-2",
+      "-1/3",
+      "1/3",
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  {
+    "id": 2,
+    "input": "integrate((x^2-1)/((x^2+1)*sqrt(x^4+1)), x)",
+    "reference": "-asin(sqrt(2)*x/(x^2+1))/sqrt(2)",
+    "mode": "indefinite",
+    "integrand": "(x^2-1)/((x^2+1)*sqrt(x^4+1))",
+    "samples": [
+      "-3",
+      "-2",
+      "-1/3",
+      "1/3",
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  {
+    "id": 3,
+    "input": "integrate(x*sin(x)/(1+cos(x)^2), x, 0, pi)",
+    "reference": "pi^2/4",
+    "mode": "definite",
+    "integrand": "x*sin(x)/(1+cos(x)^2)",
+    "samples": [
+      "-3",
+      "-2",
+      "-1/3",
+      "1/3",
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  {
+    "id": 4,
+    "input": "simplify(integrate(1/(sin(x)^4+cos(x)^4), x))",
+    "reference": "atan(tan(2*x)/sqrt(2))/sqrt(2)",
+    "mode": "indefinite",
+    "integrand": "1/(sin(x)^4+cos(x)^4)",
+    "samples": [
+      "-3",
+      "-2",
+      "-1/3",
+      "1/3",
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  {
+    "id": 5,
+    "input": "simplify(integrate((1+x^(1/4))^(1/3)/sqrt(x), x))",
+    "reference": "12/7*(1+x^(1/4))^(7/3)-3*(1+x^(1/4))^(4/3)",
+    "mode": "indefinite",
+    "integrand": "(1+x^(1/4))^(1/3)/sqrt(x)",
+    "samples": [
+      "1/16",
+      "1/3",
+      "2",
+      "7",
+      "16"
+    ]
+  },
+  {
+    "id": 6,
+    "input": "integrate(ln(1+x)/(1+x^2), x, 0, 1)",
+    "reference": "pi*ln(2)/8",
+    "mode": "definite",
+    "integrand": "ln(1+x)/(1+x^2)",
+    "samples": [
+      "-3",
+      "-2",
+      "-1/3",
+      "1/3",
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  {
+    "id": 7,
+    "input": "integrate(sin(x)^3/x, x, 0, +infinity)",
+    "reference": "pi/4",
+    "mode": "definite",
+    "integrand": "sin(x)^3/x",
+    "samples": [
+      "-3",
+      "-2",
+      "-1/3",
+      "1/3",
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  {
+    "id": 8,
+    "input": "integrate(x^2/(exp(x)+exp(-x)+2), x, -infinity, +infinity)",
+    "reference": "pi^2/3",
+    "mode": "definite",
+    "integrand": "x^2/(exp(x)+exp(-x)+2)",
+    "samples": [
+      "-3",
+      "-2",
+      "-1/3",
+      "1/3",
+      "1",
+      "2",
+      "3"
+    ]
+  }
+]
