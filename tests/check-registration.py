@@ -42,7 +42,7 @@ for release in (False, True):
     print(f'PASS: {len(rows)} command mappings, RELEASE={release}')
 for command in COMMANDS:
     assert f'* const at_{command};' in (ROOT / 'static_extern.h').read_text()
-    for catalog in ('catalogen.cpp', 'catalogfr.cpp'):
+    for catalog in ('catalogen.cpp', 'catalogfr.cpp', 'catalogzh.cpp'):
         text = (ROOT / catalog).read_text()
         entries = re.findall(r'\{\s*"' + re.escape(command) + r'\(', text)
         assert len(entries) == 1

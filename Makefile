@@ -35,14 +35,14 @@ CAS_OBJS = ysym2poly.o kgausspol.o kthreaded.o zcsturm.o zmaple.o zrpn.o zmoyal.
 # old console: kmisc.cc should be compiled with -DOLD_CONSOLE
 #GUI_OBJS = fileGUI.o inputGUI.o menuGUI.o textGUI.o fileProvider.o graphicsProvider.o stringsProvider.o history.o kdisplay.o dConsole.o dmain.o
 # new console
-GUI_OBJS = fileGUI.o menuGUI.o textGUI.o fileProvider.o graphicsProvider.o stringsProvider.o zdisplay.o console.o main.o
+GUI_OBJS = fileGUI.o menuGUI.o textGUI.o fileProvider.o graphicsProvider.o stringsProvider.o zdisplay.o console.o main.o khicas_gb18030.o
 
 LIBS = -L. -L/home/parisse/casiolocal/lib -Wl,--start-group -lsupc++ -lmicropy -ltommath  -lustl -lm -lc -lgcc -Wl,--end-group
 #LIBS = -L. -L/home/parisse/casiolocal/lib -Wl,--start-group  -ltommath -lustl -lm -lc -lgcc -Wl,--end-group
 
 .PRECIOUS: libcas.a libgui.a
 
-all: khicas90.g3a khicas90.ac2 emucas90.g3a khicas90.882 khicas50.g3a khicas50.ac2 emucas50.g3a khicas50.882 # pour la version console, supprimer le lien iostream -> iostream.new
+all: khicas90.g3a khicas90.ac2 emucas90.g3a khicas90.882 khicas50.g3a khicas50.ac2 emucas50.g3a khicas50.882 khicaszh.g3a khicaszh.ac2 # pour la version console, supprimer le lien iostream -> iostream.new
 
 #zdisplay.o: zdisplay.cc
 #	$(CXX) $(CXXFLAGS1) -c zdisplay.cc
@@ -79,6 +79,9 @@ khelpfr.o: khelpfr.cc static_help.h mkhelp
 khelpen.o: khelpen.cc static_help.h
 	./mkhelp
 	$(CXX) $(CXXFLAGS) -c khelpen.cc -o khelpen.o	
+
+khelpzh.o: khelpzh.cc static_helpzh.h
+	$(CXX) $(CXXFLAGS) -c khelpzh.cc -o khelpzh.o
 
 khicas.elf: $(CAS_OBJS) $(GUI_OBJS) khelpfr.o catalogfr.o helpfr.o prizm.ld
 	$(CXX) $(LDFLAGS) -Wl,-Map=khicas.map catalogfr.o helpfr.o $(CAS_OBJS) khelpfr.o $(GUI_OBJS) $(LIBS) -o $@
@@ -143,6 +146,21 @@ khicas50.882: khicasenm.elf prizmemu.ld
 emucas50.g3a: emucasen.bin 
 	mkg3a -n basic:Khicas50 -n internal:KHICAS50 -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
 	/bin/cp emucas50.g3a ~/.wine/drive_c
+
+khicaszh.elf: $(CAS_OBJS) $(GUI_OBJS) khelpzh.o catalogzh.o helpen.o prizm.ld
+	$(CXX) $(LDFLAGS) -Wl,-Map=khicaszh.map catalogzh.o helpen.o $(CAS_OBJS) khelpzh.o $(GUI_OBJS) $(LIBS) -o $@
+	sh3eb-elf-objdump -C -t khicaszh.elf | sort > dump_t
+
+khicaszh.bin: khicaszh.elf prizm.ld
+	$(OBJCOPY) $(OBJFLAGS) -R .rominram khicaszh.elf khicaszh.bin
+
+khicaszh.ac2: khicaszh.elf prizm.ld
+	$(OBJCOPY) $(OBJFLAGS) -j .rominram khicaszh.elf khicaszh.ac2
+	/bin/cp khicaszh.ac2 /shared/tmp
+
+khicaszh.g3a: khicaszh.bin
+	mkg3a -n basic:KhicasZH -n internal:KHICASZH -V 1.8.0 -i uns:khicasio.png -i sel:khicasio1.png $^ $@
+	/bin/cp khicaszh.g3a /shared/tmp
 
 clean:
 	$(RM) -f *.o libcas.a libgui.a  *.elf *.882 *.ac2 *.g3a *.bin *.map dump*

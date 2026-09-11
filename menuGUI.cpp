@@ -15,6 +15,7 @@
 
 #include "menuGUI.hpp"
 #include "graphicsProvider.hpp"
+#include "khicas_gb18030.h"
 extern "C" int ck_getkey(int * keyptr);
 
 typedef scrollbar TScrollbar;
@@ -66,11 +67,21 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) { // returns code telling what u
 	      menuitem[3]=0;
 	    }
 	  }
-          strncat(menuitem, menu->items[curitem].text, 68);
+          const char * itemtext;
+          int gb=khicas_gb_strip(menu->items[curitem].text,&itemtext);
+          if (gb) {
+            memmove(menuitem+1,menuitem,strlen(menuitem)+1);
+            menuitem[0]=0x01;
+          }
+          strncat(menuitem, itemtext, sizeof(menuitem)-strlen(menuitem)-1);
           if(menu->items[curitem].type != MENUITEM_SEPARATOR) {
             //make sure we have a string big enough to have background when item is selected:          
             // MB_ElementCount is used instead of strlen because multibyte chars count as two with strlen, while graphically they are just one char, making fillerRequired become wrong
-            int fillerRequired = menu->width - MB_ElementCount(menu->items[curitem].text) - (menu->type == MENUTYPE_MULTISELECT ? 2 : 3);
+            if (gb)
+              khicas_enable_gb18030();
+            int fillerRequired = menu->width - MB_ElementCount((char*)itemtext) - (menu->type == MENUTYPE_MULTISELECT ? 2 : 3);
+            if (gb)
+              khicas_disable_gb18030();
             for(int i = 0; i < fillerRequired; i++) strcat(menuitem, " ");
             mPrintXY(menu->startX,curitem+itemsStartY-menu->scroll,(char*)menuitem, (menu->selection == curitem+1 ? TEXT_MODE_INVERT : TEXT_MODE_TRANSPARENT_BACKGROUND), menu->items[curitem].color);
           } else {
@@ -131,11 +142,23 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) { // returns code telling what u
     if(showtitle) {
       if(menu->miniMiniTitle) {
         int textX = 0, textY=(menu->startY-1)*24;
-        PrintMiniMini( &textX, &textY, menu->title, 16, menu->titleColor, 0 );
+        const char * title;
+        int gb=khicas_gb_strip(menu->title,&title);
+        if (gb)
+          khicas_enable_gb18030();
+        PrintMiniMini( &textX, &textY, (unsigned char*)title, 16, menu->titleColor, 0 );
+        if (gb)
+          khicas_disable_gb18030();
       } else mPrintXY(menu->startX, menu->startY, menu->title, TEXT_MODE_TRANSPARENT_BACKGROUND, menu->titleColor);
       if(menu->subtitle != NULL) {
         int textX=(MB_ElementCount(menu->title)+menu->startX-1)*18+10, textY=6;
-        PrintMini(&textX, &textY, menu->subtitle, 0, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+        const char * subtitle;
+        int gb=khicas_gb_strip(menu->subtitle,&subtitle);
+        if (gb)
+          khicas_enable_gb18030();
+        PrintMini(&textX, &textY, (unsigned char*)subtitle, 0, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+        if (gb)
+          khicas_disable_gb18030();
       }
       mPrintXY(18, 1, "____", 0, TEXT_COLOR_BLACK);
       mPrintXY(18, 1, keyword, 0, TEXT_COLOR_BLACK);

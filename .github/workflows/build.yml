@@ -1,4 +1,4 @@
-name: Build KhiCAS 2026a English baseline
+name: Build KhiCAS 2026a bilingual packages
 
 on:
   push:
@@ -18,8 +18,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-en:
-    name: Cross-build English baseline
+  build-bilingual:
+    name: Cross-build English and Chinese packages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout full history
@@ -84,10 +84,19 @@ jobs:
           export PATH="$TOOLS_DIR/bin:$PATH"
           python tools/build.py optimized -j 4 khicas50.g3a khicas50.ac2
 
+      - name: Build Chinese G3A and AC2
+        shell: bash
+        run: |
+          export TOOLS_DIR="$HOME/khicas-toolchain"
+          export PATH="$TOOLS_DIR/bin:$PATH"
+          python tools/build.py optimized -j 4 khicaszh.g3a khicaszh.ac2
+
       - name: Report output sizes
         run: |
-          ls -lh .build/optimized/khicas50.g3a .build/optimized/khicas50.ac2
+          ls -lh .build/optimized/khicas50.g3a .build/optimized/khicas50.ac2 \
+            .build/optimized/khicaszh.g3a .build/optimized/khicaszh.ac2
           grep -A4 'Memory region' .build/optimized/khicasen.map || true
+          grep -A4 'Memory region' .build/optimized/khicaszh.map || true
 
       - name: Upload English artifact
         uses: actions/upload-artifact@v4
@@ -98,3 +107,13 @@ jobs:
             .build/optimized/khicas50.g3a
             .build/optimized/khicas50.ac2
             .build/optimized/khicasen.map
+
+      - name: Upload Chinese artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: khicas-zh
+          if-no-files-found: error
+          path: |
+            .build/optimized/khicaszh.g3a
+            .build/optimized/khicaszh.ac2
+            .build/optimized/khicaszh.map

@@ -18,6 +18,7 @@ extern "C" {
 #include <stdlib.h>
 #include <math.h>
 #include "kdisplay.h"
+#include "khicas_gb18030.h"
 #include "input_lexer.h"
 #include "console.h"
 #include "catalogGUI.hpp"
@@ -291,12 +292,22 @@ int print_msg12(const char * msg1,const char * msg2,int textY){
   drawRectangle(380,textY+10,3,60, COLOR_BLACK);
   drawRectangle(3,textY+70,380,3, COLOR_BLACK);
   int textX=30;
-  if (msg1)
-    PrintMini(&textX,&textY,(unsigned char*)msg1,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0); 
+  if (msg1){
+    const char * text;
+    int gb=khicas_gb_strip(msg1,&text);
+    if (gb) khicas_enable_gb18030();
+    PrintMini(&textX,&textY,(unsigned char*)text,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+    if (gb) khicas_disable_gb18030();
+  }
   textX=10;
   textY+=25;
-  if (msg2)
-    PrintMini(&textX,&textY,(unsigned char*)msg2,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0); 
+  if (msg2){
+    const char * text;
+    int gb=khicas_gb_strip(msg2,&text);
+    if (gb) khicas_enable_gb18030();
+    PrintMini(&textX,&textY,(unsigned char*)text,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+    if (gb) khicas_disable_gb18030();
+  }
   return textX;
 }
 

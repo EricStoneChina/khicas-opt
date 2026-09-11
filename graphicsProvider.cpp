@@ -13,6 +13,7 @@
 #include <math.h>
 
 #include "graphicsProvider.hpp"
+#include "khicas_gb18030.h"
 
 color_t* VRAM_base;
 
@@ -502,8 +503,23 @@ void mPrintXY(int x, int y, char*msg, int mode, int color) {
   nmsg[0] = 0x20;
   nmsg[1] = 0x20;
   nmsg[2] = '\0';
-  strncat(nmsg, msg, 48);
+  const char * txt;
+  int gb=khicas_gb_strip(msg,&txt);
+  size_t used=2;
+  while (*txt) {
+    size_t count=(gb && (unsigned char)txt[0]>=0x81 && txt[1]) ? 2 : 1;
+    if (used+count>=sizeof(nmsg))
+      break;
+    memcpy(nmsg+used,txt,count);
+    used+=count;
+    txt+=count;
+  }
+  nmsg[used]=0;
+  if (gb)
+    khicas_enable_gb18030();
   PrintXY(x, y, nmsg, mode, color );
+  if (gb)
+    khicas_disable_gb18030();
 }
 
 void drawScreenTitle(char* title, char* subtitle) {

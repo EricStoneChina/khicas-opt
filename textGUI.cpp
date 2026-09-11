@@ -15,6 +15,7 @@
 #include <ctype.h>
 
 #include "textGUI.hpp"
+#include "khicas_gb18030.h"
 #include "stringsProvider.hpp"
 #include "graphicsProvider.hpp"
 #include "catalogGUI.hpp"
@@ -464,11 +465,25 @@ int check_leave(textArea * text){
   return 0;
 }
 
+// A leading 0x01 marks a GB18030 string. Keep the flag for the whole text
+// element because the renderer tokenises text before calling print().
+static bool g_textarea_gb = false;
+
 void print(int &X,int&Y,const char * buf,int color,bool revert,bool fake,bool minimini){
+  const char * text;
+  int gb=khicas_gb_strip(buf,&text);
+  if (!gb && g_textarea_gb) {
+    gb=1;
+    text=buf;
+  }
+  if (gb)
+    khicas_enable_gb18030();
   if(minimini) 
-    PrintMiniMini( &X, &Y, (unsigned char *)buf, revert?4:0, color, fake?1:0 );
+    PrintMiniMini( &X, &Y, (unsigned char *)text, revert?4:0, color, fake?1:0 );
   else 
-    PrintMini(&X, &Y, (unsigned char *)buf, revert?4:0, 0xFFFFFFFF, 0, 0, color, COLOR_WHITE, fake?0:1, 0);
+    PrintMini(&X, &Y, (unsigned char *)text, revert?4:0, 0xFFFFFFFF, 0, 0, color, COLOR_WHITE, fake?0:1, 0);
+  if (gb)
+    khicas_disable_gb18030();
 }
 
 void match_print(char * singleword,int delta,int X,int Y,bool match,bool minimini){
@@ -738,6 +753,9 @@ void display(textArea * text,int & isFirstDraw,int & totalTextY,int & scroll,int
   //char bufpos[512];  sprintf(bufpos,"%i,%i:%i,%i       ",line1,pos1,line2,pos2);  puts(bufpos);
   for (int cur=0;cur < v.size();++cur) {
     const char* src = v[cur].s.c_str();
+    g_textarea_gb = ((unsigned char)src[0] == 0x01);
+    if (g_textarea_gb)
+      ++src;
     if (cur==0){
       int l=v[cur].s.size();
       if (l>=1 && src[0]=='#')
@@ -890,6 +908,41 @@ void display(textArea * text,int & isFirstDraw,int & totalTextY,int & scroll,int
       //check if printing this word would go off the screen, with fake PrintMini drawing:
       int temptextX = 0,temptextY=0;
       print(temptextX,temptextY,singleword,couleur,false,/*fake*/true,minimini);
+      // GB18030 help text has no spaces, so keep wrapping it by character.
+      const char * gbword;
+      if ((khicas_gb_strip(singleword,&gbword) || g_textarea_gb) && *gbword) {
+        const char * p=gbword;
+        while (*p){
+          int clen=1;
+          if ((unsigned char)*p>=0x81 && (unsigned char)*(p+1)>=0x40 && (unsigned char)*(p+1)!=0x7f)
+            clen=2;
+          char cbuf[4];
+          cbuf[0]=1;
+          cbuf[1]=p[0];
+          if (clen==2)
+            cbuf[2]=p[1];
+          cbuf[1+clen]=0;
+          int cw=0,chh=0;
+          print(cw,chh,cbuf,couleur,false,/*fake*/true,minimini);
+          if (textX+cw > text->width-6){
+            textX=text->x+deltax;
+            textY=textY+text->lineHeight+v[cur].lineSpacing;
+            ++nlines;
+          }
+          if (textY>=-24 && textY<LCD_HEIGHT_PX)
+            print(textX,textY,cbuf,couleur,invert,/*fake*/false,minimini);
+          else
+            textX += cw;
+          p+=clen;
+        }
+        if (*src==' ')
+          ++src;
+        if (textY>=-24 && textY<LCD_HEIGHT_PX)
+          print(textX,textY," ",COLOR_BLACK,invert,false,minimini);
+        else
+          textX += 7;
+        continue;
+      }
       if(temptextX<text->width && temptextX + textX > text->width-6) {
 	if (editable) PrintMini(&textX, &textY, (unsigned char*)"\xe6\x9b", 0x02, 0xFFFFFFFF, 0, 0, COLOR_MAGENTA, COLOR_WHITE, 1, 0);	  
 	//time for a new line
