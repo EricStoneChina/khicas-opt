@@ -61,7 +61,7 @@ CAS_OBJS = ysym2poly.o kgausspol.o kthreaded.o zcsturm.o zmaple.o zrpn.o zmoyal.
 	zvecteur.o kglobal.o zifactor.o yalg_ext.o zgauss.o zti89.o zplot.o zplot3d.o \
 	zprog.o yunary.o zusual.o yidentificateur.o kgen.o zrisch.o input_lexer.o \
 	first.o zdesolve.o ztex.o zisom.o zquater.o zadd.o overclock.o qrcodegen.o \
-	cutils.o libbf.o khicas_gb18030.o khicas_zhui.o
+	cutils.o libbf.o kconvert.o khicas_gb18030.o khicas_zhui.o
 
 # GUI/IO → 主段(2MB 预算)
 GUI_OBJS = fileGUI.o menuGUI.o textGUI.o fileProvider.o graphicsProvider.o \

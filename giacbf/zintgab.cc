@@ -905,6 +905,9 @@ namespace giac {
     return subst(g,inv_v,applyinv_v,false,contextptr);
   }
 
+  // Shared bounded leading-term check implemented in the integration dispatcher.
+  bool integration_rational_tail(const gen &,const gen &,int &,gen &,unsigned &,unsigned,GIAC_CONTEXT);
+
   static bool intgab(const gen & g0,const gen & x,const gen & a,const gen & b,gen & res,bool nonrecursive,GIAC_CONTEXT){
     if (x.type!=_IDNT)
       return false;
@@ -1119,8 +1122,27 @@ namespace giac {
 	}
 	int ieo=is_even_odd(g,x,contextptr);
 	if (ieo==2){
-	  res=0;
-	  return true;
+          // Oddness only gives a PV. Prove absolute convergence first:
+          // a pole-free rational envelope of degree <= -2, optionally
+          // multiplied by bounded real sine/cosine factors.
+          if(singu.empty() && taille(g,129)<=128){
+            gen envelope=1;vecteur factors;
+            if(g.is_symb_of_sommet(at_prod) && g._SYMBptr->feuille.type==_VECT)factors=*g._SYMBptr->feuille._VECTptr;
+            else factors.push_back(g);
+            if(factors.size()<=8){
+              for(unsigned i=0;i<factors.size();++i){
+                const gen &factor=factors[i];
+                if((factor.is_symb_of_sommet(at_sin) || factor.is_symb_of_sommet(at_cos)) &&
+                   is_zero(im(factor._SYMBptr->feuille,contextptr)))continue;
+                envelope=envelope*factor;
+              }
+              unsigned budget=128;int degree;gen leading;
+              if(integration_rational_tail(envelope,x,degree,leading,budget,0,contextptr) && degree<=-2){
+                res=0;return true;
+              }
+            }
+          }
+          return false;
 	}
 	if (is_zero(A) && intgab_r(g,x,a,b,rational,res,contextptr))
 	  return true;

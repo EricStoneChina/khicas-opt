@@ -37,6 +37,7 @@ using namespace std;
 #include "ti89.h"
 #include "alg_ext.h"
 #include "giacintl.h"
+#include "equation_normalize.h"
 
 #ifndef NO_NAMESPACE_GIAC
 namespace giac {
@@ -431,7 +432,7 @@ namespace giac {
       return symbolic((intg==0?at_sum:at_integrate),gen(v,_SEQ__VECT));
     }
     v=subst(v,i,newi,quotesubst,contextptr);
-    if (intg && s>=3 && v[2]==v[3]){
+    if (intg && s>=4 && v[2]==v[3]){
       // *logptr(contextptr) << "Warning, assuming that " << v[0] << " is regular at " << v[2] << endl;
       return 0; 
     }
@@ -1427,7 +1428,9 @@ namespace giac {
     if (ext.empty())
       return false;
     gen a=r2e(a0,vars,contextptr);
-    vecteur w=*r2e(ext,vars,contextptr)._VECTptr;
+    gen converted=r2e(ext,vars,contextptr);
+    if(converted.type!=_VECT || converted._VECTptr->size()!=ext.size())return false;
+    vecteur w=*converted._VECTptr;
     w.push_back(a);
     vecteur l(lidnt(w));
     if (!l.empty()){ // check for random values of the variables
@@ -1450,6 +1453,7 @@ namespace giac {
     if (is_undef(S))
       return false;
     // if the first line of A has a small norm then it is the line of coeff
+    if(A.empty() || A[0].type!=_VECT)return false;
     coeffs=*A[0]._VECTptr;
     if (is_greater(linfnorm(coeffs,contextptr),20,contextptr))
       return false;
@@ -1506,10 +1510,13 @@ namespace giac {
   static gen branch_evalf(const gen & g,GIAC_CONTEXT){
     if (is_undef(g)) 
       return g;
-    vecteur v(*_lname(evalf(g,1,contextptr),contextptr)._VECTptr);
+    gen names=_lname(evalf(g,1,contextptr),contextptr);
+    if(names.type!=_VECT)return g;
+    const vecteur &v=*names._VECTptr;
     gen gg(g);
     int s=int(v.size());
     for (int i=0;i<s;++i){
+      if(v[i].type!=_IDNT)return g;
       vecteur w;
       gen point=0;
       int direction=1;
@@ -1931,8 +1938,10 @@ namespace giac {
       }
       // now rewrite ln[argln[i]] as a sum of ln[primeargs[]]
       // int p=primeargs.size();
-      vecteur lnprimeargs(*apply(r2e(primeargs,vars,contextptr),at_ln,contextptr)._VECTptr);
-      vecteur lnextargs(*apply(r2e(extargs,vars,contextptr),at_ln,contextptr)._VECTptr);
+      gen lp=apply(r2e(primeargs,vars,contextptr),at_ln,contextptr);
+      gen le=apply(r2e(extargs,vars,contextptr),at_ln,contextptr);
+      if(lp.type!=_VECT || le.type!=_VECT || lp._VECTptr->size()!=primeargs.size() || le._VECTptr->size()!=extargs.size())return e;
+      const vecteur &lnprimeargs=*lp._VECTptr,&lnextargs=*le._VECTptr;
       vecteur chk(lidnt(lop(lnextargs,at_rootof)));
       if (!chk.empty())
 	return e;
@@ -1976,7 +1985,9 @@ namespace giac {
     vecteur vars(1,cst_pi);
     lvar(newl,vars);
     vecteur ln_vars(lop(newl,at_ln));
-    vecteur independant(*e2r(ln_vars,vars,contextptr)._VECTptr);
+    gen ln_rational=e2r(ln_vars,vars,contextptr);
+    if(ln_rational.type!=_VECT)return e;
+    vecteur independant(*ln_rational._VECTptr);
     int n_ln=int(independant.size());
     independant.push_back(e2r(cst_ipi(),vars,contextptr));
     matrice m;
@@ -1995,6 +2006,8 @@ namespace giac {
     // we do the substitution l by exp[newl] in g
     // and we return normal(g)
     // First make m a rectangular array
+    if(m.empty())return e;
+    for(unsigned j=0;j<m.size();++j)if(m[j].type!=_VECT)return e;
     int c=int(m.back()._VECTptr->size()),r=int(m.size());
     for (int i=0;i<r;++i){
       int ms=int(m[i]._VECTptr->size());
@@ -2038,7 +2051,9 @@ namespace giac {
     if (s1>1 && angle_radian(contextptr)){
 #ifdef FXCG
       vecteur v1(loptab(e,sincostan_tab));
-      if (!v1[0].is_symb_of_sommet(at_tan) || !v1[1].is_symb_of_sommet(at_tan))
+      // Quoted integrals/powers may have removed some of the trig nodes
+      // counted by the caller. Check this expression's actual vector size.
+      if (v1.size()>1 && (!v1[0].is_symb_of_sommet(at_tan) || !v1[1].is_symb_of_sommet(at_tan)))
 #endif
 	g=subst(e,sincostan_tab,trig2exp_tab,false,contextptr,false); // g=trig2exp(e,contextptr);
     }
@@ -2304,26 +2319,301 @@ namespace giac {
     return res;
   }
 
-  gen simplify(const gen & e_orig,GIAC_CONTEXT){
+  // Inspect syntax before recursive preprocessing. The explicit DFS stack
+  // borrows gen pointers; it neither copies expressions nor expands powers.
+  // Heuristic recursion needs a tighter bound than a syntax-only depth limit.
+  static bool simplify_preflight(const gen &input,bool &large_power){
+    struct frame {const gen *node;unsigned child;unsigned functions;};
+    frame pending[33];unsigned used=1,remaining=2048;
+    pending[0].node=&input;pending[0].child=0;pending[0].functions=0;
+    large_power=false;
+    while(used){
+      frame &top=pending[used-1];const gen &g=*top.node;
+      if(!top.child){
+        if(!remaining--)return false;
+        if(g.type==_SYMB){
+          const unary_function_ptr &op=g._SYMBptr->sommet;
+          if(op!=at_plus && op!=at_prod && op!=at_neg && op!=at_inv && op!=at_division && op!=at_equal){
+            if(++top.functions>6)return false;
+          }
+          if(op==at_pow && g._SYMBptr->feuille.type==_VECT){
+            const vecteur &p=*g._SYMBptr->feuille._VECTptr;
+            if(p.size()==2 && p[1].type==_INT_ && (p[1].val>=64 || p[1].val<=-64) &&
+               p[0].type==_SYMB)large_power=true;
+          }
+        }
+      }
+      const gen *child=0;unsigned index=top.child++;
+      if(g.type==_SYMB){if(!index)child=&g._SYMBptr->feuille;}
+      else if(g.type==_VECT){if(index<g._VECTptr->size())child=&(*g._VECTptr)[index];}
+      else if(g.type==_FRAC){if(index<2)child=index?&g._FRACptr->den:&g._FRACptr->num;}
+      else if(g.type==_CPLX){if(index<2)child=&g._CPLXptr[index];}
+      if(!child){--used;continue;}
+      if(used==33)return false;
+      unsigned functions=top.functions;
+      pending[used].node=child;pending[used].child=0;pending[used].functions=functions;++used;
+    }
+    return true;
+  }
+
+  // Flatten a bounded unary/singleton-vector chain, simplify its small leaf
+  // once, then rebuild syntax without invoking functions recursively. This
+  // retains cheap x+x -> 2*x algebra even in deeply nested sin/erf expressions.
+  static gen simplify_shallow_leaf(const gen &input,GIAC_CONTEXT){
+    const gen *shells[64],*leaf=&input;unsigned count=0;
+    while(count<64){
+      const gen *next=0;
+      if(leaf->type==_VECT && leaf->_VECTptr->size()==1)next=&leaf->_VECTptr->front();
+      else if(leaf->type==_SYMB && leaf->_SYMBptr->feuille.type!=_VECT){
+        const unary_function_ptr &op=leaf->_SYMBptr->sommet;
+        if(op==at_sin || op==at_cos || op==at_tan || op==at_sinh || op==at_cosh || op==at_tanh ||
+           op==at_exp || op==at_ln || op==at_erf || op==at_atan || op==at_asin || op==at_acos || op==at_abs)
+          next=&leaf->_SYMBptr->feuille;
+      }
+      if(!next)break;
+      shells[count++]=leaf;leaf=next;
+    }
+    bool large=false;
+    if(!count || !simplify_preflight(*leaf,large) || large)return input;
+    gen result=simplify(*leaf,contextptr);
+    while(count){
+      const gen &shell=*shells[--count];
+      if(shell.type==_VECT)result=gen(vecteur(1,result),shell.subtype);
+      else result=symbolic(shell._SYMBptr->sommet,result);
+    }
+    return result;
+  }
+
+  // Saturating upper bound for expanded arithmetic terms. Special functions
+  // are atoms: their arguments are inspected only to find nested Psi nodes.
+  // This bounds the check itself and avoids allocating an expanded expression.
+  static unsigned simplify_special_terms(const gen &g,bool &psi,unsigned &budget,unsigned depth){
+    if(!budget || depth>32){budget=0;return 257;}
+    --budget;
+    if(g.is_symb_of_sommet(at_Psi)){psi=true;return 1;}
+    if(g.is_symb_of_sommet(at_atan) || g.is_symb_of_sommet(at_asin) || g.is_symb_of_sommet(at_acos) || g.is_symb_of_sommet(at_abs))psi=true;
+    if(g.type==_FRAC){
+      unsigned a=simplify_special_terms(g._FRACptr->num,psi,budget,depth+1);
+      unsigned b=simplify_special_terms(g._FRACptr->den,psi,budget,depth+1);
+      return a>b?a:b;
+    }
+    if(g.type==_VECT){
+      unsigned count=1;const vecteur &v=*g._VECTptr;
+      for(unsigned i=0;i<v.size() && budget;++i){
+        unsigned next=simplify_special_terms(v[i],psi,budget,depth+1);
+        if(next>count)count=next;
+      }
+      return !budget?257:count;
+    }
+    if(g.type!=_SYMB)return 1;
+    const gen &f=g._SYMBptr->feuille;
+    if(f.type!=_VECT){
+      unsigned n=simplify_special_terms(f,psi,budget,depth+1);
+      return n;
+    }
+    const vecteur &v=*f._VECTptr;
+    if(g.is_symb_of_sommet(at_pow) && v.size()==2 && v[1].type==_INT_ && v[1].val>=0){
+      unsigned base=simplify_special_terms(v[0],psi,budget,depth+1),count=1;
+      if(base<=1)return base;
+      for(int k=0;k<v[1].val;++k){count*=base;if(count>=257)return 257;}
+      return count;
+    }
+    bool product=g.is_symb_of_sommet(at_prod),sum=g.is_symb_of_sommet(at_plus);
+    unsigned count=product?1:0;
+    for(unsigned i=0;i<v.size() && budget;++i){
+      unsigned next=simplify_special_terms(v[i],psi,budget,depth+1);
+      if(product)count=count*next;else if(sum)count+=next;else if(next>count)count=next;
+      if(count>257)count=257;
+    }
+    return !budget?257:count;
+  }
+  static gen simplify_special_core(const gen & e_orig,GIAC_CONTEXT){
+    // An unresolved integral is an opaque atom, as in simplifier(). Avoid
+    // expanding its integrand and restarting a failed integration search.
+    if (e_orig.is_symb_of_sommet(at_integrate) || e_orig.is_symb_of_sommet(at_when) || e_orig.is_symb_of_sommet(at_piecewise))
+      return e_orig;
     if (e_orig.type<=_POLY || is_inf(e_orig) || has_num_coeff(e_orig))
       return e_orig;
-    gen e=simplifier(e_orig,contextptr);
-    if (e.type==_FRAC)
-      return _evalc(e_orig,contextptr);
-    vecteur vsign=lop(e,at_sign);
-    vecteur vabs=lop(e,at_abs),vs1,vs2;
-    for (int i=0;i<int(vabs.size());++i){
-      vabs[i]=vabs[i]._SYMBptr->feuille;
+    // Principal complex logarithms do not preserve products. Keep their
+    // atoms separate; squares in a proved half-plane have a short exact
+    // correction, including the negative-real cut endpoint.
+    if(taille(e_orig,129)<=128 && contains(e_orig,*at_ln)){
+      if(contains(e_orig,*at_sqrt) && has_i(e_orig))return e_orig;
+      vecteur logs=lop(e_orig,at_ln),from,to;bool complex_log=false;
+      for(unsigned j=0;j<logs.size();++j){
+        const gen &argument=logs[j]._SYMBptr->feuille;
+        if(taille(argument,33)>32)continue;
+        if(!is_zero(im(argument,contextptr)))complex_log=true;
+        if(!argument.is_symb_of_sommet(at_pow) || argument._SYMBptr->feuille.type!=_VECT)continue;
+        const vecteur &p=*argument._SYMBptr->feuille._VECTptr;
+        if(p.size()!=2 || p[1]!=2)continue;
+        gen imaginary=im(p[0],contextptr);
+        bool upper=is_strictly_positive(imaginary,contextptr),lower=is_strictly_positive(-imaginary,contextptr);
+        if(!upper && !lower)continue;
+        gen real=re(p[0],contextptr);
+        gen condition=upper?symb_superieur_egal(real,0):symb_superieur_strict(real,0);
+        gen correction=symbolic(at_when,makesequence(condition,0,(upper?-2:2)*cst_pi*cst_i));
+        from.push_back(logs[j]);to.push_back(2*symbolic(at_ln,p[0])+correction);
+      }
+      if(complex_log || !from.empty())
+        return ratnormal(from.empty()?e_orig:quotesubst(e_orig,from,to,contextptr),contextptr);
     }
-    for (int i=0;i<int(vsign.size());++i){
-      gen arg=vsign[i]._SYMBptr->feuille;
-      if (equalposcomp(vabs,arg)){
-	vs1.push_back(symbolic(at_sign,arg));
-	vs2.push_back(symbolic(at_abs,arg)/arg);
+    // Short logarithmic arithmetic needs no expansion of the phase inside
+    // abs(sin(u))/abs(cos(u)). Such expansion can construct a cyclotomic
+    // extension even though the existing real logarithms are already short.
+    if(taille(e_orig,129)<=128){
+      vecteur atoms=lvar(e_orig);bool logarithmic=true,trig_abs=false;
+      for(unsigned j=0;j<atoms.size();++j){
+        const gen &atom=atoms[j];
+        if(atom.type==_IDNT)continue;
+        if(!atom.is_symb_of_sommet(at_ln)){logarithmic=false;break;}
+        const gen &arg=atom._SYMBptr->feuille;
+        trig_abs=trig_abs || (contains(arg,*at_abs) && (contains(arg,*at_sin) || contains(arg,*at_cos)));
+      }
+      if(logarithmic && trig_abs){
+        vecteur from,to;
+        for(unsigned j=0;j<atoms.size();++j){
+          const gen &atom=atoms[j];
+          if(!atom.is_symb_of_sommet(at_ln))continue;
+          const gen &arg=atom._SYMBptr->feuille;
+          vecteur absolute=lop(arg,at_abs);gen a,b;
+          if(absolute.size()!=1 || !is_linear_wrt(arg,absolute[0],a,b,contextptr) || !is_zero(b))continue;
+          bool rational=a.type==_INT_ || a.type==_ZINT ||
+            (a.type==_FRAC && (a._FRACptr->num.type==_INT_ || a._FRACptr->num.type==_ZINT) &&
+             (a._FRACptr->den.type==_INT_ || a._FRACptr->den.type==_ZINT));
+          const gen &trig=absolute[0]._SYMBptr->feuille;
+          if(!rational || !is_strictly_positive(a,contextptr) ||
+             (!trig.is_symb_of_sommet(at_sin) && !trig.is_symb_of_sommet(at_cos)))continue;
+          gen reduced=symbolic(trig._SYMBptr->sommet,ratnormal(trig._SYMBptr->feuille,contextptr));
+          from.push_back(atom);
+          to.push_back(ln(a,contextptr)+symbolic(at_ln,symbolic(at_abs,reduced)));
+        }
+        return ratnormal(quotesubst(e_orig,from,to,contextptr),contextptr);
+      }
+      // A short sum of higher trig powers in a denominator is already a
+      // useful rational form (including polar radii). The general trig
+      // rewrite can multiply it into a much larger quotient and exhaust
+      // a small stack. Normalize rational arithmetic without that rewrite.
+      if(contains(e_orig,*at_sin) && contains(e_orig,*at_cos)){
+        vecteur inverses=lop(e_orig,at_inv);
+        for(unsigned j=0;j<inverses.size();++j){
+          const gen &den=inverses[j]._SYMBptr->feuille;
+          if(!den.is_symb_of_sommet(at_plus))continue;
+          vecteur powers=lop(den,at_pow);
+          for(unsigned k=0;k<powers.size();++k){
+            const gen &f=powers[k]._SYMBptr->feuille;
+            if(f.type!=_VECT || f._VECTptr->size()!=2)continue;
+            const gen &base=f._VECTptr->front(),&n=f._VECTptr->back();
+            if(n.type!=_INT_ || n.val<3 ||
+               (!base.is_symb_of_sommet(at_sin) && !base.is_symb_of_sommet(at_cos)))continue;
+            gen reduced=ratnormal(e_orig,contextptr);
+            return taille(reduced,129)<=taille(e_orig,129)?reduced:e_orig;
+          }
+        }
       }
     }
-    if (!vs1.empty())
-      e=subst(e,vs1,vs2,false,contextptr);
+    // A single logarithm of a multivariate radical already is a compact
+    // atom. Rational arithmetic outside it can cancel coefficients without
+    // constructing the multivariate algebraic extension or expanding logs.
+    // In particular this retains branches and avoids deep cold-call stacks.
+    if(e_orig.is_symb_of_sommet(at_prod) && taille(e_orig,97)<=96){
+      vecteur logs=lop(e_orig,at_ln);
+      if(logs.size()==1){
+        const gen &arg=logs[0]._SYMBptr->feuille;
+        vecteur ids=lidnt(arg);unsigned variables=0;
+        for(unsigned i=0;i<ids.size();++i)if(ids[i]!=cst_pi)++variables;
+        bool radical=contains(arg,*at_sqrt);
+        if(!radical){
+          vecteur powers=lop(arg,at_pow);
+          for(unsigned i=0;i<powers.size();++i){
+            const gen &f=powers[i]._SYMBptr->feuille;
+            if(f.type==_VECT && f._VECTptr->size()==2 && f._VECTptr->back().type==_FRAC){radical=true;break;}
+          }
+        }
+        if(variables>1 && radical)return ratnormal(e_orig,contextptr);
+      }
+    }
+    // A*cos(u)+B*sin(u)+C is defined at every finite real u. A
+    // half-angle rewrite introduces tan(u/2) poles and loses curve points.
+    // Keep this affine harmonic chart compact; quadratic identities such
+    // as sin(u)^2+cos(u)^2 still use the general simplifier.
+    if(taille(e_orig,257)<=256){
+      vecteur trig=loptab(e_orig,sincostan_tab);
+      if(trig.size()==2 &&
+         ((trig[0].is_symb_of_sommet(at_sin) && trig[1].is_symb_of_sommet(at_cos)) ||
+          (trig[0].is_symb_of_sommet(at_cos) && trig[1].is_symb_of_sommet(at_sin))) &&
+         trig[0]._SYMBptr->feuille==trig[1]._SYMBptr->feuille && !lidnt(trig[0]._SYMBptr->feuille).empty()){
+        gen a,b,c,d;
+        if(is_linear_wrt(e_orig,trig[0],a,b,contextptr) && !contains(a,trig[1]) &&
+           is_linear_wrt(b,trig[1],c,d,contextptr))return ratnormal(e_orig,contextptr);
+      }
+    }
+    if(taille(e_orig,129)<=128){
+      vecteur angles=lop(e_orig,at_atan);
+      if(angles.size()>1 && !lidnt(angles).empty()){
+        bool reciprocal=false;
+        if(angles.size()==2){
+          const gen &a=angles[0]._SYMBptr->feuille,&b=angles[1]._SYMBptr->feuille;
+          reciprocal=is_zero(im(a,contextptr)) && is_zero(im(b,contextptr)) && is_zero(ratnormal(a*b-1,contextptr));
+        }
+        // The explicit reciprocal pair already excludes its zero/pole.
+        // Other variable atan combinations stay as atoms: logarithmic
+        // branch repair can otherwise create atan(1/x) at a regular x=0.
+        if(!reciprocal)return ratnormal(e_orig,contextptr);
+      }
+    }
+    gen e=simplifier(e_orig,contextptr);
+    // An algebraic extension for (a+x^(1/q))^(1/p) may have degree p*q.
+    // Keep these powers as atoms while simplifying their rational coefficient
+    // expressions. Normalizing them first can turn a short primitive into a
+    // large rootof before the later power-protection stage is reached.
+    vecteur nested,opaque;
+    vecteur powers=lvar(e);
+    for (unsigned j=0;j<powers.size();++j){
+      if (!powers[j].is_symb_of_sommet(at_pow)) continue;
+      const gen &f=powers[j]._SYMBptr->feuille;
+      if (f.type!=_VECT || f._VECTptr->size()!=2 || f._VECTptr->back().type!=_FRAC) continue;
+      const gen &base=f._VECTptr->front();
+      // A large base is also kept opaque; do not allocate a second unbounded
+      // traversal merely to decide whether optional normalization is useful.
+      bool deep=taille(base,129)>=129;
+      if (!deep){
+        vecteur inner=lop(base,at_pow);
+        for (unsigned k=0;k<inner.size();++k){
+          const gen &p=inner[k]._SYMBptr->feuille;
+          if (p.type==_VECT && p._VECTptr->size()==2 && p._VECTptr->back().type==_FRAC){deep=true;break;}
+        }
+      }
+      if (deep){
+        if (nested.size()==32) return e;
+        nested.push_back(powers[j]);
+      }
+    }
+    if (!nested.empty()){
+      for (unsigned j=0,k=0;j<nested.size();++j){
+        gen name;
+        do {
+          if(k>=128)return e;
+          name=identificateur(" nested_power_"+print_INT_(int(k++)));
+        } while(contains(e,name) || eval(name,1,contextptr)!=name);
+        opaque.push_back(name);
+      }
+      gen masked=quotesubst(e,nested,opaque,contextptr);
+      gen reduced=simplify(masked,contextptr);
+      reduced=quotesubst(reduced,opaque,nested,contextptr);
+      // Reconstruct integer powers after restoring atoms, e.g. (u^(1/3))^3,
+      // and merge sqrt/power spellings. These passes use rational algebra,
+      // never the common algebraic-extension construction in normal().
+      reduced=recursive_ratnormal(reduced,contextptr);
+      return ratnormal(simplifier(reduced,contextptr),contextptr);
+    }
+
+    if (e.type==_FRAC)
+      return _evalc(e_orig,contextptr);
+    // sign(u) is defined at zero. Replacing it by abs(u)/u creates a
+    // new hole, even when a vanishing smooth factor removes the cusp.
+    // Keep sign as an exact atom while simplifying the surrounding algebra.
+    vecteur vabs;
     // ratnormal added for E:=2*exp(t/25)/(19+exp(t/25)); F:=simplifier(int(E,t)); 
     // M:=(1/50)*int(E,t,50,100); simplify(M)
     vecteur lnv=lop(e,at_ln);
@@ -2382,17 +2672,13 @@ namespace giac {
     // try to rewrite powers with less indep. vars
     vecteur bases,bases2;
     if (vabs2.size()>1){
-#ifdef NO_STDEXCEPT
-      vecteur vabs2tmp=*tsimplify_common(vabs2,contextptr)._VECTptr;
-      if (is_undef(vabs2tmp)){
-	*logptr(contextptr) << vabs2tmp << endl;
-	return e_orig;
-      }
-      // check for rootof?
-      vabs2=vabs2tmp;
-#else
-      vabs2=*tsimplify_common(vabs2,contextptr)._VECTptr;
-#endif
+      // tsimplify_common can return an error rather than a vector.
+      // Check the tagged value before accessing its payload (no exceptions on SH4).
+      gen common=tsimplify_common(vabs2,contextptr);
+      if (is_undef(common)) return common;
+      if (common.type!=_VECT || common._VECTptr->size()!=vabs2.size())
+        return gensizeerr("Invalid common-power simplification result");
+      vabs2=*common._VECTptr;
       if (1){
 	int S=int(vabs2.size());
 	vector<int> base(S),expo(S);
@@ -2431,7 +2717,12 @@ namespace giac {
 	vector<int> lcms(bases.size(),1);
 	for (int i=0;i<S;++i){
 	  int p=base[i];
-	  lcms[p]=(lcms[p]*long(expo[i]))/gcd(lcms[p],expo[i]);
+	  // Divide first and bound the product before multiplying: long is
+          // only 32 bits on SH4. A larger common field is optional work.
+          if(expo[i]<=0)return e_orig;
+          int quotient=lcms[p]/gcd(lcms[p],expo[i]);
+          if(quotient>256/expo[i])return e_orig;
+          lcms[p]=quotient*expo[i];
 	}
 	for (int p=0;p<int(bases.size());++p){
 	  bases[p]=symb_pow(bases[p],fraction(1,lcms[p]));
@@ -2501,22 +2792,36 @@ namespace giac {
     }
     if (s1>1){
       // retry with trigtan/trigcos/trigsin/halftan
-      gen e2=recursive_normal(_trigtan(e,contextptr),contextptr);
-      if (int(loptab(e2,sincostan_tab).size())<s1)
-	return simplify(e2,contextptr);
+      vecteur existing_tangents=lop(v1,at_tan);
+      gen e2;
+      if(!existing_tangents.empty()){
+        e2=recursive_normal(_trigtan(e,contextptr),contextptr);
+        vecteur tangents=lop(e2,at_tan);bool same_domain=true;
+        for(unsigned j=0;j<tangents.size();++j)
+          if(!equalposcomp(existing_tangents,tangents[j])){same_domain=false;break;}
+        if(same_domain && int(loptab(e2,sincostan_tab).size())<s1)return simplify(e2,contextptr);
+      }
       e2=recursive_normal(_trigcos(e,contextptr),contextptr);
       if (int(loptab(e2,sincostan_tab).size())<s1)
 	return simplify(e2,contextptr);
       e2=recursive_normal(_trigsin(e,contextptr),contextptr);
       if (int(loptab(e2,sincostan_tab).size())<s1)
 	return simplify(e2,contextptr);
-      e2=_halftan(v1,contextptr);
-      if (e2.type==_VECT){
-	vecteur w1(loptab(e2,sincostan_tab));
-	if (w1.size()<v1.size()){
-	  e=subst(e,v1,e2,false,contextptr);
-	  return simplify(e,contextptr);
-	}
+      if(!existing_tangents.empty()){
+        e2=_halftan(v1,contextptr);
+        if (e2.type==_VECT){
+          vecteur w1(loptab(e2,sincostan_tab)),new_tangents=lop(e2,at_tan);
+          bool same_domain=true;
+          for(unsigned j=0;j<new_tangents.size();++j)
+            if(!equalposcomp(existing_tangents,new_tangents[j])){same_domain=false;break;}
+          // A new half-angle tangent can be infinite where the original
+          // expression is regular. Fewer atoms alone is not a valid reason
+          // to accept that loss of parameter points.
+          if(same_domain && w1.size()<v1.size()){
+            e=subst(e,v1,e2,false,contextptr);
+            return simplify(e,contextptr);
+          }
+        }
       }
     }
     e=quotesubst(e,vabs,vabs2,contextptr);
@@ -2534,6 +2839,10 @@ namespace giac {
       }
     }
 #endif	
+    // Counts taken before quotesubst include functions hidden inside the
+    // protected atoms. Do not expand or index those now-absent functions.
+    s1=int(loptab(e,sincostan_tab).size());
+    s2=int(loptab(e,asinacosatan_tab).size());
     gen g=tsimplify_noexpln(e,s1,s2,contextptr); 
     gen glin=cklin(g,contextptr);
     bool glinb=glin!=g;
@@ -2558,7 +2867,7 @@ namespace giac {
 	}
       }
 #ifdef FXCG
-      if (s1!=2 || !v1[0].is_symb_of_sommet(at_tan) || !v1[1].is_symb_of_sommet(at_tan))
+      if (s1!=2 || v1.size()!=2 || !v1[0].is_symb_of_sommet(at_tan) || !v1[1].is_symb_of_sommet(at_tan))
 #endif
 	g=recursive_normal(trigcos(g,contextptr),contextptr); 
       return quotesubst(g,vabs2,vabs,contextptr);
@@ -2586,12 +2895,350 @@ namespace giac {
     g=quotesubst(g,vabs2,vabs,contextptr);
     return g;
   }
+
+  gen simplify(const gen & e_orig,GIAC_CONTEXT){
+    bool large_power=false;
+    if(!simplify_preflight(e_orig,large_power))return simplify_shallow_leaf(e_orig,contextptr);
+    if(large_power)return e_orig;
+    // A rational normalization may replace cos(u)^(2m) by
+    // (1-sin(u)^2)^m, expanding a compact integer trig product. Preserve
+    // this already compact form once its degree is large. No real-only
+    // placeholder is used: the original entire functions remain intact.
+    if (e_orig.is_symb_of_sommet(at_prod) && e_orig._SYMBptr->feuille.type==_VECT &&
+        e_orig._SYMBptr->feuille._VECTptr->size()<=4 && taille(e_orig,65)<=64){
+      const vecteur &factors=*e_orig._SYMBptr->feuille._VECTptr;
+      bool simple=true,large=false;
+      for (unsigned i=0;i<factors.size() && simple;++i){
+        const gen &factor=factors[i];
+        if (factor.type==_INT_ || factor.type==_ZINT || factor.type==_FRAC || factor.type==_IDNT ||
+            factor.is_symb_of_sommet(at_sin) || factor.is_symb_of_sommet(at_cos)) continue;
+        if (factor.is_symb_of_sommet(at_inv)){
+          const gen &den=factor._SYMBptr->feuille;
+          if (den.type==_INT_ || den.type==_ZINT || den.type==_FRAC)continue;
+        }
+        if (!factor.is_symb_of_sommet(at_pow) || factor._SYMBptr->feuille.type!=_VECT){simple=false;break;}
+        const vecteur &power=*factor._SYMBptr->feuille._VECTptr;
+        if (power.size()!=2 || power[1].type!=_INT_ || power[1].val<1 ||
+            (!power[0].is_symb_of_sommet(at_sin) && !power[0].is_symb_of_sommet(at_cos))){simple=false;break;}
+        large=large || power[1].val>=32;
+      }
+      if (simple && large)return e_orig;
+    }
+    bool psi=false;unsigned budget=2048;
+    unsigned terms=simplify_special_terms(e_orig,psi,budget,0);
+    if(!budget)return e_orig;
+    // Saturate at 257 so the existing 64-term special-function gate and
+    // a 256-term general distribution gate share one bounded traversal.
+    // Multivariate normalization can expand short nested powers into
+    // thousands of monomials. Keep the same 64-term distribution budget
+    // before constructing polynomial coefficient arrays.
+    if(terms>64 && (lidnt(e_orig).size()>1 || terms>256))return e_orig;
+    if(terms>64){
+      if(contains(e_orig,*at_sqrt))return e_orig;
+      vecteur roots=lop(e_orig,at_pow);
+      for(unsigned j=0;j<roots.size();++j){
+        const gen &f=roots[j]._SYMBptr->feuille;
+        if(f.type==_VECT && f._VECTptr->size()==2 && f[1]==gen(1)/2)return e_orig;
+      }
+    }
+    // Factored trigonometric products can create exponentially many
+    // independent polynomial terms before trig identities are applied.
+    if(terms>64 && (contains(e_orig,*at_sin) || contains(e_orig,*at_cos)))return e_orig;
+    // Treat dilogarithms and lazy conditional values as algebraic atoms.
+    // Expanding their phases can construct large cyclotomic extensions;
+    // descending into when can evaluate an undefined unselected branch.
+    if(contains(e_orig,*at_Li2) || contains(e_orig,*at_when) || contains(e_orig,*at_piecewise))return terms>64?e_orig:ratnormal(e_orig,contextptr);
+    // Keep large closed trig constants out of algebraic-extension/trig
+    // rewriting. Only explicit rational multiples of pi are masked: these
+    // sin/cos values are real, even when other constants in the expression
+    // are complex. Small identities and expressions with variables retain
+    // the ordinary simplifier; other special-function guards keep priority.
+    if(!psi && e_orig.type==_SYMB && budget<1920){
+      unsigned constant_size=taille(e_orig,513);
+      if(constant_size>128 && constant_size<513){
+      vecteur ids=lidnt(e_orig);bool pure=true;
+      for(unsigned j=0;j<ids.size();++j)if(ids[j]!=cst_pi){pure=false;break;}
+      vecteur atoms=pure?lvar(e_orig):vecteur(0),closed,names;
+      for(unsigned j=0;j<atoms.size();++j){
+        const gen &atom=atoms[j];
+        if(!(atom.is_symb_of_sommet(at_sin) || atom.is_symb_of_sommet(at_cos)))continue;
+        gen argument=atom._SYMBptr->feuille;
+        if(taille(argument,17)>16)continue;
+        // Read a small scalar*pi product without normalizing its argument.
+        // In particular a short syntax tree containing an enormous power
+        // is not permission to evaluate that power during this guard.
+        vecteur factors;
+        if(argument.is_symb_of_sommet(at_division) && argument._SYMBptr->feuille.type==_VECT){
+          const vecteur &v=*argument._SYMBptr->feuille._VECTptr;
+          if(v.size()!=2)continue;
+          factors.push_back(symbolic(at_inv,v[1]));argument=gen(v[0]);
+        }
+        if(argument.is_symb_of_sommet(at_neg)){
+          factors.push_back(-1);argument=gen(argument._SYMBptr->feuille);
+        }
+        if(argument.is_symb_of_sommet(at_prod) && argument._SYMBptr->feuille.type==_VECT){
+          const vecteur &v=*argument._SYMBptr->feuille._VECTptr;
+          if(v.size()>4)continue;
+          for(unsigned k=0;k<v.size();++k)factors.push_back(v[k]);
+        }
+        else factors.push_back(argument);
+        gen q=1;unsigned pi_count=0;bool valid=true;
+        for(unsigned k=0;k<factors.size();++k){
+          gen factor=factors[k];
+          if(factor==cst_pi){++pi_count;continue;}
+          bool inverse=factor.is_symb_of_sommet(at_inv);
+          if(inverse)factor=gen(factor._SYMBptr->feuille);
+          gen numerator=factor,denominator=1;
+          if(factor.type==_FRAC){numerator=factor._FRACptr->num;denominator=factor._FRACptr->den;}
+          if(numerator.type!=_INT_ || denominator.type!=_INT_ ||
+             numerator.val < -4096 || numerator.val>4096 ||
+             denominator.val < -4096 || denominator.val>4096 || !denominator.val ||
+             (inverse && !numerator.val)){valid=false;break;}
+          q=q*rdiv(inverse?denominator:numerator,inverse?numerator:denominator,contextptr);
+        }
+        if(!valid || pi_count!=1 || q.type!=_FRAC ||
+           q._FRACptr->num.type!=_INT_ || q._FRACptr->den.type!=_INT_ ||
+           q._FRACptr->den.val<=6 || q._FRACptr->den.val>4096)continue;
+        closed.push_back(atom);
+      }
+      if(closed.size()>=2 && closed.size()<=8){
+        if(terms>64)return e_orig;
+        for(unsigned j=0,k=0;j<closed.size();++j){
+          gen name;
+          do {
+            if(k>=32)return e_orig;
+            name=identificateur(" simplify_closed_trig_"+print_INT_(int(k++)));
+          }while(contains(e_orig,name) || eval(name,1,contextptr)!=name);
+          names.push_back(name);
+        }
+        gen masked=quotesubst(e_orig,closed,names,contextptr);
+        // Rational arithmetic still performs exact cancellations, but does
+        // not rewrite trigonometric functions or grow an algebraic field.
+        gen result=ratnormal(masked,contextptr);
+        result=quotesubst(result,names,closed,contextptr);
+        return taille(result,constant_size+1)<=constant_size?result:e_orig;
+      }
+      }
+    }
+    if(!psi)return simplify_special_core(e_orig,contextptr);
+    // Keep real odd-root factors intact through rational/trigonometric
+    // simplification. In particular sign(g) must stay defined at g=0.
+    vecteur root_powers=lop(e_orig,at_pow),root_signs=lop(e_orig,at_sign);
+    vecteur real_roots,root_names;
+    for(unsigned i=0;i<root_powers.size();++i){
+      const gen &f=root_powers[i]._SYMBptr->feuille;
+      if(f.type!=_VECT || f._VECTptr->size()!=2)continue;
+      const gen &base=(*f._VECTptr)[0],&exponent=(*f._VECTptr)[1];
+      if(!base.is_symb_of_sommet(at_abs) || exponent.type!=_FRAC ||
+         !is_one(exponent._FRACptr->num) || exponent._FRACptr->den.type!=_INT_)continue;
+      int n=exponent._FRACptr->den.val;
+      if(n<3 || n>9 || !(n%2))continue;
+      const gen &argument=base._SYMBptr->feuille;
+      if(taille(argument,129)>128 || !is_zero(im(argument,contextptr)))continue;
+      real_roots.push_back(root_powers[i]);
+      for(unsigned j=0;j<root_signs.size();++j)
+        if(root_signs[j]._SYMBptr->feuille==argument && !equalposcomp(real_roots,root_signs[j]))real_roots.push_back(root_signs[j]);
+      if(real_roots.size()>32)return e_orig;
+    }
+    if(!real_roots.empty()){
+      unsigned k=0;
+      for(unsigned i=0;i<real_roots.size();++i){
+        gen name;
+        do {
+          if(k>=128)return e_orig;
+          name=identificateur(" simplify_real_root_"+print_INT_(int(k++)));
+        } while(contains(e_orig,name) || eval(name,1,contextptr)!=name);
+        root_names.push_back(name);
+      }
+      gen masked=quotesubst(e_orig,real_roots,root_names,contextptr);
+      return quotesubst(simplify(masked,contextptr),root_names,real_roots,contextptr);
+    }
+    vecteur psi_atoms=lop(e_orig,at_Psi),special,replacement;
+    // The real placeholders below are valid for positive rational Psi
+    // arguments and nonnegative integer orders. Inspect their syntax without
+    // evaluating a possibly expensive or complex special function.
+    if(!psi_atoms.empty() && terms>64)return e_orig;
+    for(unsigned i=0;i<psi_atoms.size();++i){
+      const gen &f=psi_atoms[i]._SYMBptr->feuille;
+      const gen *argument=&f;
+      if(f.type==_VECT){
+        const vecteur &v=*f._VECTptr;
+        if(v.size()!=2 || v[1].type!=_INT_ || v[1].val<0)continue;
+        argument=&v[0];
+      }
+      const gen &a=*argument;
+      bool rational=a.type==_INT_ || a.type==_ZINT;
+      if(a.type==_FRAC)
+        rational=(a._FRACptr->num.type==_INT_ || a._FRACptr->num.type==_ZINT) &&
+          (a._FRACptr->den.type==_INT_ || a._FRACptr->den.type==_ZINT) && !is_zero(a._FRACptr->den);
+      if(rational && is_strictly_positive(a,contextptr))special.push_back(psi_atoms[i]);
+    }
+    // Protect closed inverse angles when integer powers make logarithmic
+    // rewrites grow. Simple angle sums still use the normal identities,
+    // including atan(a)+atan(1/a) and asin(a)+acos(a).
+    vecteur atoms=lvar(e_orig);
+    vecteur powers=lop(e_orig,at_pow);bool angle_power=false;
+    for(unsigned i=0;i<powers.size() && !angle_power;++i){
+      const gen &f=powers[i]._SYMBptr->feuille;
+      if(f.type!=_VECT || f._VECTptr->size()!=2)continue;
+      const gen &base=(*f._VECTptr)[0],&exponent=(*f._VECTptr)[1];
+      if(exponent.type==_INT_ && exponent.val>=2 &&
+         (base.is_symb_of_sommet(at_atan) || base.is_symb_of_sommet(at_asin) || base.is_symb_of_sommet(at_acos)) && equalposcomp(atoms,base))angle_power=true;
+    }
+    // Multiplication may retain h*h instead of constructing the power h^2.
+    // Detect that spelling too, without expanding a sum or a product.
+    if(!angle_power){
+      vecteur products=lop(e_orig,at_prod);
+      for(unsigned i=0;i<products.size() && !angle_power;++i){
+        const gen &f=products[i]._SYMBptr->feuille;
+        if(f.type!=_VECT)continue;
+        const vecteur &v=*f._VECTptr;
+        for(unsigned j=0;j<v.size() && !angle_power;++j){
+          if(!(v[j].is_symb_of_sommet(at_atan) || v[j].is_symb_of_sommet(at_asin) || v[j].is_symb_of_sommet(at_acos)) || !equalposcomp(atoms,v[j]))continue;
+          for(unsigned k=0;k<j;++k)if(v[k]==v[j]){angle_power=true;break;}
+        }
+      }
+    }
+    for(unsigned i=0;i<atoms.size();++i){
+      const gen &atom=atoms[i];
+      if(!angle_power || !(atom.is_symb_of_sommet(at_atan) || atom.is_symb_of_sommet(at_asin) || atom.is_symb_of_sommet(at_acos)) || taille(atom,65)>64)continue;
+      vecteur names=lidnt(atom);bool closed=true;
+      for(unsigned j=0;j<names.size();++j)if(names[j]!=cst_pi){closed=false;break;}
+      if(!closed)continue;
+      const gen &argument=atom._SYMBptr->feuille;
+      if(!is_zero(im(argument,contextptr)))continue;
+      if(!atom.is_symb_of_sommet(at_atan) &&
+         (!(is_zero(1-argument) || is_strictly_positive(1-argument,contextptr)) ||
+          !(is_zero(1+argument) || is_strictly_positive(1+argument,contextptr))))continue;
+      special.push_back(atom);
+    }
+    if(special.empty())return simplify_special_core(e_orig,contextptr);
+    // Retain factored special-function arithmetic when distributing it
+    // would exceed the same 64-term budget used by the integration rules.
+    if(terms>64)return e_orig;
+    if(special.size()>64)return e_orig;
+    unsigned candidate=0;
+    for(unsigned i=0;i<special.size();++i){
+      gen atom;
+      do {
+        if(candidate>=128)return e_orig;
+        atom=identificateur(" simplify_Psi_"+print_INT_(int(candidate++)));
+      } while(contains(e_orig,atom) || eval(atom,1,contextptr)!=atom);
+      replacement.push_back(atom);
+    }
+    gen masked=quotesubst(e_orig,special,replacement,contextptr);
+    gen result=simplify_special_core(masked,contextptr);
+    return quotesubst(result,replacement,special,contextptr);
+  }
   static const char _expln2trig_s []="expln2trig";
   static define_unary_function_eval (__expln2trig,&expln2trig,_expln2trig_s);
   define_unary_function_ptr5( at_expln2trig ,alias_at_expln2trig,&__expln2trig,0,true);
 
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool simplify_root_domain(const gen &args){
+    if(taille(args,257)>256)return false;
+    // Preserve inherited holes of explicit factored quotients. Exact
+    // shared-factor detection needs no expansion or polynomial root search.
+    if(args.is_symb_of_sommet(at_prod) && args._SYMBptr->feuille.type==_VECT){
+      const vecteur &f=*args._SYMBptr->feuille._VECTptr;
+      for(unsigned j=0;j<f.size();++j){
+        if(!f[j].is_symb_of_sommet(at_inv))continue;
+        const gen &den=f[j]._SYMBptr->feuille;
+        if(den.type==_INT_ || den.type==_ZINT)continue;
+        for(unsigned k=0;k<f.size();++k)if(f[k]==den)return true;
+      }
+    }
+    // Algebraic normalization of an additive radical denominator can
+    // multiply by a vanishing conjugate, creating new holes. Preserve the
+    // original denominator through products and powers as well as 1/(a+r).
+    if(has_op(args,*at_sqrt) || has_op(args,*at_pow)){
+      vecteur quotients=mergevecteur(lop(args,at_inv),lop(args,at_division));
+      for(unsigned j=0;j<quotients.size();++j){
+        gen den=quotients[j]._SYMBptr->feuille;
+        if(quotients[j].is_symb_of_sommet(at_division)){
+          if(den.type!=_VECT || den._VECTptr->size()!=2)continue;den=gen(den[1]);
+        }
+        if(!has_op(den,*at_plus))continue;
+        if(has_op(den,*at_sqrt))return true;
+        vecteur powers=lop(den,at_pow);
+        for(unsigned k=0;k<powers.size();++k){
+          const gen &f=powers[k]._SYMBptr->feuille;
+          if(f.type==_VECT && f._VECTptr->size()==2 && f[1]==gen(1)/2)return true;
+        }
+      }
+    }
+    // Principal complex roots and real logarithm magnitudes carry domain
+    // information that a real algebraic surrogate cannot discard.
+    if(has_i(args) || contains(args,*at_ln)){
+      if(has_op(args,*at_sqrt))return true;
+      vecteur powers=lop(args,at_pow);
+      for(unsigned j=0;j<powers.size();++j){
+        const gen &f=powers[j]._SYMBptr->feuille;
+        if(f.type==_VECT && f._VECTptr->size()==2 && f[1]==gen(1)/2)return true;
+      }
+    }
+    // Logarithms of even powers encode excluded zeros. Combining them
+    // with a quotient log can otherwise erase its sign/domain restriction.
+    if(!has_i(args) && has_op(args,*at_ln)){
+      vecteur logs=lop(args,at_ln);bool square=false,quotient=false;
+      for(unsigned j=0;j<logs.size() && logs.size()>1;++j){
+        const gen &u=logs[j]._SYMBptr->feuille;
+        quotient=quotient || has_op(u,*at_inv) || has_op(u,*at_division);
+        if(u.is_symb_of_sommet(at_pow) && u._SYMBptr->feuille.type==_VECT && u._SYMBptr->feuille._VECTptr->size()==2){
+          const gen &n=u._SYMBptr->feuille[1];
+          if(n.type==_INT_ && n.val>0 && n.val%2==0)square=true;
+        }
+      }
+      if(square && quotient)return true;
+    }
+    // Half-angle root quotients retain periodic domain information in abs.
+    // Conjugate rationalization can cancel a separate cosine denominator.
+    if(has_op(args,*at_abs) && (has_op(args,*at_sin) || has_op(args,*at_cos))){
+      vecteur inverses=lop(args,at_inv),divisions=lop(args,at_division);
+      for(unsigned j=0;j<inverses.size();++j){
+        const gen &den=inverses[j]._SYMBptr->feuille;
+        if(has_op(den,*at_sin) || has_op(den,*at_cos))return true;
+      }
+      for(unsigned j=0;j<divisions.size();++j){
+        const gen &f=divisions[j]._SYMBptr->feuille;
+        if(f.type==_VECT && f._VECTptr->size()==2 &&
+           (has_op(f[1],*at_sin) || has_op(f[1],*at_cos)))return true;
+      }
+    }
+    // Rationalizing a trig atan argument can multiply numerator and
+    // denominator by a vanishing conjugate, adding holes to a global chart.
+    if(has_op(args,*at_atan) && (has_op(args,*at_sin) || has_op(args,*at_cos)))return true;
+    // Rational inner arguments of real roots must not be replaced by a
+    // principal complex power during algebraic normalization.
+    if(has_op(args,*at_surd) || has_op(args,*at_NTHROOT)){
+      vecteur roots=mergevecteur(lop(args,at_surd),lop(args,at_NTHROOT));
+      for(unsigned j=0;j<roots.size();++j){
+        const gen &f=roots[j]._SYMBptr->feuille;
+        if(f.type==_VECT && f._VECTptr->size()==2){
+          bool nth=roots[j].is_symb_of_sommet(at_NTHROOT);
+          const gen &u=f[nth?1:0],&n=f[nth?0:1];
+          if((n.type==_INT_ && n.val>1 && n.val%2) || has_op(u,*at_inv) || has_op(u,*at_division))return true;
+        }
+      }
+    }
+    return false;
+  }
+
   gen _simplify(const gen & args,GIAC_CONTEXT){
     if ( args.type==_STRNG && args.subtype==-1) return  args;
+    // A conditional value is a lazy branch boundary. Evaluating or
+    // normalizing both branches can enter an undefined Gamma/log branch.
+    if(args.is_symb_of_sommet(at_when) || args.is_symb_of_sommet(at_piecewise))return args;
+    if(simplify_root_domain(args))return args;
+    // surd2pow's algebraic surrogate may be assumed nonnegative while a
+    // real odd root changes sign. Keep real logarithm magnitudes intact.
+    if(taille(args,129)<=128 && contains(args,*at_ln) && contains(args,*at_abs) &&
+       (has_op(args,*at_surd) || has_op(args,*at_NTHROOT)))return ratnormal(args,contextptr);
+    bool large_power=false;
+    if(!simplify_preflight(args,large_power))return simplify_shallow_leaf(args,contextptr);
+    if(large_power)return args;
     gen var,res;
     if (is_algebraic_program(args,var,res))
       return symb_prog3(var,0,_simplify(res,contextptr));
@@ -2614,8 +3261,10 @@ namespace giac {
       }
       return apply(args,_simplify,contextptr);
     }
-    if (is_equal(args))
+    if (is_equal(args)){
+      if(equation_primitive(args,res,contextptr))return res;
       return apply_to_equal(args,_simplify,contextptr);
+    }
     int st=step_infolevel(contextptr);
     step_infolevel(0,contextptr);
     int c=calc_mode(contextptr);
