@@ -29,6 +29,8 @@ jobs:
           python-version: '3.12'
       - name: Materialize official snapshot ref
         run: git fetch origin upstream/khicas-2026-07-31:refs/heads/upstream/khicas-2026-07-31
+      - name: Check English command help
+        run: python tests/check-help.py
       - name: Install build dependencies
         run: |
           sudo apt-get update
