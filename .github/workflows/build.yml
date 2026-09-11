@@ -1,0 +1,82 @@
+name: Build KhiCAS 2026a English package
+
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-english:
+    name: Cross-build English package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize official snapshot ref
+        run: git fetch origin upstream/khicas-2026-07-31:refs/heads/upstream/khicas-2026-07-31
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake curl build-essential zlib1g-dev libpng-dev
+      - name: Cache Casio toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/khicas-toolchain
+          key: khicas-toolchain-v1
+      - name: Install Casio toolchain and mkg3a
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://www-fourier.univ-grenoble-alpes.fr/~parisse/casio'
+          tools="$HOME/khicas-toolchain"
+          mkdir -p "$tools" "$tools/runtime" "$tools/bin"
+          if [[ ! -x "$tools/casiolocal/opt/sh3eb-elf/bin/sh3eb-elf-g++" && ! -x "$tools/opt/sh3eb-elf/bin/sh3eb-elf-g++" ]]; then
+            curl --fail --location --retry 5 --retry-delay 3 "$base/casiolocal.tgz" --output "$tools/casiolocal.tgz"
+            tar -xzf "$tools/casiolocal.tgz" -C "$tools"
+            rm -f "$tools/casiolocal.tgz"
+          fi
+          if [[ ! -x "$tools/bin/mkg3a" ]]; then
+            curl --fail --location --retry 5 --retry-delay 3 "$base/mkg3a.tgz" --output "$tools/mkg3a.tgz"
+            tar -xzf "$tools/mkg3a.tgz" -C "$tools"
+            rm -f "$tools/mkg3a.tgz"
+            cmake -S "$tools/mkg3a" -B "$tools/mkg3a/build-ci"
+            cmake --build "$tools/mkg3a/build-ci" --parallel 4
+            find "$tools/mkg3a/build-ci" -type f -name mkg3a -exec cp {} "$tools/bin/mkg3a" \;
+          fi
+          if ! ldconfig -p 2>/dev/null | grep -q 'libmpfr.so.4'; then
+            curl --fail --location --retry 5 --retry-delay 3 "$base/libmpfr.so.4" --output "$tools/runtime/libmpfr.so.4"
+          fi
+      - name: Build English G3A and AC2
+        shell: bash
+        run: |
+          export TOOLS_DIR="$HOME/khicas-toolchain"
+          export PATH="$TOOLS_DIR/bin:$PATH"
+          python tools/build.py optimized -j 4 khicas50.g3a khicas50.ac2
+      - name: Report output sizes
+        run: |
+          ls -lh .build/optimized/khicas50.g3a .build/optimized/khicas50.ac2
+          grep -A4 'Memory region' .build/optimized/khicasen.map || true
+      - name: Upload English artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: khicas-en
+          if-no-files-found: error
+          path: |
+            .build/optimized/khicas50.g3a
+            .build/optimized/khicas50.ac2
+            .build/optimized/khicasen.map
