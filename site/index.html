@@ -1,97 +1,307 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="KhiCAS ZH：面向 Casio fx-CG50 的中文计算机代数系统。">
-  <meta name="theme-color" content="#0b1733">
-  <title>KhiCAS ZH · fx-CG50 中文计算</title>
-  <link rel="icon" href="assets/khicasio.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KhiCAS - Advanced symbolic mathematics and computer algebra system for Casio fx-CG50 graphing calculators. Features exact calculus, equation solving, plotting, and more.">
+  <meta name="keywords" content="KhiCAS, Casio fx-CG50, symbolic math, CAS, calculator, Giac, Xcas">
+  <meta property="og:title" content="KhiCAS · Symbolic Mathematics for fx-CG50">
+  <meta property="og:description" content="Bring powerful symbolic mathematics to your Casio fx-CG50 calculator">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://khicas.kcisec.site/">
+  <title>KhiCAS · Symbolic Mathematics for fx-CG50</title>
+  <link rel="icon" type="image/png" href="assets/khicasio.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="KhiCAS ZH 首页">
-      <img src="assets/khicasio.png" alt="KhiCAS ZH 图标">
-      <span>KhiCAS <b>ZH</b></span>
-    </a>
-    <nav aria-label="主导航">
-      <a href="#features">功能</a>
-      <a href="#install">安装</a>
-      <a href="#examples">示例</a>
-      <a href="#about">关于</a>
-      <a href="https://github.com/EricStoneChina/khicas-opt" target="_blank" rel="noreferrer">源码 ↗</a>
-    </nav>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">
+        <img src="assets/khicasio.png" alt="KhiCAS Logo" class="logo">
+        <span class="brand-name">KhiCAS</span>
+        <span class="version-badge">2026a</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#install">Install</a></li>
+        <li><a href="#docs">Documentation</a></li>
+        <li><a href="#download" class="btn-download">Download</a></li>
+      </ul>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <span class="hero-badge">Open Source · GPL v2</span>
+          <h1 class="hero-title">Symbolic Mathematics<br>for Your Calculator</h1>
+          <p class="hero-description">KhiCAS brings the power of computer algebra to the Casio fx-CG50. Perform exact calculus, solve equations symbolically, plot functions, and explore advanced mathematics — all on your graphing calculator.</p>
+          <div class="hero-actions">
+            <a href="#download" class="btn btn-primary">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 3v11m0 0l-4-4m4 4l4-4M3 17h14"/>
+              </svg>
+              Download Latest Release
+            </a>
+            <a href="https://github.com/KCISEastCampus/khicas-opt" class="btn btn-secondary" target="_blank" rel="noopener">
+              View on GitHub
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+              </svg>
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-value">500+</span>
+              <span class="stat-label">Functions</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">50+</span>
+              <span class="stat-label">Commands</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">100%</span>
+              <span class="stat-label">Open Source</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-demo">
+          <div class="terminal">
+            <div class="terminal-header">
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+              <span class="terminal-title">KhiCAS Shell</span>
+            </div>
+            <div class="terminal-body">
+              <div class="terminal-line">
+                <span class="prompt">&gt;</span>
+                <span class="input">integrate(sin(x)^2, x, 0, pi)</span>
+              </div>
+              <div class="terminal-output">pi/2</div>
+              <div class="terminal-line">
+                <span class="prompt">&gt;</span>
+                <span class="input">solve(x^3 - 6*x^2 + 11*x - 6 = 0, x)</span>
+              </div>
+              <div class="terminal-output">[1, 2, 3]</div>
+              <div class="terminal-line">
+                <span class="prompt">&gt;</span>
+                <span class="input">cart2polar(x^2 + y^2 = 4, [x,y], [r,theta])</span>
+              </div>
+              <div class="terminal-output">r = 2</div>
+              <div class="terminal-line">
+                <span class="prompt">&gt;</span>
+                <span class="cursor">_</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <main id="top">
-    <section class="hero wrap">
-      <div class="hero-copy">
-        <p class="eyebrow">KhiCAS ZH · v1.8.0-zh.3</p>
-        <h1>把符号计算<br><em>带到中文界面。</em></h1>
-        <p class="lead">KhiCAS ZH 是运行在 Casio fx-CG50 上的中文 KhiCAS。它保留 Giac/Xcas 的符号计算能力，加入中文界面、中文帮助和可直接执行的命令示例。</p>
-        <div class="actions">
-          <a class="button primary" href="https://github.com/EricStoneChina/khicas-opt/actions" target="_blank" rel="noreferrer">下载最新构建 <span>↗</span></a>
-          <a class="button quiet" href="#install">查看安装方法</a>
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Capabilities</span>
+        <h2>Powerful Mathematics at Your Fingertips</h2>
+        <p>KhiCAS 2026a brings professional-grade symbolic computation to the fx-CG50</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">∫</div>
+          <h3>Symbolic Calculus</h3>
+          <p>Compute derivatives, integrals, limits, and series expansions with exact symbolic results. Handle multi-variable calculus and implicit differentiation.</p>
         </div>
-        <p class="build-note"><span class="dot"></span>面向 Casio fx-CG50 · GPL v2 · 开源项目</p>
-      </div>
-      <div class="hero-card" aria-label="KhiCAS ZH 计算示例">
-        <div class="card-top"><span>中文帮助</span><span>fx-CG50</span></div>
-        <div class="formula">∫ sin(x) dx</div>
-        <div class="result">= -cos(x) + C</div>
-        <div class="card-caption">integrate(sin(x),x)</div>
-        <div class="card-lines"><i></i><i></i><i></i></div>
-      </div>
-    </section>
-
-    <section id="about" class="section about-section">
-      <div class="wrap">
-        <div class="section-heading"><p class="eyebrow">关于 KhiCAS ZH</p><h2>为中文用户整理的符号计算工具。</h2></div>
-        <div class="about-grid">
-          <div class="about-card about-intro"><span class="release-badge">v1.8.0-zh.3</span><h3>KhiCAS ZH</h3><p>在 fx-CG50 上使用中文界面、中文帮助和 Function Catalog。它基于 KhiCAS、Giac 与 Xcas，覆盖代数、微积分、矩阵、统计和绘图。</p><p class="about-meta">由 EricStoneChina 构建 · 2026</p></div>
-          <div class="about-card"><h3>项目链接</h3><a href="https://github.com/EricStoneChina/khicas-opt/releases" target="_blank" rel="noreferrer">发行版与下载 <span>↗</span></a><a href="https://github.com/EricStoneChina/khicas-opt" target="_blank" rel="noreferrer">GitHub 源码 <span>↗</span></a><a href="https://github.com/EricStoneChina/khicas-opt/issues" target="_blank" rel="noreferrer">反馈问题 <span>↗</span></a><p class="about-meta">GPL version 2</p></div>
+        <div class="feature-card">
+          <div class="feature-icon">⟺</div>
+          <h3>Equation Solving</h3>
+          <p>Solve algebraic equations, systems of equations, differential equations, and inequalities. Convert between coordinate systems effortlessly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Advanced Plotting</h3>
+          <p>Graph functions in Cartesian, polar, and parametric forms. Visualize implicit equations and explore geometric constructions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Matrix Operations</h3>
+          <p>Perform linear algebra operations including eigenvalues, matrix decomposition, and solving linear systems symbolically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">∑</div>
+          <h3>Statistics & Probability</h3>
+          <p>Statistical analysis, probability distributions, hypothesis testing, and regression analysis built into the calculator.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Resource Optimized</h3>
+          <p>Intelligent simplification and bounded computation paths ensure practical performance on calculator hardware.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="features" class="section wrap">
-      <div class="section-heading"><p class="eyebrow">为计算而生</p><h2>熟悉的能力，清晰的中文。</h2></div>
-      <div class="feature-grid">
-        <article><span class="feature-icon">中</span><h3>中文界面与帮助</h3><p>菜单、分类、About 和帮助说明使用中文，GB18030 字库直接由计算器系统渲染。</p></article>
-        <article><span class="feature-icon">∑</span><h3>完整符号计算</h3><p>支持因式分解、积分、微分、方程、矩阵、概率统计和绘图等常用命令。</p></article>
-        <article><span class="feature-icon">▶</span><h3>示例可以直接执行</h3><p>Function Catalog 提供完整参数形式，F2/F3 可直接插入示例，减少查手册的来回切换。</p></article>
+  <!-- Installation Section -->
+  <section id="install" class="install">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Getting Started</span>
+        <h2>Install KhiCAS in Minutes</h2>
+        <p>Follow these simple steps to add symbolic mathematics to your Casio fx-CG50</p>
       </div>
-    </section>
-
-    <section id="install" class="section install-section">
-      <div class="wrap install-grid">
-        <div><p class="eyebrow">三分钟开始</p><h2>安装 KhiCAS ZH</h2><p class="muted">中文版主程序和第二段程序必须来自同一次构建，并且需要成对复制到计算器存储根目录。</p></div>
-        <ol class="steps">
-          <li><b>下载</b><span>打开 Actions 的 <strong>khicaszh-chinese</strong>，下载最新构建产物。</span></li>
-          <li><b>清理</b><span>删除计算器根目录中旧的 <code>khicas*</code> 文件。</span></li>
-          <li><b>复制</b><span>将 <code>khicaszh.g3a</code> 和 <code>khicaszh.ac2</code> 一起复制到根目录。</span></li>
-          <li><b>运行</b><span>从主菜单启动 KhiCAS ZH；出现错误时先检查两个文件是否配套。</span></li>
-        </ol>
+      <div class="install-steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Download the Package</h3>
+            <p>Download both <code>khicas50.g3a</code> and <code>khicas50.ac2</code> from the latest release. These files must be from the same release to work correctly.</p>
+            <a href="https://github.com/KCISEastCampus/khicas-opt/releases/latest" class="step-link" target="_blank" rel="noopener">Download Latest Release →</a>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Connect Your Calculator</h3>
+            <p>Connect your Casio fx-CG50 to your computer via USB cable. The calculator should appear as a removable drive on your system.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Copy Files to Root</h3>
+            <p>Copy both downloaded files to the root directory of your calculator's storage. Do not place them in any subdirectory.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>Launch KhiCAS</h3>
+            <p>Safely disconnect the calculator and access KhiCAS from the main menu. If loading fails, verify both files are from the same release.</p>
+          </div>
+        </div>
       </div>
-    </section>
-
-    <section id="examples" class="section wrap">
-      <div class="section-heading"><p class="eyebrow">从一个命令开始</p><h2>帮助里的例子，拿来就算。</h2></div>
-      <div class="example-grid">
-        <div class="code-card"><div class="code-label">代数</div><pre><span>factor</span>(x^4-1)
-<span>→</span> (x-1)(x+1)(x²+1)</pre><p>因式分解多项式</p></div>
-        <div class="code-card"><div class="code-label">矩阵</div><pre><span>det</span>([[1,2],[3,4]])
-<span>→</span> -2</pre><p>计算方阵行列式</p></div>
-        <div class="code-card"><div class="code-label">统计</div><pre><span>mean</span>([1,2,3,4,5])
-<span>→</span> 3</pre><p>求列表算术平均值</p></div>
+      <div class="install-note">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <div>
+          <strong>Important:</strong> Always keep both <code>.g3a</code> and <code>.ac2</code> files together from the same release. Mixing files from different versions will cause loading failures.
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="cta wrap"><div><p class="eyebrow">开放构建</p><h2>一起让计算器更好用。</h2><p>反馈中文显示、目录命令或真机兼容性问题，帮助项目继续完善。</p></div><a class="button primary" href="https://github.com/EricStoneChina/khicas-opt/issues" target="_blank" rel="noreferrer">提交反馈 <span>↗</span></a></section>
-  </main>
+  <!-- Documentation Section -->
+  <section id="docs" class="docs">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Resources</span>
+        <h2>Documentation & Support</h2>
+        <p>Everything you need to make the most of KhiCAS</p>
+      </div>
+      <div class="docs-grid">
+        <a href="https://github.com/KCISEastCampus/khicas-opt/blob/main/README.md" class="doc-card" target="_blank" rel="noopener">
+          <div class="doc-icon">📖</div>
+          <h3>README</h3>
+          <p>Project overview, build instructions, and development guide</p>
+        </a>
+        <a href="https://github.com/KCISEastCampus/khicas-opt/tree/main/tests" class="doc-card" target="_blank" rel="noopener">
+          <div class="doc-icon">🧪</div>
+          <h3>Tests</h3>
+          <p>Test suites for calculus, integration, and symbolic operations</p>
+        </a>
+        <a href="https://github.com/KCISEastCampus/khicas-opt/actions" class="doc-card" target="_blank" rel="noopener">
+          <div class="doc-icon">⚙️</div>
+          <h3>CI/CD</h3>
+          <p>Continuous integration builds and automated testing</p>
+        </a>
+        <a href="https://github.com/KCISEastCampus/khicas-opt/issues" class="doc-card" target="_blank" rel="noopener">
+          <div class="doc-icon">💬</div>
+          <h3>Issues</h3>
+          <p>Report bugs, request features, and get support</p>
+        </a>
+      </div>
+    </div>
+  </section>
 
-  <footer class="footer wrap"><span>© 2026 EricStoneChina · KhiCAS ZH v1.8.0-zh.3</span><span><a href="https://github.com/EricStoneChina/khicas-opt" target="_blank" rel="noreferrer">GitHub</a> · GPL v2</span></footer>
+  <!-- Download Section -->
+  <section id="download" class="download">
+    <div class="container">
+      <div class="download-card">
+        <h2>Ready to Get Started?</h2>
+        <p>Download KhiCAS 2026a for Casio fx-CG50 and unlock symbolic mathematics on your calculator.</p>
+        <div class="download-actions">
+          <a href="https://github.com/KCISEastCampus/khicas-opt/releases/latest" class="btn btn-primary btn-large" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 3v11m0 0l-4-4m4 4l4-4M3 17h14"/>
+            </svg>
+            Download Latest Release
+          </a>
+          <a href="https://github.com/KCISEastCampus/khicas-opt/releases" class="btn btn-outline btn-large" target="_blank" rel="noopener">
+            View All Releases
+          </a>
+        </div>
+        <p class="download-info">
+          <strong>Latest:</strong> v1.8.0 series · <strong>License:</strong> GNU GPL v2 · <strong>Platform:</strong> Casio fx-CG50
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="assets/khicasio.png" alt="KhiCAS Logo" class="footer-logo">
+          <p><strong>KhiCAS 2026a</strong></p>
+          <p>Symbolic mathematics for Casio fx-CG50</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Project</h4>
+            <ul>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt" target="_blank" rel="noopener">GitHub Repository</a></li>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt/releases" target="_blank" rel="noopener">Releases</a></li>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt/blob/main/README.md" target="_blank" rel="noopener">Documentation</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Community</h4>
+            <ul>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt/issues" target="_blank" rel="noopener">Issues</a></li>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt/discussions" target="_blank" rel="noopener">Discussions</a></li>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt/blob/main/LICENSE" target="_blank" rel="noopener">GPL v2 License</a></li>
+              <li><a href="https://github.com/KCISEastCampus/khicas-opt#credits" target="_blank" rel="noopener">Credits</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 KhiCAS Project · Licensed under GNU GPL v2 · Based on Giac/Xcas by Bernard Parisse</p>
+        <p>Follows Fadouse's official development branch · English calculator package</p>
+      </div>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
