@@ -16,6 +16,7 @@
 
 #include "textGUI.hpp"
 #include "khicas_gb18030.h"
+#include "zh_ui.h"
 #include "stringsProvider.hpp"
 #include "graphicsProvider.hpp"
 #include "catalogGUI.hpp"
