@@ -16,6 +16,7 @@
 #include <math.h>
 
 extern int lang; // 0 english, 1 francais
+extern int zh_ui_enabled; // 1 only for the Chinese add-in
 extern const char ram_filename[];
 
 typedef struct {

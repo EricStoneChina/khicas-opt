@@ -68,6 +68,7 @@ void reset_alpha(){
 }
 
 int lang=0;
+int zh_ui_enabled=0;
 const char ram_filename[]="\\\\fls0\\khicas50.8c2";
 const catalogFunc completeCat[] = { // list of all functions (including some not in any category)
   {"cart2param(eq,[x,y],t)", 0, "Cartesian to parametric branches; retain real parameter domains.", "y=x^2,[x,y],t", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},

@@ -374,14 +374,16 @@ bool isalphanum(char c){
 }
 
 void search_msg(){
-  DefineStatusMessage((char *)(lang?"EXE: suivant, AC: annuler":"EXE: next, AC: cancel"),1,0,0);
+  if (lang) DefineStatusMessage((char *)"EXE: suivant, AC: annuler",1,0,0);
+  else zh_ui_define_status("EXE: next, AC: cancel");
   DisplayStatusArea();    	    
 }  
 
 
 void show_status(textArea * text,const ustl::string & search,const ustl::string & replace){
   if (text->editable && text->clipline>=0)
-    DefineStatusMessage((char *)"PAD: select, CLIP: copy, AC: cancel",1,0,0);
+    if (lang) DefineStatusMessage((char *)"PAD: selectionner, CLIP: copier, AC: annuler",1,0,0);
+    else zh_ui_define_status("PAD: select, CLIP: copy, AC: cancel");
   else {
     ustl::string status;
     int heure,minute;
@@ -412,7 +414,8 @@ void show_status(textArea * text,const ustl::string & search,const ustl::string 
 
 bool chk_replace(textArea * text,const ustl::string & search,const ustl::string & replace){
   if (replace.size())
-    DefineStatusMessage((char *)(lang?"Remplacer? EXE: Oui, 8 ou N: Non":"Replace? EXE: Yes, 8 or N: No"),1,0,0);
+    if (lang) DefineStatusMessage((char *)"Remplacer? EXE: Oui, 8 ou N: Non",1,0,0);
+    else zh_ui_define_status("Replace? EXE: Yes, 8 or N: No");
   else
     search_msg();
   DisplayStatusArea();
@@ -470,11 +473,12 @@ int check_leave(textArea * text){
 static bool g_textarea_gb = false;
 
 void print(int &X,int&Y,const char * buf,int color,bool revert,bool fake,bool minimini){
+  const char *source = zh_ui_translate(buf);
   const char * text;
-  int gb=khicas_gb_strip(buf,&text);
+  int gb=khicas_gb_strip(source,&text);
   if (!gb && g_textarea_gb) {
     gb=1;
-    text=buf;
+    text=source;
   }
   if (gb)
     khicas_enable_gb18030();
@@ -777,7 +781,7 @@ void display(textArea * text,int & isFirstDraw,int & totalTextY,int & scroll,int
     if (editable){
       char line_s[16];
       sprint_int(line_s,cur+1);
-      PrintMiniMini(&textX, &textY, (unsigned char *)line_s, 0, TEXT_COLOR_PURPLE, 0 );
+      PrintMiniMini(&textX, &textY, (unsigned char *)zh_ui_translate(line_s), 0, TEXT_COLOR_PURPLE, 0 );
     }
     textX=text->x+deltax;
     int tlen = v[cur].s.size();
@@ -1238,7 +1242,7 @@ int doTextArea(textArea* text) {
 	}
 #else
 	copy_clipboard(v[textline].s,false,true);
-	DefineStatusMessage((char*)"Line copied to clipboard", 1, 0, 0);
+	zh_ui_define_status("Line copied to clipboard");
 	DisplayStatusArea();
 #endif
 	continue;
@@ -1631,7 +1635,7 @@ int doTextArea(textArea* text) {
 	      if (textline>=v.size())
 		--textline;
 	    }
-	    DefineStatusMessage((char*)"Line cut and copied to clipboard", 1, 0, 0);
+	    zh_ui_define_status("Line cut and copied to clipboard");
 	    DisplayStatusArea();
 	  }
 	}

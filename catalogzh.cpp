@@ -25,6 +25,9 @@ extern "C" {
 #include "main.h"
   //#include "memmgr.h"
 #include "catalogGUI.hpp"
+#include "catalogzh_auto.h"
+#include "zh_messages.h"
+#include "zh_ui.h"
 #include "fileGUI.hpp"
 #include "textGUI.hpp"
 #include "graphicsProvider.hpp"
@@ -460,13 +463,21 @@ const catalogFunc completeCat[] = { // list of all functions (including some not
   {"~", "~", "Complement", "#~7", 0, CAT_CATEGORY_PROGCMD},
 };
 
+#if 0
 const char chk_restart_string1[]="Keep variables?";
 const char chk_restart_string2[]="F1: keep,   F6: erase";
 const char aide_khicas_string[]="Khicas Help";
 const char main_string1[]="Clear variables?";
 const char main_string2[]="F1: cancel,  F6: confirm";
 const char shortcuts_string[]="To set the system clock, run hh,mm=>, for example 13,45=>,\nKeyboard shortcuts (shell and editor)\nF1-F3: according to the legends\nF4: catalog\nF5: lowercase lock or switch lowercase/uppercase\nF6: file menu\n(-): _\nshift-OPTN: programming commands including pixelised graphs\nshift-PRGM: programming characters\nshift-FRAC: plot commands\nOPTN: options\nshift-QUIT: turtle\nshift-Lst: list editor or commands\nshift-Mtr: matrix editor or commands\nVARS: list of variables (shell) or turtle picture (editor)\nshift-FORMAT: purge\n=>+: partfrac\n=>*: factor\n=>sin/cos/tan\n=>=>: solve\n\n*** Shell ***:\ndownkey: completion/help, shift-SETUP: configuration\nF3: 2-d expression editor or graphic view or text editor\nalpha-F3: text editor\n\n*** Expression editor ***\npad: move selection inside expression tree\nshift-left/right exchange selection with right or left argument\nALPHA-left/right inside a sum or product: increase selection adding left or right argument\nF3: Edit selection, shift-F3: increase fontsize, ALPHA-F3: decrease fontsize\nF4: catalog\nF5: lower/uppercase\nF6: Eval selection, shift-F6: approx value, ALPHA-F6: regroup command\nDEL: suppress root operator in selection\n\n*** Script editor: ***\nfraction key (G): indent, shift-fraction: help/completion, shift-CLIP: begins selection, move cursor to the end then DEL to remove or shift-CLIP to copy to clipboard. shift-PASTE to paste.\nF6-6 Search only: enter word then EXE then EXIT. Type EXE for next occurence, AC to cancel.\nF6-6: Replace: enter word then EXE then replacement then EXE. Type EXE or EXIT to replace or skip replacement and go to the next occurence, AC to cancel.\nshift-Ans: check syntax\n\n*** Graphs: ***\n+ - zoom\n(-): zoomout along y\n*: autoscale\n/: orthonormalize\nOPTN: axes on/off";
-const char apropos_string[]="\x01""KhiCAS ZH 1.8.0-zh.3\n\x01""fx-CG50 \xd6\xd0\xce\xc4\xb7\xfb\xba\xc5\xbc\xc6\xcb\xe3\n\x01""\xd6\xd0\xce\xc4\xbd\xe7\xc3\xe6 \xa1\xa4 \xd6\xd0\xce\xc4\xb0\xef\xd6\xfa\n\x01""Function Catalog \xa1\xa4 Example\n\x01""\xb4\xfa\xca\xfd \xa1\xa4 \xce\xa2\xbb\xfd\xb7\xd6 \xa1\xa4 \xbe\xd8\xd5\xf3 \xa1\xa4 \xbb\xe6\xcd\xbc\n\x01""\xcf\xee\xc4\xbf\xcd\xf8\xd5\xbe:\n\x01""https://khicas.kcisec.site/\n\x01""GitHub:\n\x01""github.com/EricStoneChina/khicas-opt\n\x01""\xd3\xc9 EricStoneChina \xb9\xb9\xbd\xa8 (2026)\n\x01""\xbb\xf9\xd3\xda KhiCAS / Giac / Xcas\n\x01""GPL version 2";
+#endif
+const char chk_restart_string1[]=ZH_CHK_RESTART_STRING1;
+const char chk_restart_string2[]=ZH_CHK_RESTART_STRING2;
+const char aide_khicas_string[]=ZH_AIDE_KHICAS_STRING;
+const char main_string1[]=ZH_MAIN_STRING1;
+const char main_string2[]=ZH_MAIN_STRING2;
+const char shortcuts_string[]=ZH_SHORTCUTS_STRING;
+const char apropos_string[]=ZH_APROPOS_STRING;
 
 int CAT_COMPLETE_COUNT=sizeof(completeCat)/sizeof(catalogFunc);
 
@@ -515,7 +526,7 @@ int showCatalog(char* insertText,int preselect,int menupos) {
   menu.items=menuitems;
   menu.numitems=sizeof(menuitems)/sizeof(MenuItem);
   menu.scrollout=1;
-  menu.title = (char*)"Function Catalog";
+  menu.title = (char*)zh_ui_translate("Function Catalog");
   
   while(1) {
     if (preselect)
@@ -674,16 +685,16 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
   while(1) {
     int fkeyw=LCD_WIDTH_PX/6;
     drawRectangle(0,LCD_HEIGHT_PX-23, fkeyw, 23, TEXT_COLOR_BLACK);
-    Bdisp_MMPrint(0,LCD_HEIGHT_PX-STATUS_AREA_PX-19,"  INPUT",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
+    zh_ui_bdisp_mmprint(0,LCD_HEIGHT_PX-STATUS_AREA_PX-19,"  INPUT",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
     drawRectangle(fkeyw,LCD_HEIGHT_PX-23, fkeyw, 23, TEXT_COLOR_BLACK);
-    Bdisp_MMPrint(fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19," EXAMPL1",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
+    zh_ui_bdisp_mmprint(fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19," EXAMPL1",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
     drawRectangle(2*fkeyw,LCD_HEIGHT_PX-23, fkeyw, 23, TEXT_COLOR_BLACK);
-    Bdisp_MMPrint(2*fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19," EXAMPL2",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
+    zh_ui_bdisp_mmprint(2*fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19," EXAMPL2",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
     drawRectangle(3*fkeyw,LCD_HEIGHT_PX-23, fkeyw, 23, TEXT_COLOR_BLACK);
     drawRectangle(4*fkeyw,LCD_HEIGHT_PX-23, fkeyw, 23, TEXT_COLOR_BLACK);
-    Bdisp_MMPrint(4*fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19,"  HELP",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
+    zh_ui_bdisp_mmprint(4*fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19,"  HELP",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
     drawRectangle(5*fkeyw,LCD_HEIGHT_PX-23, fkeyw, 23, TEXT_COLOR_BLACK);
-    Bdisp_MMPrint(5*fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19," QRHELP ",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
+    zh_ui_bdisp_mmprint(5*fkeyw,LCD_HEIGHT_PX-STATUS_AREA_PX-19," QRHELP ",0,0xffffffff,0,0,COLOR_WHITE,COLOR_BLACK,1,0);
     int sres = doMenu(&menu);
     if(sres == MENU_RETURN_EXIT){
       reset_alpha();
@@ -694,7 +705,7 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
     bool stathelp=has_static_help(fcmdname,lang,fhowto,fsyntax,fexamples,frelated);
     if (sres==KEY_CTRL_F6 && fcmdname){
       string url="https://www-fourier.ujf-grenoble.fr/~parisse/giac/doc/en/cascmd_en/"+longhelp(fcmdname);
-      QRdisp(url.c_str(),"Xcas doc qrcode",fcmdname,"EXE/EXIT: OK",0);
+      QRdisp(url.c_str(),zh_ui_translate("Xcas doc qrcode"),fcmdname,zh_ui_translate("EXE/EXIT: OK"),0);
     }
     if (sres == KEY_CTRL_F5) {
       char * example=index<allcmds?completeCat[index].example:0;
@@ -702,7 +713,7 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
       textArea text;
       text.editable=false;
       text.clipline=-1;
-      text.title = (char*)"Help on command";
+      text.title = (char*)zh_ui_translate("Help on command");
       text.allowF1=true;
       text.python=python_compat(contextptr);
       ustl::vector<textElement> & elem=text.elements;
@@ -713,7 +724,7 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
       elem[1].lineSpacing = 3;
       ustl::string autoexample;
       if (index<allcmds){
-	elem[1].s = completeCat[index].desc;
+	 elem[1].s = zh_catalog_description(completeCat[index].name, completeCat[index].desc);
 	// Chinese build: the translated static help carries a 0x01 GB18030 marker,
 	// prefer it over the built-in (English) catalog description.
 	if (stathelp && fhowto && (unsigned char)fhowto[0]==1)
@@ -721,7 +732,7 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
       }
       else {
 	int token=menuitems[menu.selection-1].token;
-	elem[1].s="Sorry, no help available...";
+	 elem[1].s=zh_ui_translate("Sorry, no help available...");
 	// *logptr(contextptr) << token << endl;
 	if (stathelp){
 	  // Chinese static help is GB18030 with a leading 0x01 marker. It is
@@ -738,19 +749,19 @@ int doCatalogMenu(char* insertText, char* title, int category,const char * cmdna
 	  if (isopt){
 	    if (token==_INT_PLOT+T_NUMBER*256){
 	      autoexample="display="+elem[0].s;
-	      elem[1].s ="display option: "+ autoexample;
+	      elem[1].s =ustl::string(zh_ui_translate("display option: "))+ autoexample;
 	    }
 	    if (token==_INT_COLOR+T_NUMBER*256){
 	      autoexample="display="+elem[0].s;
-	      elem[1].s="color option: "+ autoexample;
+	      elem[1].s=ustl::string(zh_ui_translate("color option: "))+ autoexample;
 	    }
 	    if (token==_INT_SOLVER+T_NUMBER*256){
 	      autoexample=elem[0].s;
-	      elem[1].s="fsolve option: " + autoexample;
+	      elem[1].s=ustl::string(zh_ui_translate("fsolve option: ")) + autoexample;
 	    }
 	    if (token==_INT_TYPE+T_TYPE_ID*256){
 	      autoexample=elem[0].s;
-	      elem[1].s="Object type: " + autoexample;
+	      elem[1].s=ustl::string(zh_ui_translate("Object type: ")) + autoexample;
 	    }
 	  }
 	  if (isall){

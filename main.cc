@@ -32,6 +32,7 @@ extern "C" {
 #include "console.h"
   //#include "memmgr.h"
 #include "catalogGUI.hpp"
+#include "zh_ui.h"
 #include "fileGUI.hpp"
 #include "textGUI.hpp"
 #include "graphicsProvider.hpp"
@@ -686,9 +687,11 @@ const char * gettext(const char * s) {
       giac::freeze=false;
       for (;;){
 #ifdef NSPIRE_NEWLIB
-	DefineStatusMessage((char*)((lang==1)?"Ecran fige. Taper esc":"Screen frozen. Press esc."), 1, 0, 0);
+	if (lang==1) DefineStatusMessage((char*)"Ecran fige. Taper esc", 1, 0, 0);
+	else zh_ui_define_status("Screen frozen. Press esc.");
 #else
-	DefineStatusMessage((char*)((lang==1)?"Ecran fige. Taper EXIT":"Screen frozen. Press EXIT."), 1, 0, 0);
+	if (lang==1) DefineStatusMessage((char*)"Ecran fige. Taper EXIT", 1, 0, 0);
+	else zh_ui_define_status("Screen frozen. Press EXIT.");
 #endif
 	DisplayStatusArea();
 	int key;
@@ -1656,7 +1659,8 @@ static giac::gen eqw_presentation(const giac::gen & ge,bool editable,const giac:
   for (;;){
 #if 1
     if (firstrun==2){
-      DefineStatusMessage((char*)(lang?"EXE: quitte, resultat dans last":"EXE: quit, result stored in last"), 1, 0, 0);
+      if (lang) DefineStatusMessage((char*)"EXE: quitte, resultat dans last", 1, 0, 0);
+      else zh_ui_define_status("EXE: quit, result stored in last");
       //EnableStatusArea(2);
       DisplayStatusArea();
       firstrun=1;
@@ -1664,7 +1668,7 @@ static giac::gen eqw_presentation(const giac::gen & ge,bool editable,const giac:
     else
       set_xcas_status();
 #else
-    DefineStatusMessage((char*)"+-: zoom, pad: move, EXIT: quit", 1, 0, 0);
+    zh_ui_define_status("+-: zoom, pad: move, EXIT: quit");
     //EnableStatusArea(2);
     DisplayStatusArea();
 #endif
@@ -2493,7 +2497,7 @@ void displaylogo(){
   clip_ymin=24;
   t.draw();
   clip_ymin=save_ymin;
-  DefineStatusMessage((char*)"+-: zoom, pad: move, EXIT: quit", 1, 0, 0);
+  zh_ui_define_status("+-: zoom, pad: move, EXIT: quit");
   while (1){
     save_ymin=clip_ymin;
     clip_ymin=24;
@@ -2734,7 +2738,8 @@ string remove_path0(const string & st){
 }
 
 void save(const char * fname){
-  DefineStatusMessage((char*)(lang==1?"Sauvegarde en cours":"Saving in progress"), 1, 0, 0);
+  if (lang==1) DefineStatusMessage((char*)"Sauvegarde en cours", 1, 0, 0);
+  else zh_ui_define_status("Saving in progress");
   DisplayStatusArea();
   Bdisp_PutDisp_DD();
   clear_abort();
@@ -2772,15 +2777,15 @@ int restore_session(const char * fname){
     PrintMini(&x,&y,(unsigned char*)KHICAS_DISPLAY_VERSION,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     x=0; y+=18;
 #ifdef MICROPY_LIB
-    PrintMini(&x,&y,(unsigned char*)"MicroPython 1.12 (c) D. George et al",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+    zh_ui_printmini(&x,&y,"MicroPython 1.12 (c) D. George et al",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     x=0; y+=18;
-    PrintMini(&x,&y,(unsigned char*)"License GPL2 (KhiCAS), MIT (mPython)",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+    zh_ui_printmini(&x,&y,"License GPL2 (KhiCAS), MIT (mPython)",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     x=0; y+=18;
 #else
-    PrintMini(&x,&y,(unsigned char*)"  License GPL 2",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+    zh_ui_printmini(&x,&y,"  License GPL 2",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     x=0; y+=18;
 #endif
-    PrintMini(&x,&y,(unsigned char*)"  Do not use if CAS is forbidden",0x02, 0xFFFFFFFF, 0, 0, COLOR_RED, COLOR_WHITE, 1, 0);
+    zh_ui_printmini(&x,&y,"  Do not use if CAS is forbidden",0x02, 0xFFFFFFFF, 0, 0, COLOR_RED, COLOR_WHITE, 1, 0);
 #ifdef MICROPY_LIB
     if (confirm("Syntax?","F1: Xcas, F6: Python",0)==KEY_CTRL_F6){
       xcas::switch_to_micropy(false,contextptr);

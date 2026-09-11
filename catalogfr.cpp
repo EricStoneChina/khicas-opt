@@ -72,6 +72,7 @@ void reset_alpha(){
 
 const char ram_filename[]="\\\\fls0\\khicas90.8c2";
 int lang=1;
+int zh_ui_enabled=0;
 const catalogFunc completeCat[] = { // list of all functions (including some not in any category)
   {"cart2param(eq,[x,y],t)", 0, "Cartesian to parametric branches; retain real parameter domains.", "y=x^2,[x,y],t", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},
   {"cart2polar(eq,[x,y],[r,theta])", 0, "Cartesian to polar equation (radians).", "x^2+y^2=4,[x,y],[r,theta]", 0, CAT_CATEGORY_PLOT | (CAT_CATEGORY_SOLVE << 8)},

@@ -16,6 +16,7 @@
 #include "menuGUI.hpp"
 #include "graphicsProvider.hpp"
 #include "khicas_gb18030.h"
+#include "zh_ui.h"
 extern "C" int ck_getkey(int * keyptr);
 
 typedef scrollbar TScrollbar;
@@ -42,7 +43,7 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) { // returns code telling what u
       menu->scroll = menu->selection -(menu->numitems>itemsHeight ? itemsHeight : menu->numitems);
     if (menu->selection-1 < menu->scroll)
       menu->scroll = menu->selection -1;
-    if(menu->statusText != NULL) DefineStatusMessage(menu->statusText, 1, 0, 0);
+    if(menu->statusText != NULL) zh_ui_define_status(menu->statusText);
     // Clear the area of the screen we are going to draw on
     if(0 == menu->pBaRtR) drawRectangle(18*(menu->startX-1), 24*(menu->miniMiniTitle ? itemsStartY:menu->startY), 18*menu->width+((menu->scrollbar && menu->scrollout)?6:0), 24*menu->height-(menu->miniMiniTitle ? 24:0), COLOR_WHITE);
     if (menu->numitems>0) {
@@ -68,7 +69,7 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) { // returns code telling what u
 	    }
 	  }
           const char * itemtext;
-          int gb=khicas_gb_strip(menu->items[curitem].text,&itemtext);
+          int gb=khicas_gb_strip(zh_ui_translate(menu->items[curitem].text),&itemtext);
           if (gb) {
             memmove(menuitem+1,menuitem,strlen(menuitem)+1);
             menuitem[0]=0x01;
@@ -143,17 +144,17 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) { // returns code telling what u
       if(menu->miniMiniTitle) {
         int textX = 0, textY=(menu->startY-1)*24;
         const char * title;
-        int gb=khicas_gb_strip(menu->title,&title);
+        int gb=khicas_gb_strip(zh_ui_translate(menu->title),&title);
         if (gb)
           khicas_enable_gb18030();
         PrintMiniMini( &textX, &textY, (unsigned char*)title, 16, menu->titleColor, 0 );
         if (gb)
           khicas_disable_gb18030();
-      } else mPrintXY(menu->startX, menu->startY, menu->title, TEXT_MODE_TRANSPARENT_BACKGROUND, menu->titleColor);
+      } else mPrintXY(menu->startX, menu->startY, (char*)zh_ui_translate(menu->title), TEXT_MODE_TRANSPARENT_BACKGROUND, menu->titleColor);
       if(menu->subtitle != NULL) {
         int textX=(MB_ElementCount(menu->title)+menu->startX-1)*18+10, textY=6;
         const char * subtitle;
-        int gb=khicas_gb_strip(menu->subtitle,&subtitle);
+        int gb=khicas_gb_strip(zh_ui_translate(menu->subtitle),&subtitle);
         if (gb)
           khicas_enable_gb18030();
         PrintMini(&textX, &textY, (unsigned char*)subtitle, 0, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);

@@ -1,0 +1,1482 @@
+[
+  {
+    "name": "!",
+    "howto": "运算符或程序选项 !。"
+  },
+  {
+    "name": "#",
+    "howto": "运算符或程序选项 #。"
+  },
+  {
+    "name": "%",
+    "howto": "运算符或程序选项 %。"
+  },
+  {
+    "name": "&",
+    "howto": "运算符或程序选项 &。"
+  },
+  {
+    "name": ":=",
+    "howto": "运算符或程序选项 :=。"
+  },
+  {
+    "name": "<",
+    "howto": "运算符或程序选项 <。"
+  },
+  {
+    "name": "=>",
+    "howto": "运算符或程序选项 =>。"
+  },
+  {
+    "name": ">",
+    "howto": "运算符或程序选项 >。"
+  },
+  {
+    "name": "Li2",
+    "howto": "二重对数函数 Li2(z)，使用主值分支。可对实数或复数参数进行数值计算。"
+  },
+  {
+    "name": "\\",
+    "howto": "执行 \\ 相关的符号计算操作。用法：\\。"
+  },
+  {
+    "name": "_",
+    "howto": "物理量或单位选项：_。"
+  },
+  {
+    "name": "_A",
+    "howto": "物理量或单位选项：_A。"
+  },
+  {
+    "name": "_Bq",
+    "howto": "物理量或单位选项：_Bq。"
+  },
+  {
+    "name": "_C",
+    "howto": "物理量或单位选项：_C。"
+  },
+  {
+    "name": "_Ci",
+    "howto": "物理量或单位选项：_Ci。"
+  },
+  {
+    "name": "_F",
+    "howto": "物理量或单位选项：_F。"
+  },
+  {
+    "name": "_F_",
+    "howto": "物理量或单位选项：_F_。"
+  },
+  {
+    "name": "_G_",
+    "howto": "物理量或单位选项：_G_。"
+  },
+  {
+    "name": "_H",
+    "howto": "物理量或单位选项：_H。"
+  },
+  {
+    "name": "_Hz",
+    "howto": "物理量或单位选项：_Hz。"
+  },
+  {
+    "name": "_J",
+    "howto": "物理量或单位选项：_J。"
+  },
+  {
+    "name": "_K",
+    "howto": "物理量或单位选项：_K。"
+  },
+  {
+    "name": "_Kcal",
+    "howto": "物理量或单位选项：_Kcal。"
+  },
+  {
+    "name": "_MeV",
+    "howto": "物理量或单位选项：_MeV。"
+  },
+  {
+    "name": "_N",
+    "howto": "物理量或单位选项：_N。"
+  },
+  {
+    "name": "_NA_",
+    "howto": "物理量或单位选项：_NA_。"
+  },
+  {
+    "name": "_Ohm",
+    "howto": "物理量或单位选项：_Ohm。"
+  },
+  {
+    "name": "_PSun_",
+    "howto": "物理量或单位选项：_PSun_。"
+  },
+  {
+    "name": "_Pa",
+    "howto": "物理量或单位选项：_Pa。"
+  },
+  {
+    "name": "_REarth_",
+    "howto": "物理量或单位选项：_REarth_。"
+  },
+  {
+    "name": "_RSun_",
+    "howto": "物理量或单位选项：_RSun_。"
+  },
+  {
+    "name": "_R_",
+    "howto": "物理量或单位选项：_R_。"
+  },
+  {
+    "name": "_S",
+    "howto": "物理量或单位选项：_S。"
+  },
+  {
+    "name": "_StdP_",
+    "howto": "物理量或单位选项：_StdP_。"
+  },
+  {
+    "name": "_StdT_",
+    "howto": "物理量或单位选项：_StdT_。"
+  },
+  {
+    "name": "_Sv",
+    "howto": "物理量或单位选项：_Sv。"
+  },
+  {
+    "name": "_T",
+    "howto": "物理量或单位选项：_T。"
+  },
+  {
+    "name": "_V",
+    "howto": "物理量或单位选项：_V。"
+  },
+  {
+    "name": "_Vm_",
+    "howto": "物理量或单位选项：_Vm_。"
+  },
+  {
+    "name": "_W",
+    "howto": "物理量或单位选项：_W。"
+  },
+  {
+    "name": "_Wb",
+    "howto": "物理量或单位选项：_Wb。"
+  },
+  {
+    "name": "_alpha_",
+    "howto": "物理量或单位选项：_alpha_。"
+  },
+  {
+    "name": "_c_",
+    "howto": "物理量或单位选项：_c_。"
+  },
+  {
+    "name": "_cd",
+    "howto": "物理量或单位选项：_cd。"
+  },
+  {
+    "name": "_cdf",
+    "howto": "计算概率分布相关数值。用法：_cdf。"
+  },
+  {
+    "name": "_d",
+    "howto": "物理量或单位选项：_d。"
+  },
+  {
+    "name": "_deg",
+    "howto": "物理量或单位选项：_deg。"
+  },
+  {
+    "name": "_eV",
+    "howto": "物理量或单位选项：_eV。"
+  },
+  {
+    "name": "_epsilon0_",
+    "howto": "物理量或单位选项：_epsilon0_。"
+  },
+  {
+    "name": "_ft",
+    "howto": "物理量或单位选项：_ft。"
+  },
+  {
+    "name": "_g_",
+    "howto": "物理量或单位选项：_g_。"
+  },
+  {
+    "name": "_grad",
+    "howto": "物理量或单位选项：_grad。"
+  },
+  {
+    "name": "_h",
+    "howto": "物理量或单位选项：_h。"
+  },
+  {
+    "name": "_h_",
+    "howto": "物理量或单位选项：_h_。"
+  },
+  {
+    "name": "_ha",
+    "howto": "物理量或单位选项：_ha。"
+  },
+  {
+    "name": "_hbar_",
+    "howto": "物理量或单位选项：_hbar_。"
+  },
+  {
+    "name": "_inch",
+    "howto": "物理量或单位选项：_inch。"
+  },
+  {
+    "name": "_kWh",
+    "howto": "物理量或单位选项：_kWh。"
+  },
+  {
+    "name": "_k_",
+    "howto": "物理量或单位选项：_k_。"
+  },
+  {
+    "name": "_kg",
+    "howto": "物理量或单位选项：_kg。"
+  },
+  {
+    "name": "_l",
+    "howto": "物理量或单位选项：_l。"
+  },
+  {
+    "name": "_m",
+    "howto": "物理量或单位选项：_m。"
+  },
+  {
+    "name": "_mEarth_",
+    "howto": "物理量或单位选项：_mEarth_。"
+  },
+  {
+    "name": "_m^2",
+    "howto": "物理量或单位选项：_m^2。"
+  },
+  {
+    "name": "_m^3",
+    "howto": "物理量或单位选项：_m^3。"
+  },
+  {
+    "name": "_me_",
+    "howto": "物理量或单位选项：_me_。"
+  },
+  {
+    "name": "_miUS",
+    "howto": "物理量或单位选项：_miUS。"
+  },
+  {
+    "name": "_mn",
+    "howto": "物理量或单位选项：_mn。"
+  },
+  {
+    "name": "_mp_",
+    "howto": "物理量或单位选项：_mp_。"
+  },
+  {
+    "name": "_mpme_",
+    "howto": "物理量或单位选项：_mpme_。"
+  },
+  {
+    "name": "_mu0_",
+    "howto": "物理量或单位选项：_mu0_。"
+  },
+  {
+    "name": "_phi_",
+    "howto": "物理量或单位选项：_phi_。"
+  },
+  {
+    "name": "_plot",
+    "howto": "绘制相关图形。用法：_plot。"
+  },
+  {
+    "name": "_qe_",
+    "howto": "物理量或单位选项：_qe_。"
+  },
+  {
+    "name": "_qme_",
+    "howto": "物理量或单位选项：_qme_。"
+  },
+  {
+    "name": "_rad",
+    "howto": "物理量或单位选项：_rad。"
+  },
+  {
+    "name": "_rem",
+    "howto": "物理量或单位选项：_rem。"
+  },
+  {
+    "name": "_s",
+    "howto": "物理量或单位选项：_s。"
+  },
+  {
+    "name": "_sd_",
+    "howto": "物理量或单位选项：_sd_。"
+  },
+  {
+    "name": "_syr_",
+    "howto": "物理量或单位选项：_syr_。"
+  },
+  {
+    "name": "_tr",
+    "howto": "物理量或单位选项：_tr。"
+  },
+  {
+    "name": "_yd",
+    "howto": "物理量或单位选项：_yd。"
+  },
+  {
+    "name": "a and b",
+    "howto": "执行 a and b 相关的符号计算操作。用法：a and b。"
+  },
+  {
+    "name": "a or b",
+    "howto": "执行 a or b 相关的符号计算操作。用法：a or b。"
+  },
+  {
+    "name": "a2q",
+    "howto": "执行 a2q 相关的符号计算操作。用法：a2q(A,[vars])。"
+  },
+  {
+    "name": "abcuv",
+    "howto": "执行 abcuv 相关的符号计算操作。用法：abcuv(a,b,c)。"
+  },
+  {
+    "name": "abs",
+    "howto": "绝对值 / 复数的模 / 向量范数。用法:abs(x)"
+  },
+  {
+    "name": "altitude",
+    "howto": "求三角形的高。用法：altitude(A,B,C)。"
+  },
+  {
+    "name": "append",
+    "howto": "在列表末尾追加一个元素。"
+  },
+  {
+    "name": "approx",
+    "howto": "数值近似。用法:approx(expr) 或 approx(expr,n)"
+  },
+  {
+    "name": "area",
+    "howto": "求几何对象的面积。用法：area(object)。"
+  },
+  {
+    "name": "arg",
+    "howto": "复数的辐角(角度单位随模式，示例需弧度模式)。用法:arg(z)"
+  },
+  {
+    "name": "asc",
+    "howto": "把 ASCII 字符串转换为字符码列表。用法:asc(s)。"
+  },
+  {
+    "name": "assume",
+    "howto": "执行 assume 相关的符号计算操作。用法：assume(hyp)。"
+  },
+  {
+    "name": "avance",
+    "howto": "海龟绘图命令。用法：avance(n)。"
+  },
+  {
+    "name": "axes",
+    "howto": "执行 axes 相关的符号计算操作。用法：axes。"
+  },
+  {
+    "name": "baisse_crayon",
+    "howto": "执行 baisse_crayon 相关的符号计算操作。用法：baisse_crayon。"
+  },
+  {
+    "name": "barplot",
+    "howto": "绘制相关图形。用法：barplot(list)。"
+  },
+  {
+    "name": "barycenter",
+    "howto": "求带权点列的重心。用法：barycenter([point,coefficient],...)。"
+  },
+  {
+    "name": "binomial",
+    "howto": "二项分布与组合数。用法:binomial(n,p,k) 求 n 次试验恰有 k 次成功的概率;binomial(n,k) 为组合数。"
+  },
+  {
+    "name": "bisector",
+    "howto": "求角平分线。用法：bisector(A,B,C)。"
+  },
+  {
+    "name": "bitxor",
+    "howto": "执行 bitxor 相关的符号计算操作。用法：bitxor。"
+  },
+  {
+    "name": "black",
+    "howto": "图形显示选项：black。"
+  },
+  {
+    "name": "blue",
+    "howto": "图形显示选项：blue。"
+  },
+  {
+    "name": "cache_tortue",
+    "howto": "执行 cache_tortue 相关的符号计算操作。用法：cache_tortue。"
+  },
+  {
+    "name": "camembert",
+    "howto": "执行 camembert 相关的符号计算操作。用法：camembert(list)。"
+  },
+  {
+    "name": "cart2param",
+    "howto": "将笛卡尔方程转换为参数方程分支，并保留实参数定义域。用法:cart2param(eq,[x,y],t)。"
+  },
+  {
+    "name": "cart2polar",
+    "howto": "将笛卡尔方程转换为极坐标方程，角度使用弧度。用法:cart2polar(eq,[x,y],[r,theta])。"
+  },
+  {
+    "name": "ceil",
+    "howto": "向上取整(不小于 x 的最小整数)。用法:ceil(x)"
+  },
+  {
+    "name": "center",
+    "howto": "求圆、球或圆锥曲线的中心。用法：center(object)。"
+  },
+  {
+    "name": "cfactor",
+    "howto": "复数范围内因式分解。用法:cfactor(p);实数范围不能分解的二次式也可继续分解。"
+  },
+  {
+    "name": "char",
+    "howto": "把 ASCII 字符码或字符码列表转换为字符串。用法:char(n) 或 char(L)。"
+  },
+  {
+    "name": "charpoly",
+    "howto": "特征多项式。用法:charpoly(A,x) 返回关于 x 的多项式;charpoly(A) 返回系数列表。"
+  },
+  {
+    "name": "circle",
+    "howto": "创建圆。用法：circle(center,radius)。"
+  },
+  {
+    "name": "circumcircle",
+    "howto": "求三点外接圆。用法：circumcircle(A,B,C)。"
+  },
+  {
+    "name": "clearscreen",
+    "howto": "执行 clearscreen 相关的符号计算操作。用法：clearscreen()。"
+  },
+  {
+    "name": "coeff",
+    "howto": "提取多项式系数。用法:coeff(p,x,n) 取 x^n 的系数;coeff(p,x) 返回系数列表。"
+  },
+  {
+    "name": "comb",
+    "howto": "组合数，从 n 个不同对象中选 k 个，不计顺序。用法:comb(n,k)。"
+  },
+  {
+    "name": "cond",
+    "howto": "执行 cond 相关的符号计算操作。用法：cond(A,[1,2,inf])。"
+  },
+  {
+    "name": "cone",
+    "howto": "创建圆锥。用法：cone(A,v,theta[,h])。"
+  },
+  {
+    "name": "conic",
+    "howto": "创建或识别二次曲线。用法：conic(expression)。"
+  },
+  {
+    "name": "conj",
+    "howto": "共轭复数。用法:conj(z)"
+  },
+  {
+    "name": "coordinates",
+    "howto": "返回点的笛卡尔坐标。用法：coordinates(object)。"
+  },
+  {
+    "name": "correlation",
+    "howto": "相关系数。用法:correlation(L1,L2)"
+  },
+  {
+    "name": "covariance",
+    "howto": "求两组等长数据的协方差。用法:covariance(X,Y)。"
+  },
+  {
+    "name": "cpartfrac",
+    "howto": "复数范围内部分分式分解。用法:cpartfrac(f) 或 cpartfrac(f,x)。"
+  },
+  {
+    "name": "crayon",
+    "howto": "执行 crayon 相关的符号计算操作。用法：crayon。"
+  },
+  {
+    "name": "cross",
+    "howto": "两个三维向量的叉积，结果仍为三维向量。用法:cross(u,v)。"
+  },
+  {
+    "name": "csolve",
+    "howto": "在复数范围精确解方程。用法:csolve(eq,x);方程组用 csolve([eq1,eq2],[x,y])。"
+  },
+  {
+    "name": "cube",
+    "howto": "创建立方体。用法：cube(A,B,C)。"
+  },
+  {
+    "name": "curl",
+    "howto": "执行 curl 相关的符号计算操作。用法：curl(u,vars)。"
+  },
+  {
+    "name": "cyan",
+    "howto": "图形显示选项：cyan。"
+  },
+  {
+    "name": "cylinder",
+    "howto": "创建圆柱。用法：cylinder(A,v,r[,h])。"
+  },
+  {
+    "name": "debug",
+    "howto": "逐步执行用户函数，便于调试。用法：debug(f(args))。"
+  },
+  {
+    "name": "degree",
+    "howto": "求多项式对指定变量的次数。用法:degree(p,x)。"
+  },
+  {
+    "name": "denom",
+    "howto": "返回约分后分式的分母。用法:denom(f);先化简，再提取分母。"
+  },
+  {
+    "name": "desolve",
+    "howto": "精确解微分方程。用法:desolve(eq,x,y);初值条件可与方程放在同一列表中。"
+  },
+  {
+    "name": "det",
+    "howto": "方阵的行列式。用法:det(A)"
+  },
+  {
+    "name": "diff",
+    "howto": "求导数。用法:diff(f,x) 一阶导数;diff(f,x,n) n 阶导数"
+  },
+  {
+    "name": "discriminant",
+    "howto": "求多项式判别式。用法:discriminant(p,x);二次式结果为 b^2-4*a*c。"
+  },
+  {
+    "name": "display",
+    "howto": "设置图形显示选项。用法：display(object,options)。"
+  },
+  {
+    "name": "disque n",
+    "howto": "执行 disque n 相关的符号计算操作。用法：disque n。"
+  },
+  {
+    "name": "dodecahedron",
+    "howto": "执行 dodecahedron 相关的符号计算操作。用法：dodecahedron(A,B,C)。"
+  },
+  {
+    "name": "dot",
+    "howto": "两个等长向量的点积。用法:dot(u,v)。"
+  },
+  {
+    "name": "draw_arc",
+    "howto": "在屏幕上绘制像素图形。用法：draw_arc(x1,y1,rx,ry,theta1,theta2,c)。"
+  },
+  {
+    "name": "draw_circle",
+    "howto": "在屏幕上绘制像素图形。用法：draw_circle(x1,y1,r,c)。"
+  },
+  {
+    "name": "draw_line",
+    "howto": "在屏幕上绘制像素图形。用法：draw_line(x1,y1,x2,y2,c)。"
+  },
+  {
+    "name": "draw_pixel",
+    "howto": "在屏幕上绘制像素图形。用法：draw_pixel(x,y,color)。"
+  },
+  {
+    "name": "draw_polygon",
+    "howto": "在屏幕上绘制像素图形。用法：draw_polygon([[x1,y1],...],c)。"
+  },
+  {
+    "name": "draw_rectangle",
+    "howto": "在屏幕上绘制像素图形。用法：draw_rectangle(x,y,w,h,c)。"
+  },
+  {
+    "name": "draw_string",
+    "howto": "在屏幕上绘制像素图形。用法：draw_string(s,x,y,c)。"
+  },
+  {
+    "name": "ecris",
+    "howto": "执行 ecris 相关的符号计算操作。用法：ecris。"
+  },
+  {
+    "name": "edit list",
+    "howto": "执行 edit list 相关的符号计算操作。用法：edit list。"
+  },
+  {
+    "name": "edit matrix",
+    "howto": "执行 edit matrix 相关的符号计算操作。用法：edit matrix。"
+  },
+  {
+    "name": "efface",
+    "howto": "执行 efface 相关的符号计算操作。用法：efface。"
+  },
+  {
+    "name": "egcd",
+    "howto": "扩展欧几里得算法:求 U,V,D 使 A*U+B*V=D=gcd(A,B)。用法:egcd(A,B)"
+  },
+  {
+    "name": "eigenvals",
+    "howto": "求方阵的特征值。用法:eigenvals(A)。"
+  },
+  {
+    "name": "eigenvects",
+    "howto": "求可对角化方阵的特征向量，按列组成矩阵。用法:eigenvects(A)。"
+  },
+  {
+    "name": "elif test",
+    "howto": "执行 elif test 相关的符号计算操作。用法：elif test。"
+  },
+  {
+    "name": "ellipse",
+    "howto": "按两个焦点和一点创建椭圆。用法：ellipse(F1,F2,M)。"
+  },
+  {
+    "name": "equation",
+    "howto": "返回几何对象的笛卡尔方程。用法：equation(object)。"
+  },
+  {
+    "name": "erf",
+    "howto": "误差函数。用法：erf(x)。"
+  },
+  {
+    "name": "erfc",
+    "howto": "余误差函数。用法：erfc(x)。"
+  },
+  {
+    "name": "euler",
+    "howto": "欧拉函数 φ(n):小于 n 且与 n 互素的整数个数。用法:euler(n)"
+  },
+  {
+    "name": "eval",
+    "howto": "计算表达式的值。用法：eval(f)。"
+  },
+  {
+    "name": "evalc",
+    "howto": "把复数表达式化为实部+i*虚部。用法:evalc(z)。"
+  },
+  {
+    "name": "exact",
+    "howto": "将近似小数转换为精确有理数。用法:exact(v);结果受数值精度影响。"
+  },
+  {
+    "name": "exp2trig",
+    "howto": "将复指数改写为正弦和余弦。用法:exp2trig(expr)。"
+  },
+  {
+    "name": "exponential_regression",
+    "howto": "执行回归分析。用法：exponential_regression(Xlist,Ylist)。"
+  },
+  {
+    "name": "exponential_regression_plot",
+    "howto": "绘制相关图形。用法：exponential_regression_plot(Xlist,Ylist)。"
+  },
+  {
+    "name": "exponentiald",
+    "howto": "求指数分布的概率密度。用法：exponentiald(lambda,x)。"
+  },
+  {
+    "name": "extend",
+    "howto": "把另一个列表追加到列表末尾。"
+  },
+  {
+    "name": "factor",
+    "howto": "因式分解多项式(整数分解用 ifactor)。用法:factor(p) 或 factor(p,x)"
+  },
+  {
+    "name": "filled",
+    "howto": "图形显示选项：filled。"
+  },
+  {
+    "name": "float",
+    "howto": "执行 float 相关的符号计算操作。用法：float(x)。"
+  },
+  {
+    "name": "floor",
+    "howto": "向下取整(不超过 x 的最大整数)。用法:floor(x)"
+  },
+  {
+    "name": "fourier_an",
+    "howto": "求傅里叶余弦系数。"
+  },
+  {
+    "name": "fourier_bn",
+    "howto": "求傅里叶正弦系数。"
+  },
+  {
+    "name": "fourier_cn",
+    "howto": "求复指数傅里叶系数。"
+  },
+  {
+    "name": "from math/... import *",
+    "howto": "执行 from math/... import * 相关的符号计算操作。用法：from math/... import *。"
+  },
+  {
+    "name": "fsolve",
+    "howto": "数值解方程。用法:fsolve(eq,x=a..b) 指定区间，或 fsolve(eq,x=初值)。"
+  },
+  {
+    "name": "function def",
+    "howto": "执行 function def 相关的符号计算操作。用法：function def。"
+  },
+  {
+    "name": "gauss",
+    "howto": "化简二次型。用法：gauss(q)。"
+  },
+  {
+    "name": "gcd",
+    "howto": "整数最大公因数或多项式最大公因式。用法:gcd(a,b)。"
+  },
+  {
+    "name": "gl_x",
+    "howto": "执行 gl_x 相关的符号计算操作。用法：gl_x。"
+  },
+  {
+    "name": "gl_y",
+    "howto": "执行 gl_y 相关的符号计算操作。用法：gl_y。"
+  },
+  {
+    "name": "gramschmidt",
+    "howto": "对向量组作 Gram-Schmidt 正交化。用法：gramschmidt(M)。"
+  },
+  {
+    "name": "green",
+    "howto": "图形显示选项：green。"
+  },
+  {
+    "name": "halftan",
+    "howto": "用半角正切代换三角表达式。用法：halftan(expr)。"
+  },
+  {
+    "name": "hermite",
+    "howto": "生成 Hermite 多项式。"
+  },
+  {
+    "name": "hilbert",
+    "howto": "执行 hilbert 相关的符号计算操作。用法：hilbert(n)。"
+  },
+  {
+    "name": "histogram",
+    "howto": "绘制直方图。用法:histogram(L);histogram(L,a,h) 指定分组起点 a 和组距 h。"
+  },
+  {
+    "name": "homothety",
+    "howto": "执行 homothety 相关的符号计算操作。用法：homothety(center,ratio,object)。"
+  },
+  {
+    "name": "hyperbola",
+    "howto": "按两个焦点和一点创建双曲线。用法：hyperbola(F1,F2,M)。"
+  },
+  {
+    "name": "iabcuv",
+    "howto": "执行 iabcuv 相关的符号计算操作。用法：iabcuv(a,b,c)。"
+  },
+  {
+    "name": "ichinrem",
+    "howto": "中国剩余定理。用法:ichinrem([a,m],[b,n])，求同时满足余数 a、b 的同余解。"
+  },
+  {
+    "name": "icosahedron",
+    "howto": "执行 icosahedron 相关的符号计算操作。用法：icosahedron(A,B,C)。"
+  },
+  {
+    "name": "idivis",
+    "howto": "列出正整数的所有正约数。用法:idivis(n)。"
+  },
+  {
+    "name": "idn",
+    "howto": "n 阶单位矩阵。用法:idn(n)"
+  },
+  {
+    "name": "iegcd",
+    "howto": "整数扩展最大公因数。用法:iegcd(a,b)，返回 u,v,d，满足 a*u+b*v=d=gcd(a,b)。"
+  },
+  {
+    "name": "ifactor",
+    "howto": "整数质因数分解。用法:ifactor(n)"
+  },
+  {
+    "name": "ilaplace",
+    "howto": "逆拉普拉斯变换。用法:ilaplace(F,s,x)，从 s 变换回自变量 x。"
+  },
+  {
+    "name": "im",
+    "howto": "复数的虚部。用法:im(z)"
+  },
+  {
+    "name": "incircle",
+    "howto": "求三角形内切圆。用法：incircle(A,B,C)。"
+  },
+  {
+    "name": "inf",
+    "howto": "执行 inf 相关的符号计算操作。用法：inf。"
+  },
+  {
+    "name": "input",
+    "howto": "从键盘读取输入。用法：input()。"
+  },
+  {
+    "name": "integrate",
+    "howto": "求积分。用法:integrate(f,x) 求不定积分;integrate(f,x,a,b) 求定积分"
+  },
+  {
+    "name": "inter",
+    "howto": "求两个几何对象的交集。用法：inter(A,B)。"
+  },
+  {
+    "name": "interp",
+    "howto": "拉格朗日插值。用法:interp(X,Y)，X 和 Y 为等长坐标列表，各横坐标互异。"
+  },
+  {
+    "name": "inv",
+    "howto": "矩阵求逆(或表达式的倒数)。用法:inv(A)"
+  },
+  {
+    "name": "iquo",
+    "howto": "整数整除的商。用法:iquo(a,b)"
+  },
+  {
+    "name": "irem",
+    "howto": "整数整除的余数。用法:irem(a,b)"
+  },
+  {
+    "name": "is_collinear",
+    "howto": "判断几何或代数条件是否成立。用法：is_collinear(A,B,C)。"
+  },
+  {
+    "name": "is_concyclic",
+    "howto": "判断几何或代数条件是否成立。用法：is_concyclic(A,B,C,D)。"
+  },
+  {
+    "name": "is_element",
+    "howto": "判断几何或代数条件是否成立。用法：is_element(A,G)。"
+  },
+  {
+    "name": "is_orthogonal",
+    "howto": "判断几何或代数条件是否成立。用法：is_orthogonal(D,E)。"
+  },
+  {
+    "name": "is_parallel",
+    "howto": "判断几何或代数条件是否成立。用法：is_parallel(D,E)。"
+  },
+  {
+    "name": "isprime",
+    "howto": "判断整数是否为素数:是返回 1,否则返回 0。用法:isprime(n)"
+  },
+  {
+    "name": "jordan",
+    "howto": "求矩阵的 Jordan 标准形。用法：jordan(A)。"
+  },
+  {
+    "name": "laguerre",
+    "howto": "生成 Laguerre 多项式。"
+  },
+  {
+    "name": "laplace",
+    "howto": "拉普拉斯变换。用法:laplace(f,x,s)，从自变量 x 变换到 s。"
+  },
+  {
+    "name": "lcm",
+    "howto": "整数最小公倍数或多项式最小公倍式。用法:lcm(a,b)。"
+  },
+  {
+    "name": "lcoeff",
+    "howto": "提取多项式最高次项的系数。用法:lcoeff(p) 或 lcoeff(p,x)。"
+  },
+  {
+    "name": "legendre",
+    "howto": "生成 Legendre 多项式。"
+  },
+  {
+    "name": "len",
+    "howto": "返回列表元素数或字符串长度。用法:len(L) 或 len(s)。"
+  },
+  {
+    "name": "leve_crayon",
+    "howto": "执行 leve_crayon 相关的符号计算操作。用法：leve_crayon。"
+  },
+  {
+    "name": "limit",
+    "howto": "求极限。用法:limit(f,x=a);单侧极限:limit(f,x=a,1) 右极限、limit(f,x=a,-1) 左极限"
+  },
+  {
+    "name": "line",
+    "howto": "创建直线。用法：line(equation)。"
+  },
+  {
+    "name": "line_width_",
+    "howto": "执行 line_width_ 相关的符号计算操作。用法：line_width_。"
+  },
+  {
+    "name": "linear_regression",
+    "howto": "最小二乘直线拟合。用法:linear_regression(X,Y)，返回 y=a*x+b 的系数 a,b。"
+  },
+  {
+    "name": "linear_regression_plot",
+    "howto": "绘制相关图形。用法：linear_regression_plot(Xlist,Ylist)。"
+  },
+  {
+    "name": "linetan",
+    "howto": "求曲线在指定点的切线。用法：linetan(expr,x,x0)。"
+  },
+  {
+    "name": "linsolve",
+    "howto": "解线性方程组。用法:linsolve([eq1,eq2],[x,y]) 或 linsolve(A,b)"
+  },
+  {
+    "name": "local j,k;",
+    "howto": "执行 local j,k; 相关的符号计算操作。用法：local j,k;。"
+  },
+  {
+    "name": "logarithmic_regression",
+    "howto": "执行回归分析。用法：logarithmic_regression(Xlist,Ylist)。"
+  },
+  {
+    "name": "logarithmic_regression_plot",
+    "howto": "绘制相关图形。用法：logarithmic_regression_plot(Xlist,Ylist)。"
+  },
+  {
+    "name": "loop for",
+    "howto": "执行 loop for 相关的符号计算操作。用法：loop for。"
+  },
+  {
+    "name": "loop in list",
+    "howto": "执行 loop in list 相关的符号计算操作。用法：loop in list。"
+  },
+  {
+    "name": "loop while",
+    "howto": "执行 loop while 相关的符号计算操作。用法：loop while。"
+  },
+  {
+    "name": "lu",
+    "howto": "LU 分解。用法:lu(A)，返回置换 p、下三角 L、上三角 U，满足 permu2mat(p)*A=L*U。"
+  },
+  {
+    "name": "magenta",
+    "howto": "图形显示选项：magenta。"
+  },
+  {
+    "name": "map",
+    "howto": "对列表每个元素应用函数。用法:map(L,f)"
+  },
+  {
+    "name": "matpow",
+    "howto": "计算矩阵的整数次幂。用法：matpow(A,n)。"
+  },
+  {
+    "name": "matrix",
+    "howto": "生成矩阵。用法:matrix(m,n,f)，f(j,k) 决定元素;Xcas 模式下行列下标从 0 开始。"
+  },
+  {
+    "name": "mean",
+    "howto": "算术平均值。用法:mean(L)"
+  },
+  {
+    "name": "median",
+    "howto": "中位数。用法:median(L)"
+  },
+  {
+    "name": "median_line",
+    "howto": "执行 median_line 相关的符号计算操作。用法：median_line(A,B,C)。"
+  },
+  {
+    "name": "midpoint",
+    "howto": "求两点的中点。用法：midpoint(A,B)。"
+  },
+  {
+    "name": "mksa",
+    "howto": "执行 mksa 相关的符号计算操作。用法：mksa(x)。"
+  },
+  {
+    "name": "montre_tortue",
+    "howto": "执行 montre_tortue 相关的符号计算操作。用法：montre_tortue。"
+  },
+  {
+    "name": "mult_c_conjugate",
+    "howto": "执行 mult_c_conjugate 相关的符号计算操作。用法：mult_c_conjugate。"
+  },
+  {
+    "name": "mult_conjugate",
+    "howto": "执行 mult_conjugate 相关的符号计算操作。用法：mult_conjugate。"
+  },
+  {
+    "name": "normald",
+    "howto": "正态分布的概率密度，不是区间概率。用法:normald(mu,sigma,x);normald(x) 为标准正态。"
+  },
+  {
+    "name": "not",
+    "howto": "执行 not 相关的符号计算操作。用法：not(x)。"
+  },
+  {
+    "name": "numer",
+    "howto": "返回约分后分式的分子。用法:numer(f);先化简，再提取分子。"
+  },
+  {
+    "name": "octahedron",
+    "howto": "执行 octahedron 相关的符号计算操作。用法：octahedron(A,B,C)。"
+  },
+  {
+    "name": "odesolve",
+    "howto": "数值求解常微分方程初值问题。"
+  },
+  {
+    "name": "parabola",
+    "howto": "按焦点和准线上一点创建抛物线。用法：parabola(F,A)。"
+  },
+  {
+    "name": "param2cart",
+    "howto": "消去参数并转换为笛卡尔方程，保留定义域排除项。用法:param2cart([X(t),Y(t)],t,[x,y])。"
+  },
+  {
+    "name": "param2polar",
+    "howto": "将参数曲线转换为极坐标方程；省略坐标列表时返回极坐标对。用法:param2polar([X(t),Y(t)],t,[r,theta])。"
+  },
+  {
+    "name": "parameq",
+    "howto": "返回几何对象的参数方程。用法：parameq(object)。"
+  },
+  {
+    "name": "partfrac",
+    "howto": "部分分式分解。用法:partfrac(p,x)"
+  },
+  {
+    "name": "pas_de_cote n",
+    "howto": "执行 pas_de_cote n 相关的符号计算操作。用法：pas_de_cote n。"
+  },
+  {
+    "name": "perpen_bisector",
+    "howto": "求线段的垂直平分线。用法：perpen_bisector(A,B)。"
+  },
+  {
+    "name": "plane",
+    "howto": "创建平面。用法：plane(equation)。"
+  },
+  {
+    "name": "plot",
+    "howto": "绘制函数图像。用法:plot(f) 或 plot(f,x=a..b)"
+  },
+  {
+    "name": "plotarea",
+    "howto": "绘制相关图形。用法：plotarea(expr,x=a..b,[n,meth])。"
+  },
+  {
+    "name": "plotcontour",
+    "howto": "绘制相关图形。用法：plotcontour(expr,[x=xm..xM,y=ym..yM],levels)。"
+  },
+  {
+    "name": "plotfield",
+    "howto": "绘制相关图形。用法：plotfield(f(t,y),[t=tmin..tmax,y=ymin..ymax])。"
+  },
+  {
+    "name": "plotfunc",
+    "howto": "绘制函数图像。用法:plotfunc(f,x=a..b);曲面用 plotfunc(f,[x=a..b,y=c..d])。"
+  },
+  {
+    "name": "plotlist",
+    "howto": "按顺序连点。用法:plotlist([y0,y1,...]) 默认横坐标从 0 开始;也可传入坐标对列表。"
+  },
+  {
+    "name": "plotode",
+    "howto": "绘制相关图形。用法：plotode(f(t,y),[t=tmin..tmax,y],[t0,y0])。"
+  },
+  {
+    "name": "plotparam",
+    "howto": "绘制参数曲线。用法:plotparam([X(t),Y(t)],t=a..b);三角函数示例需弧度模式。"
+  },
+  {
+    "name": "plotpolar",
+    "howto": "绘制极坐标曲线。用法:plotpolar(r,x,a,b)，x 为极角;示例需弧度模式。"
+  },
+  {
+    "name": "plotseq",
+    "howto": "绘制相关图形。用法：plotseq(f(x),x=[u0,m,M],n)。"
+  },
+  {
+    "name": "plus_point",
+    "howto": "执行 plus_point 相关的符号计算操作。用法：plus_point。"
+  },
+  {
+    "name": "point",
+    "howto": "创建二维或三维点。用法：point(x,y[,z])。"
+  },
+  {
+    "name": "polar2cart",
+    "howto": "将极坐标方程转换为笛卡尔方程，采用 r>=0 和主值角度；原点需单独检查。用法:polar2cart(eq,[r,theta],[x,y])。"
+  },
+  {
+    "name": "polar2param",
+    "howto": "将极坐标方程转换为笛卡尔参数分支，角度使用弧度。用法:polar2param(eq,[r,theta],t)。"
+  },
+  {
+    "name": "polygon",
+    "howto": "创建多边形。用法：polygon(list)。"
+  },
+  {
+    "name": "polygonscatterplot",
+    "howto": "绘制相关图形。用法：polygonscatterplot(Xlist,Ylist)。"
+  },
+  {
+    "name": "polyhedron",
+    "howto": "创建多面体。用法：polyhedron(A,B,C,D,...)。"
+  },
+  {
+    "name": "polynomial_regression",
+    "howto": "执行回归分析。用法：polynomial_regression(Xlist,Ylist,n)。"
+  },
+  {
+    "name": "polynomial_regression_plot",
+    "howto": "绘制相关图形。用法：polynomial_regression_plot(Xlist,Ylist,n)。"
+  },
+  {
+    "name": "power_regression",
+    "howto": "执行回归分析。用法：power_regression(Xlist,Ylist,n)。"
+  },
+  {
+    "name": "power_regression_plot",
+    "howto": "绘制相关图形。用法：power_regression_plot(Xlist,Ylist,n)。"
+  },
+  {
+    "name": "powmod",
+    "howto": "快速计算模幂。用法:powmod(a,n,p)，求 a^n 除以 p 的余数，无需展开大整数。"
+  },
+  {
+    "name": "print",
+    "howto": "打印表达式。用法：print(expr)。"
+  },
+  {
+    "name": "projection",
+    "howto": "求几何对象的投影。用法：projection(object1,object2)。"
+  },
+  {
+    "name": "proot",
+    "howto": "多项式数值求根。用法:proot(P)"
+  },
+  {
+    "name": "purge",
+    "howto": "清除变量。用法：purge(x)。"
+  },
+  {
+    "name": "python",
+    "howto": "执行 Python 兼容代码。用法：python(f)。"
+  },
+  {
+    "name": "python_compat",
+    "howto": "设置 Python 兼容模式。用法：python_compat(0|1|2)。"
+  },
+  {
+    "name": "q2a",
+    "howto": "执行 q2a 相关的符号计算操作。用法：q2a(expr,vars)。"
+  },
+  {
+    "name": "qr",
+    "howto": "QR 分解。用法:qr(A)，返回正交矩阵 Q 和上三角矩阵 R，使 A=Q*R。"
+  },
+  {
+    "name": "quadric",
+    "howto": "执行 quadric 相关的符号计算操作。用法：quadric(equation)。"
+  },
+  {
+    "name": "quartile1",
+    "howto": "第一四分位数。用法:quartile1(L);可加第二个列表作为各数据的频数。"
+  },
+  {
+    "name": "quartile3",
+    "howto": "第三四分位数。用法:quartile3(L);可加第二个列表作为各数据的频数。"
+  },
+  {
+    "name": "quo",
+    "howto": "多项式除法的商。用法:quo(p,q,x);整数除法的商用 iquo(a,b)。"
+  },
+  {
+    "name": "quote",
+    "howto": "返回表达式的未求值形式。用法：quote(x)。"
+  },
+  {
+    "name": "radius",
+    "howto": "求圆、球或几何对象的半径。用法：radius(object)。"
+  },
+  {
+    "name": "rand",
+    "howto": "生成 0 到 1 之间的随机数。用法:rand()"
+  },
+  {
+    "name": "randint",
+    "howto": "生成随机数值或随机对象。用法：randint(a,b)。"
+  },
+  {
+    "name": "range",
+    "howto": "生成整数范围 [a,b)。用法：range(a,b)。"
+  },
+  {
+    "name": "ranm",
+    "howto": "随机矩阵。用法:ranm(m,n);ranm(m,n,normald,mu,sigma) 按指定正态分布生成。"
+  },
+  {
+    "name": "ranv",
+    "howto": "随机向量。用法:ranv(n);ranv(n,normald,mu,sigma) 按指定正态分布生成 n 个数。"
+  },
+  {
+    "name": "ratnormal",
+    "howto": "通分并约去公因式，化为最简有理式。用法:ratnormal(f)。"
+  },
+  {
+    "name": "re",
+    "howto": "复数的实部。用法:re(z)"
+  },
+  {
+    "name": "read",
+    "howto": "从文件读取变量。用法：read(\"filename\")。"
+  },
+  {
+    "name": "rectangle_plein a,b",
+    "howto": "执行 rectangle_plein a,b 相关的符号计算操作。用法：rectangle_plein a,b。"
+  },
+  {
+    "name": "recule n",
+    "howto": "执行 recule n 相关的符号计算操作。用法：recule n。"
+  },
+  {
+    "name": "red",
+    "howto": "图形显示选项：red。"
+  },
+  {
+    "name": "reflection",
+    "howto": "关于对象作对称变换。用法：reflection(object1,object2)。"
+  },
+  {
+    "name": "rem",
+    "howto": "多项式除法的余式。用法:rem(p,q,x);整数除法的余数用 irem(a,b)。"
+  },
+  {
+    "name": "residue",
+    "howto": "求函数在指定点的留数。用法:residue(f,z,z0)。"
+  },
+  {
+    "name": "resultant",
+    "howto": "求两个多项式的结式。用法：resultant(p,q,x)。"
+  },
+  {
+    "name": "return res",
+    "howto": "执行 return res 相关的符号计算操作。用法：return res。"
+  },
+  {
+    "name": "revert",
+    "howto": "求幂级数的反函数展开。用法：revert(p[,x])。"
+  },
+  {
+    "name": "rgb",
+    "howto": "执行 rgb 相关的符号计算操作。用法：rgb(r,g,b)。"
+  },
+  {
+    "name": "rhombus_point",
+    "howto": "执行 rhombus_point 相关的符号计算操作。用法：rhombus_point。"
+  },
+  {
+    "name": "rond n",
+    "howto": "执行 rond n 相关的符号计算操作。用法：rond n。"
+  },
+  {
+    "name": "rotation",
+    "howto": "绕中心旋转对象。用法：rotation(center,angle,object)。"
+  },
+  {
+    "name": "rref",
+    "howto": "矩阵的行简化阶梯形。用法:rref(A)"
+  },
+  {
+    "name": "rsolve",
+    "howto": "求递推数列通项。用法:rsolve(eq,u(n),初值);多项初值放在列表中。"
+  },
+  {
+    "name": "saute n",
+    "howto": "执行 saute n 相关的符号计算操作。用法：saute n。"
+  },
+  {
+    "name": "scatterplot",
+    "howto": "绘制散点图。用法:scatterplot(X,Y)，两组坐标列表长度相同。"
+  },
+  {
+    "name": "segment",
+    "howto": "创建线段。用法：segment(A,B)。"
+  },
+  {
+    "name": "seq",
+    "howto": "生成列表。用法:seq(f,k,a,b) 或 seq(f,k,a,b,步长)"
+  },
+  {
+    "name": "sign",
+    "howto": "符号函数:正数返回 1,负数返回 -1,0 返回 0。用法:sign(x)"
+  },
+  {
+    "name": "similarity",
+    "howto": "作相似变换。用法：similarity(center,ratio,angle,object)。"
+  },
+  {
+    "name": "simplify",
+    "howto": "化简表达式。用法:simplify(expr)"
+  },
+  {
+    "name": "single_inter",
+    "howto": "求两个对象的单一交点。用法：single_inter(A,B)。"
+  },
+  {
+    "name": "solve",
+    "howto": "解方程(精确解)。用法:solve(方程,x);方程组:solve([eq1,eq2],[x,y])"
+  },
+  {
+    "name": "sorted",
+    "howto": "返回排序后的列表。用法:sorted(L) 升序;sorted(L,f) 用比较函数 f 排序。"
+  },
+  {
+    "name": "sphere",
+    "howto": "创建球体。用法：sphere(A,r)。"
+  },
+  {
+    "name": "square_point",
+    "howto": "创建正方形。"
+  },
+  {
+    "name": "star_point",
+    "howto": "执行 star_point 相关的符号计算操作。用法：star_point。"
+  },
+  {
+    "name": "stddev",
+    "howto": "标准差。用法:stddev(L)"
+  },
+  {
+    "name": "subst",
+    "howto": "代入替换:把 a 中的 b 换成 c。用法:subst(a,b=c),也可简写 a(b=c)"
+  },
+  {
+    "name": "sum",
+    "howto": "求和。用法:sum(f,k,m,M) 表示 k 从 m 到 M 对 f 求和"
+  },
+  {
+    "name": "svd",
+    "howto": "实数方阵的奇异值分解。用法:svd(A)，返回 U,S,Q，满足 A=U*diag(S)*tran(Q)。"
+  },
+  {
+    "name": "tabvar",
+    "howto": "生成函数的变化表。用法：tabvar(f[,x=a..b])。"
+  },
+  {
+    "name": "taylor",
+    "howto": "泰勒展开。用法:taylor(f,x=a,n);加 polynom 参数可去掉余项"
+  },
+  {
+    "name": "tchebyshev1",
+    "howto": "生成第一类切比雪夫多项式。"
+  },
+  {
+    "name": "tchebyshev2",
+    "howto": "生成第二类切比雪夫多项式。"
+  },
+  {
+    "name": "tcollect",
+    "howto": "收集表达式中的同类项。用法：tcollect(expr)。"
+  },
+  {
+    "name": "test else",
+    "howto": "执行 test else 相关的符号计算操作。用法：test else。"
+  },
+  {
+    "name": "test if",
+    "howto": "执行 test if 相关的符号计算操作。用法：test if。"
+  },
+  {
+    "name": "texpand",
+    "howto": "展开三角、指数等函数中的和角或倍角。用法:texpand(expr)。"
+  },
+  {
+    "name": "time",
+    "howto": "测量命令的执行时间。用法：time(cmd)。"
+  },
+  {
+    "name": "tlin",
+    "howto": "三角函数线性化，把乘积和幂改写成三角函数的和。用法:tlin(expr)。"
+  },
+  {
+    "name": "tourne_droite n",
+    "howto": "执行 tourne_droite n 相关的符号计算操作。用法：tourne_droite n。"
+  },
+  {
+    "name": "tourne_gauche n",
+    "howto": "执行 tourne_gauche n 相关的符号计算操作。用法：tourne_gauche n。"
+  },
+  {
+    "name": "trace",
+    "howto": "矩阵的迹(主对角线元素之和)。用法:trace(A)"
+  },
+  {
+    "name": "translation",
+    "howto": "平移几何对象。用法：translation(vector,object)。"
+  },
+  {
+    "name": "transpose",
+    "howto": "矩阵转置(共轭转置用 trn(A))。用法:transpose(A)"
+  },
+  {
+    "name": "triangle",
+    "howto": "创建三角形。用法：triangle(A,B,C)。"
+  },
+  {
+    "name": "triangle_point",
+    "howto": "执行 triangle_point 相关的符号计算操作。用法：triangle_point。"
+  },
+  {
+    "name": "trig2exp",
+    "howto": "把三角函数改写为复指数。用法：trig2exp(expr)。"
+  },
+  {
+    "name": "trigcos",
+    "howto": "用余弦恒等式改写三角表达式。用法：trigcos(expr)。"
+  },
+  {
+    "name": "trigsin",
+    "howto": "用正弦恒等式改写三角表达式。用法：trigsin(expr)。"
+  },
+  {
+    "name": "trigtan",
+    "howto": "用正切恒等式改写三角表达式。用法：trigtan(expr)。"
+  },
+  {
+    "name": "ufactor",
+    "howto": "执行 ufactor 相关的符号计算操作。用法：ufactor(a,b)。"
+  },
+  {
+    "name": "uniformd",
+    "howto": "求均匀分布的概率密度。用法：uniformd(a,b,x)。"
+  },
+  {
+    "name": "usimplify",
+    "howto": "执行 usimplify 相关的符号计算操作。用法：usimplify(a)。"
+  },
+  {
+    "name": "vertices",
+    "howto": "返回多边形或多面体的顶点。用法：vertices(object)。"
+  },
+  {
+    "name": "write",
+    "howto": "把变量及其值写入文件。用法：write(\"filename\",var)。"
+  },
+  {
+    "name": "yellow",
+    "howto": "图形显示选项：yellow。"
+  },
+  {
+    "name": "|",
+    "howto": "运算符或程序选项 |。"
+  },
+  {
+    "name": "~",
+    "howto": "运算符或程序选项 ~。"
+  }
+]

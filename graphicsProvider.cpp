@@ -14,6 +14,7 @@
 
 #include "graphicsProvider.hpp"
 #include "khicas_gb18030.h"
+#include "zh_ui.h"
 
 color_t* VRAM_base;
 
@@ -480,14 +481,23 @@ void drawLine(int x1, int y1, int x2, int y2, int color) {
 
 
 void printCentered(char* text, int y, int FGC, int BGC) {
-  int len = strlen(text);
-  int x = LCD_WIDTH_PX/2-(len*18)/2;
-  int cur = 0;
-  while(cur<len) {
-    PrintCXY(x, y, &text[cur], 0x40, -1, FGC, BGC, 1, 0 );
-    x=x+18;
-    cur++;
+  const char *source = zh_ui_translate(text);
+  const char *display;
+  int gb = khicas_gb_strip(source,&display);
+  int columns = 0;
+  for (const unsigned char *p=(const unsigned char *)display; *p; ++p) {
+    if (gb && *p>=0x81 && p[1]) ++p;
+    ++columns;
   }
+  int x = LCD_WIDTH_PX/2-(columns*18)/2;
+  int cur = 0;
+  if (gb) khicas_enable_gb18030();
+  while(display[cur]) {
+    PrintCXY(x, y, &display[cur], 0x40, -1, FGC, BGC, 1, 0 );
+    x=x+18;
+    cur += (gb && (unsigned char)display[cur]>=0x81 && display[cur+1]) ? 2 : 1;
+  }
+  if (gb) khicas_disable_gb18030();
 }
 
 void clearLine(int x, int y, color_t color) {
@@ -499,12 +509,13 @@ void clearLine(int x, int y, color_t color) {
 }
 
 void mPrintXY(int x, int y, char*msg, int mode, int color) {
+  const char *source = zh_ui_translate(msg);
   char nmsg[50];
   nmsg[0] = 0x20;
   nmsg[1] = 0x20;
   nmsg[2] = '\0';
   const char * txt;
-  int gb=khicas_gb_strip(msg,&txt);
+  int gb=khicas_gb_strip(source,&txt);
   size_t used=2;
   while (*txt) {
     size_t count=(gb && (unsigned char)txt[0]>=0x81 && txt[1]) ? 2 : 1;

@@ -1,0 +1,154 @@
+{
+  "Config": "设置",
+  "Shortcuts": "快捷键",
+  "About": "关于",
+  "A propos": "关于",
+  "Quit": "退出",
+  "Python heap ": "Python 堆 ",
+  "Python not available": "Python 不可用",
+  "Digits (9, 19, 28)?": "数字位数（9、19、28）？",
+  "Heap size in K": "堆大小（K）",
+  "No Data": "无数据",
+  "Variables": "变量",
+  "Last result": "上次结果",
+  "Current command": "当前命令",
+  "Clip on:": "剪贴板内容：",
+  "Save session ": "保存会话",
+  "Save session as": "会话另存为",
+  "Load session": "加载会话",
+  "New session": "新建会话",
+  "New script": "新建脚本",
+  "Edit script": "编辑脚本",
+  "Run script": "运行脚本",
+  "Matrix editor": "矩阵编辑器",
+  "Clear": "清除",
+  "Clear script": "清除脚本",
+  "Radians": "弧度",
+  "Auto save": "自动保存",
+  "Function Catalog": "函数目录",
+  "  INPUT": "输入",
+  " EXAMPL1": "示例 1",
+  " EXAMPL2": "示例 2",
+  "  HELP": "帮助",
+  " QRHELP ": "二维码帮助",
+  "Help on command": "命令帮助",
+  "Sorry, no help available...": "抱歉，没有可用的帮助。",
+  "display option: ": "显示选项：",
+  "color option: ": "颜色选项：",
+  "fsolve option: ": "数值求解选项：",
+  "Object type: ": "对象类型：",
+  "EXE/EXIT: OK": "EXE/EXIT：确定",
+  "Xcas doc qrcode": "Xcas 文档二维码",
+  "Line copied to clipboard": "已将行复制到剪贴板",
+  "Line cut and copied to clipboard": "已剪切并复制行",
+  "CATALOG": "目录",
+  "File,Cfg": "文件、设置",
+  "Edit": "编辑",
+  "simp": "化简",
+  "Syntax": "语法",
+  "Xcas interpreter": "Xcas 解释器",
+  "XcasPy ^=**": "XcasPy ^=**",
+  "XcasPy ^=xor": "XcasPy ^=xor",
+  "Clear variables?": "清除变量？",
+  "F1: cancel,  F6: confirm": "F1：取消，F6：确认",
+  "Keep variables?": "保留变量？",
+  "F1: keep,   F6: erase": "F1：保留，F6：清除",
+  "F1: yes,     F6: cancel": "F1：是，F6：取消",
+  "F1/F6: ok": "F1/F6：确定",
+  "Press F1 or F6": "按 F1 或 F6",
+  "Invalid value": "数值无效",
+  "Interrupted": "已中断",
+  "Screen frozen. Press any key.": "屏幕已冻结。按任意键继续。",
+  "Type MENU key": "请按 MENU 键",
+  "Memory full": "内存不足",
+  "Purge variable": "清除变量",
+  "Saving in progress": "正在保存",
+  "Auto-save disabled": "自动保存已禁用",
+  "Current session will be lost": "当前会话将丢失",
+  "Clear history?": "清除历史记录？",
+  "Really erase?": "确定要清除吗？",
+  "Quit?": "退出？",
+  "Save current sheet?": "保存当前表格？",
+  "Error reading file": "读取文件出错",
+  "Could not find an empty cell": "找不到空单元格",
+  "Unable to convert": "无法转换",
+  "Unable to find polynomial roots": "找不到多项式根",
+  "Not a polynomial or deg<2 or deg>8": "不是多项式，或次数不在 2 到 8 之间",
+  "Numerical Integration Error": "数值积分错误",
+  "No more free variable available": "没有可用的自由变量",
+  "Root at": "根位于",
+  "Screen frozen. Press EXIT.": "屏幕已冻结。按 EXIT 继续。",
+  "F1: back to editor,  F6: confirm": "F1：返回编辑器，F6：确认",
+  "EXE: quit, result stored in last": "EXE：退出，结果保存到 last",
+  "+-: zoom, pad: move, EXIT: quit": "+/-：缩放，方向键：移动，EXIT：退出",
+  "Type MENU key, open another application": "按 MENU 键，然后打开其他应用",
+  "File exists!": "文件已存在！",
+  "F1:overwrite,           F6: cancel": "F1：覆盖，F6：取消",
+  "F1: overwrite,           F6: cancel": "F1：覆盖，F6：取消",
+  "F1: save, F6: discard changes": "F1：保存，F6：放弃修改",
+  "Changes will be lost": "修改将丢失",
+  "Replace? EXE: Yes, 8 or N: No": "替换？EXE：是，8 或 N：否",
+  "EXE: next, AC: cancel": "EXE：下一个，AC：取消",
+  "PAD: select, CLIP: copy, AC: cancel": "方向键：选择，CLIP：复制，AC：取消",
+  "Search, replace": "查找、替换",
+  "Goto line": "跳转到行",
+  "Insert": "插入",
+  "Check syntax": "检查语法",
+  "Scripts": "脚本",
+  "File": "文件",
+  "Help": "帮助",
+  "EXE: ok, EXIT: cancel": "EXE：确定，EXIT：取消"
+  ,"MicroPython 1.12 (c) D. George et al": "MicroPython 1.12（版权所有 D. George 等）"
+  ,"License GPL2 (KhiCAS), MIT (mPython)": "许可证：GPL2（KhiCAS），MIT（mPython）"
+  ,"  License GPL 2": "  许可证：GPL 2"
+  ,"  Do not use if CAS is forbidden": "  如果考试禁止使用 CAS，请勿使用"
+  ,"Screen frozen. Press esc.": "屏幕已冻结。按 esc 继续。"
+  ,"Screen frozen. Press EXIT.": "屏幕已冻结。按 EXIT 继续。"
+  ,"EXE: quit, result stored in last": "EXE：退出，结果保存到 last"
+  ,"+-: zoom, pad: move, EXIT: quit": "+/-：缩放，方向键：移动，EXIT：退出"
+  ,"Saving in progress": "正在保存"
+  ,"Line copied to clipboard": "已将行复制到剪贴板"
+  ,"Line cut and copied to clipboard": "已剪切并复制行"
+  ,"Python/Xcas": "Python/Xcas"
+  ,"Sqrt": "平方根"
+  ,"Step/step": "单步/步进"
+  ,"Save": "保存"
+  ,"Save as": "另存为"
+  ,"Applications": "应用"
+  ,"Run session": "运行会话"
+  ,"Script editor": "脚本编辑器"
+  ,"Open script": "打开脚本"
+  ,"Clear history": "清除历史记录"
+  ,"Parameter": "参数"
+  ,"Config shift-SETUP": "设置（SHIFT-SETUP）"
+  ,"Index": "索引"
+  ,"New value?": "新值？"
+  ,"New value? ": "新值？ "
+  ,"Invalid variable name": "变量名无效"
+  ,"F1 or F6: ok": "F1 或 F6：确定"
+  ,"Clear Xcas variables?": "清除 Xcas 变量？"
+  ,"Clear MicroPython heap?": "清除 MicroPython 堆？"
+  ,"Clear QuickJS heap?": "清除 QuickJS 堆？"
+  ,"Variable name:": "变量名："
+  ,"Line number": "行号"
+  ,"Columns:": "列数："
+  ,"Filename:": "文件名："
+  ,"Search:": "查找："
+  ,"Replace by:": "替换为："
+  ,"EXIT or empty string: cancel": "EXIT 或空字符串：取消"
+  ,"EXIT: search only ": "EXIT：仅查找 "
+  ,"Save selection in": "将选择保存到"
+  ,"Really leave": "确定要退出吗"
+  ,"Auto shutdown": "自动关机"
+  ,"Exam mode": "考试模式"
+  ,"Session saved": "会话已保存"
+  ,"BROAD LEAPS": "快速跳转"
+  ,"unable to read": "无法读取"
+  ,"Fatal: unable to load ram part": "致命错误：无法加载 RAM 部分"
+  ,"Fatal: unable to check ram part": "致命错误：无法检查 RAM 部分"
+  ,"Please type any key": "请按任意键"
+  ,"To restart KhiCAS, type keys": "要重启 KhiCAS，请按以下按键"
+  ,"To shutdown, type the keys": "要关机，请按以下按键"
+  ,"Back to home menu. To shutdown": "返回主菜单。要关机，请再次按 SHIFT AC/ON"
+  ,"Press MENU key": "请按 MENU 键"
+}

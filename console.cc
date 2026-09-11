@@ -19,6 +19,7 @@ extern "C" {
 #include <math.h>
 #include "kdisplay.h"
 #include "khicas_gb18030.h"
+#include "zh_ui.h"
 #include "input_lexer.h"
 #include "console.h"
 #include "catalogGUI.hpp"
@@ -276,7 +277,8 @@ void copy_clipboard(const ustl::string & s,bool status,bool clip_pasted){
     *clipboard()+=s;
   clip_pasted=false;
   if (status){
-    DefineStatusMessage((char*)(lang?"Selection copiee vers presse-papiers.":"Selection copied to clipboard"), 1, 0, 0);
+    if (lang) DefineStatusMessage((char*)"Selection copiee vers presse-papiers.", 1, 0, 0);
+    else zh_ui_define_status("Selection copied to clipboard");
     DisplayStatusArea();
   }
 }
@@ -294,7 +296,7 @@ int print_msg12(const char * msg1,const char * msg2,int textY){
   int textX=30;
   if (msg1){
     const char * text;
-    int gb=khicas_gb_strip(msg1,&text);
+    int gb=khicas_gb_strip(zh_ui_translate(msg1),&text);
     if (gb) khicas_enable_gb18030();
     PrintMini(&textX,&textY,(unsigned char*)text,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     if (gb) khicas_disable_gb18030();
@@ -303,7 +305,7 @@ int print_msg12(const char * msg1,const char * msg2,int textY){
   textY+=25;
   if (msg2){
     const char * text;
-    int gb=khicas_gb_strip(msg2,&text);
+    int gb=khicas_gb_strip(zh_ui_translate(msg2),&text);
     if (gb) khicas_enable_gb18030();
     PrintMini(&textX,&textY,(unsigned char*)text,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     if (gb) khicas_disable_gb18030();
@@ -2952,7 +2954,7 @@ char *Console_Make_Entry(const unsigned char* str)
 void PrintMini(int x,int y,const char * s,int mode){
   x *=3;
   y *=3;
-  PrintMini(&x,&y,(unsigned char *)s,mode,0xFFFFFFFF,0,0,COLOR_BLACK, COLOR_WHITE, 1, 0);
+  PrintMini(&x,&y,(unsigned char *)zh_ui_translate(s),mode,0xFFFFFFFF,0,0,COLOR_BLACK, COLOR_WHITE, 1, 0);
 }
 
 //Draws and runs the asked for menu.

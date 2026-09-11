@@ -16,6 +16,7 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $masterPath = Join-Path $root 'static_helpen.h'
 $jsonPath   = Join-Path $root 'tools\help-zh.json'
+$autoPath   = Join-Path $root 'tools\catalog-zh-auto.json'
 $outPath    = Join-Path $root 'static_helpzh.h'
 
 $utf8 = New-Object System.Text.UTF8Encoding($false)   # no BOM
@@ -24,6 +25,11 @@ $latin1 = [System.Text.Encoding]::GetEncoding(28591)
 $master = [System.IO.File]::ReadAllText($masterPath, $latin1)
 $jsonText = [System.IO.File]::ReadAllText($jsonPath, [System.Text.Encoding]::UTF8)
 $translations = $jsonText | ConvertFrom-Json
+$autoTranslations = $null
+if ([System.IO.File]::Exists($autoPath)) {
+    $autoText = [System.IO.File]::ReadAllText($autoPath, [System.Text.Encoding]::UTF8)
+    $autoTranslations = $autoText | ConvertFrom-Json
+}
 
 # PowerShell property lookup is case-insensitive. Command names are not:
 # LU/lu and QR/qr have different signatures, so resolve translation keys with
@@ -41,6 +47,18 @@ function Get-TranslationProperty($name) {
     $property = Get-ExactProperty $translations $name
     if ($property -eq $null -and $translations.caseSensitive -ne $null) {
         $property = Get-ExactProperty $translations.caseSensitive $name
+    }
+    if ($property -eq $null -and $autoTranslations -ne $null) {
+        if ($autoTranslations -is [array]) {
+            foreach ($entry in $autoTranslations) {
+                if ([string]::Equals([string]$entry.name, $name, [StringComparison]::Ordinal)) {
+                    $property = [pscustomobject]@{ Name = $entry.name; Value = $entry.howto }
+                    break
+                }
+            }
+        } else {
+            $property = Get-ExactProperty $autoTranslations $name
+        }
     }
     return $property
 }
