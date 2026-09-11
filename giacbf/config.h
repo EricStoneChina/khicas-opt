@@ -32,7 +32,7 @@
 #define SIZEOF_LONG_LONG 8
 
 /* Version number of package */
-#define VERSION "1.4.9-57"
+#define VERSION PACKAGE_VERSION
 #define FXCG
 #define GIAC_NO_OPTIMIZATIONS
 #define HAVE_NO_HOME_DIRECTORY

@@ -3439,7 +3439,7 @@ namespace giac {
     if (is_inf(e) || is_undef(e) )
       return e;
     matrice l; lvar(e,l);
-    if (l.size()>1) l=sort1(l);
+    if (l.size()>1) gen_sort_f(l.begin(),l.end(),sort_func);
     gen fg=e2r(e,l,contextptr); // ok
     if (fg.type==_FRAC && fg._FRACptr->num.type==_FRAC){
       fraction f(fg._FRACptr->num._FRACptr->num,fg._FRACptr->den*fg._FRACptr->num._FRACptr->den);
@@ -3480,7 +3480,7 @@ namespace giac {
     if (is_inf(e) || is_undef(e) )
       return e;
     matrice l; lvar(e,l);
-    if (l.size()>1) l=sort1(l);
+    if (l.size()>1) gen_sort_f(l.begin(),l.end(),sort_func);
     gen fg=e2r(e,l,contextptr);
     for (unsigned i=0;i<l.size();++i){
       if (l[i].type==_SYMB)

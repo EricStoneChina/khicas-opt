@@ -237,7 +237,7 @@ int bf_set_ui(bf_t *r, uint64_t a)
         a1 = a >> 32;
         shift = clz(a1);
         r->tab[0] = a0 << shift;
-        r->tab[1] = (a1 << shift) | (a0 >> (LIMB_BITS - shift));
+        r->tab[1] = (a1 << shift) | (shift ? a0 >> (LIMB_BITS - shift) : 0);
         r->expn = 2 * LIMB_BITS - shift;
     }
 #endif
@@ -253,7 +253,7 @@ int bf_set_si(bf_t *r, int64_t a)
     int ret;
 
     if (a < 0) {
-        ret = bf_set_ui(r, -a);
+        ret = bf_set_ui(r, -(uint64_t)a);
         r->sign = 1;
     } else {
         ret = bf_set_ui(r, a);
@@ -293,7 +293,8 @@ int bf_set(bf_t *r, const bf_t *a)
     }
     r->sign = a->sign;
     r->expn = a->expn;
-    memcpy(r->tab, a->tab, a->len * sizeof(limb_t));
+    if (a->len)
+        memcpy(r->tab, a->tab, a->len * sizeof(limb_t));
     return 0;
 }
 
@@ -2235,41 +2236,60 @@ int bf_div(bf_t *r, const bf_t *a, const bf_t *b, limb_t prec,
     return bf_op2(r, a, b, prec, flags, __bf_div);
 }
 
+/* A read-only small operand needs no heap allocation. The caller owns tab;
+   never resize or delete this bf_t. Keep the general arithmetic/rounding path. */
+static void bf_init_uint64(bf_context_t *ctx, bf_t *b, limb_t *tab, uint64_t v)
+{
+    int shift;
+    bf_init(ctx, b);
+    if (!v)
+        return;
+    b->tab = tab;
+#if LIMB_BITS == 32
+    if (v >> 32) {
+        uint32_t hi = v >> 32, lo = v;
+        shift = clz(hi);
+        tab[0] = lo << shift;
+        tab[1] = (hi << shift) | (shift ? lo >> (32 - shift) : 0);
+        b->len = 2;
+        b->expn = 64 - shift;
+        return;
+    }
+#endif
+    shift = clz((limb_t)v);
+    tab[0] = (limb_t)v << shift;
+    b->len = 1;
+    b->expn = LIMB_BITS - shift;
+}
+
 int bf_mul_ui(bf_t *r, const bf_t *a, uint64_t b1, limb_t prec,
                bf_flags_t flags)
 {
     bf_t b;
-    int ret;
-    bf_init(r->ctx, &b);
-    ret = bf_set_ui(&b, b1);
-    ret |= bf_mul(r, a, &b, prec, flags);
-    bf_delete(&b);
-    return ret;
+    limb_t tab[64 / LIMB_BITS];
+    bf_init_uint64(r->ctx, &b, tab, b1);
+    return bf_mul(r, a, &b, prec, flags);
 }
 
 int bf_mul_si(bf_t *r, const bf_t *a, int64_t b1, limb_t prec,
                bf_flags_t flags)
 {
     bf_t b;
-    int ret;
-    bf_init(r->ctx, &b);
-    ret = bf_set_si(&b, b1);
-    ret |= bf_mul(r, a, &b, prec, flags);
-    bf_delete(&b);
-    return ret;
+    limb_t tab[64 / LIMB_BITS];
+    /* Unsigned subtraction also handles INT64_MIN without signed overflow. */
+    bf_init_uint64(r->ctx, &b, tab, b1 < 0 ? -(uint64_t)b1 : (uint64_t)b1);
+    b.sign = b1 < 0;
+    return bf_mul(r, a, &b, prec, flags);
 }
 
 int bf_add_si(bf_t *r, const bf_t *a, int64_t b1, limb_t prec,
               bf_flags_t flags)
 {
     bf_t b;
-    int ret;
-    
-    bf_init(r->ctx, &b);
-    ret = bf_set_si(&b, b1);
-    ret |= bf_add(r, a, &b, prec, flags);
-    bf_delete(&b);
-    return ret;
+    limb_t tab[64 / LIMB_BITS];
+    bf_init_uint64(r->ctx, &b, tab, b1 < 0 ? -(uint64_t)b1 : (uint64_t)b1);
+    b.sign = b1 < 0;
+    return bf_add(r, a, &b, prec, flags);
 }
 
 int bf_pow_ui(bf_t *r, const bf_t *a, limb_t b, limb_t prec,
@@ -5433,7 +5453,7 @@ static inline __maybe_unused limb_t shrd(limb_t low, limb_t high, long shift)
 static inline __maybe_unused limb_t shld(limb_t a1, limb_t a0, long shift)
 {
     if (shift != 0)
-        return (a1 << shift) | (a0 >> (LIMB_BITS - shift));
+        return (a1 << shift) | (shift ? a0 >> (LIMB_BITS - shift) : 0);
     else
         return a1;
 }

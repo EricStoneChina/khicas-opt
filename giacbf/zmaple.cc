@@ -170,6 +170,7 @@ extern "C" double emcctime();
 extern "C" {
 #include <rtc.h>
 }
+bool get_cas_memory_stats(unsigned *stats);
 #endif
 #ifndef NO_NAMESPACE_GIAC
 namespace giac {
@@ -472,6 +473,24 @@ namespace giac {
   gen _time(const gen & a,GIAC_CONTEXT){
     if ( a.type==_STRNG && a.subtype==-1) return  a;
     if (a.type==_VECT && a.subtype==_SEQ__VECT){
+      // Explicit single evaluation, unlike the ordinary repeated time(expr).
+      // [answer, seconds, free_before, free_after, lifetime_peak,
+      //  exhaustion_failures_delta, fragmentation_failures_delta]
+      if (a._VECTptr->size()==2 && a._VECTptr->back().type==_STRNG &&
+          *a._VECTptr->back()._STRNGptr=="resources"){
+        unsigned before[5],after[5];
+        if (!get_cas_memory_stats(before)) return gensizeerr(contextptr);
+        unsigned start=RTC_GetTicks();
+        gen answer=eval(a._VECTptr->front(),eval_level(contextptr),contextptr);
+        unsigned elapsed=unsigned(RTC_GetTicks())-start;
+        if (!get_cas_memory_stats(after)) return gensizeerr(contextptr);
+        vecteur result;result.reserve(7);result.push_back(answer);
+        result.push_back(double(elapsed)/128);
+        result.push_back(gen(size_t(before[0])));result.push_back(gen(size_t(after[0])));
+        result.push_back(gen(size_t(after[2])));
+        result.push_back(gen(size_t(after[3]-before[3])));result.push_back(gen(size_t(after[4]-before[4])));
+        return result;
+      }
       if (a._VECTptr->size()==2 && a._VECTptr->front().type==_INT_ && a._VECTptr->back().type==_INT_){
 	int h=a._VECTptr->front().val;
 	h=h%24;

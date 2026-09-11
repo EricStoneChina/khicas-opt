@@ -213,78 +213,46 @@ namespace giac {
     return r;
   }
   
+  // All groups before this cursor are full. Freeing an earlier slot moves
+  // the cursor back, preserving the original lowest-free-slot policy.
+  static unsigned first_free16=0,first_free24=0;
+#ifdef ALLOC32
+  static unsigned first_free32=0;
+#endif
+#ifdef ALLOC48
+  static unsigned first_free48=0;
+#endif
+
+  static int take_free_slot(unsigned *slots,unsigned groups,unsigned &first){
+    while (first<groups && !slots[first])
+      ++first;
+    if (first==groups)
+      return -1;
+    unsigned pos=freeslotpos(slots[first]);
+    slots[first] &= ~(1u<<pos);
+    return int(first*32+pos);
+  }
+
   static void* allocfast(size_t size){
-    int i,pos;
-    if (size==24){ 
-      for (i=0;i<ALLOC24/32;){
-	if (!(freeslot24[i] || freeslot24[i+1])){
-	  i+=2;
-	  continue;
-	}
-	if (freeslot24[i]){
-	  pos=freeslotpos(freeslot24[i]);
-	  freeslot24[i] &= ~(1<<pos);
-	  return (void *) (tab24+i*32+pos);
-	}
-	i++;
-	pos=freeslotpos(freeslot24[i]);
-	freeslot24[i] &= ~(1<<pos);
-	return (void *) (tab24+i*32+pos);
-      }
+    int pos;
+    if (size==24){
+      pos=take_free_slot(freeslot24,ALLOC24/32,first_free24);
+      if (pos>=0) return tab24+pos;
     }
-    if (size==16){ 
-      for (i=0;i<ALLOC16/32;){
-	if (!(freeslot16[i] || freeslot16[i+1])){
-	  i+=2;
-	  continue;
-	}
-	if (freeslot16[i]){
-	  pos=freeslotpos(freeslot16[i]);
-	  freeslot16[i] &= ~(1<<pos);
-	  return (void *) (tab16+i*32+pos);
-	}
-	++i;
-	pos=freeslotpos(freeslot16[i]);
-	freeslot16[i] &= ~(1<<pos);
-	return (void *) (tab16+i*32+pos);
-      }
+    if (size==16){
+      pos=take_free_slot(freeslot16,ALLOC16/32,first_free16);
+      if (pos>=0) return tab16+pos;
     }
 #ifdef ALLOC32
-    if (size==32){ 
-      for (i=0;i<ALLOC32/32;){
-	if (!(freeslot32[i] || freeslot32[i+1])){
-	  i+=2;
-	  continue;
-	}
-	if (freeslot32[i]){
-	  pos=freeslotpos(freeslot32[i]);
-	  freeslot32[i] &= ~(1<<pos);
-	  return (void *) (tab32+i*32+pos);
-	}
-	++i;
-	pos=freeslotpos(freeslot32[i]);
-	freeslot32[i] &= ~(1<<pos);
-	return (void *) (tab32+i*32+pos);
-      }
+    if (size==32){
+      pos=take_free_slot(freeslot32,ALLOC32/32,first_free32);
+      if (pos>=0) return tab32+pos;
     }
 #endif
 #ifdef ALLOC48
-    if (size==48){ 
-      for (i=0;i<ALLOC48/32;){
-	if (!(freeslot48[i] || freeslot48[i+1])){
-	  i+=2;
-	  continue;
-	}
-	if (freeslot48[i]){
-	  pos=freeslotpos(freeslot48[i]);
-	  freeslot48[i] &= ~(1<<pos);
-	  return (void *) (tab48+i*32+pos);
-	}
-	++i;
-	pos=freeslotpos(freeslot48[i]);
-	freeslot48[i] &= ~(1<<pos);
-	return (void *) (tab48+i*32+pos);
-      }
+    if (size==48){
+      pos=take_free_slot(freeslot48,ALLOC48/32,first_free48);
+      if (pos>=0) return tab48+pos;
     }
 #endif
     void * p =  malloc(size);  
@@ -301,14 +269,16 @@ namespace giac {
     if ( ((size_t)obj >= (size_t) &tab24[0]) &&
 	 ((size_t)obj < (size_t) &tab24[ALLOC24]) ){
       int pos= ((size_t)obj -((size_t) &tab24[0]))/sizeof(six_int);
-      freeslot24[pos/32] |= (1 << (pos%32)); 
+      freeslot24[pos/32] |= (1u << (pos%32));
+      if (unsigned(pos/32)<first_free24) first_free24=unsigned(pos/32);
       return;
     }
     if ( ((size_t)obj>=(size_t) &tab16[0] ) &&
 	 ((size_t)obj<(size_t) &tab16[ALLOC16] ) ){
       * (unsigned *) obj= 0;
       int pos= ((size_t)obj -((size_t) &tab16[0]))/sizeof(four_int);
-      freeslot16[pos/32] |= (1 << (pos%32)); 
+      freeslot16[pos/32] |= (1u << (pos%32));
+      if (unsigned(pos/32)<first_free16) first_free16=unsigned(pos/32);
       return;
     }
 #ifdef ALLOC48
@@ -316,7 +286,8 @@ namespace giac {
 	 ((size_t)obj<(size_t) &tab48[ALLOC48] ) ){
       * (unsigned *) obj= 0;
       int pos= ((size_t)obj -((size_t) &tab48[0]))/sizeof(twelve_int);
-      freeslot48[pos/32] |= (1 << (pos%32)); 
+      freeslot48[pos/32] |= (1u << (pos%32));
+      if (unsigned(pos/32)<first_free48) first_free48=unsigned(pos/32);
       return;
     }
 #endif
@@ -324,7 +295,8 @@ namespace giac {
     if ( ((size_t)obj>=(size_t) &tab32[0]) &&
 	 ((size_t)obj<(size_t) &tab32[ALLOC32]) ){
       int pos= ((size_t)obj -((size_t) &tab32[0]))/sizeof(eight_int);
-      freeslot32[pos/32] |= (1 << (pos%32));
+      freeslot32[pos/32] |= (1u << (pos%32));
+      if (unsigned(pos/32)<first_free32) first_free32=unsigned(pos/32);
       return;
     }
 #endif

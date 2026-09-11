@@ -96,6 +96,7 @@ extern "C" int ck_getkey(int * keyptr);
 extern "C" bool oldalphastate,oldshiftstate; // status before last ck_getkey
 void do_restart();
 int get_free_memory();
+bool get_cas_memory_stats(unsigned *stats);
 extern giac::context * contextptr; 
 bool eqws(char * s,bool eval); // from main.cc, s must be at least GEN_PRINT_BUFSIZE char
 giac::gen eqw(const giac::gen & ge,bool editable);

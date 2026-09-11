@@ -122,10 +122,11 @@ namespace giac {
       return;
     }
     convolutionpower(v,k/2,res,contextptr);
-    vecteur tmp=res;
+    vecteur tmp;
+    swap(tmp,res);
     convolution(tmp,tmp,res,contextptr);
     if (k%2){
-      tmp=res;
+      swap(tmp,res);
       convolution(tmp,v,res,contextptr);
     }
   }
@@ -390,10 +391,11 @@ namespace giac {
       return;
     }
     tconvolutionpower(v,k/2,res,contextptr);
-    vecteur tmp=res;
+    vecteur tmp;
+    swap(tmp,res);
     tconvolution(tmp,tmp,res,contextptr);
     if (k%2){
-      tmp=res;
+      swap(tmp,res);
       tconvolution(tmp,v,res,contextptr);
     }
   }

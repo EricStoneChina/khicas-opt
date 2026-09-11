@@ -3,6 +3,8 @@
 #include "overclock.h"
 #include <fxcg/keyboard.h>
 #include "giacPCH.h"
+#include "khicas_version.h"
+#include "parametric_display.h"
 #include <fxcg/display.h>
 #include <fxcg/file.h>
 #include <fxcg/keyboard.h>
@@ -1259,6 +1261,17 @@ extern char sextra, eextra;
 #endif
 
 kmalloc_arena_t static_ram = { 0 },ram3M={0};
+// Snapshot only: retain allocator accounting and its lifetime high-water mark.
+bool get_cas_memory_stats(unsigned *stats){
+  kmalloc_gint_stats_t *s=kmalloc_get_gint_stats(pythonjs_static_heap?&ram3M:&static_ram);
+  if (!s) return false;
+  stats[0]=s->free_memory;
+  stats[1]=s->used_memory;
+  stats[2]=s->peak_used_memory;
+  stats[3]=s->exhaustion_failures;
+  stats[4]=s->fragmentation_failures;
+  return true;
+}
 int get_free_memory(){
   kmalloc_gint_stats_t * s;
   if (pythonjs_static_heap)
@@ -1270,6 +1283,7 @@ int get_free_memory(){
   return res;
 }
 #else
+bool get_cas_memory_stats(unsigned *){return false;}
 int get_free_memory(){
   return freeslotmem();
 }
@@ -1591,7 +1605,11 @@ bool ispnt(const gen & g){
   return ispnt(g._VECTptr->back());
 }
 
+static giac::gen eqw_presentation(const giac::gen & ge,bool editable,const giac::gen *raw_result);
 giac::gen eqw(const giac::gen & ge,bool editable){
+  return eqw_presentation(ge,editable,0);
+}
+static giac::gen eqw_presentation(const giac::gen & ge,bool editable,const giac::gen *raw_result){
   bool edited=false;
 #ifdef CURSOR
   Cursor_SetFlashOff();
@@ -1687,6 +1705,44 @@ giac::gen eqw(const giac::gen & ge,bool editable){
     int key;
     in_ckgetkey(&key,1,menu.c_str(),shiftmenu.c_str(),alphamenu.c_str(),eqwcolorbg);
     bool alph=oldalphastate;//keyflag==4||keyflag==0x84||keyflag==8||keyflag==0x88;
+    if(raw_result){
+      // Labels belong to the view only. EXE, copying and storing must never
+      // evaluate x(t) or replace usable parameter pairs with equalities.
+      if(key==KEY_CTRL_EXE){
+        giac::sto(*raw_result,giac::gen("last",contextptr),contextptr);
+        return *raw_result;
+      }
+      if(key==KEY_CTRL_EXIT || key==KEY_CTRL_AC)return *raw_result;
+      if(key==KEY_CTRL_CLIP){
+        copy_clipboard(parametric_display_selection(*raw_result,line,col).print(contextptr),true,true);
+        continue;
+      }
+      if(key==KEY_CHAR_STORE){
+        ustl::string name;
+        if(inputline(lang?"Stocker selection dans":"Save selection in",lang?"Nom de variable: ":"Variable name: ",name,false) && !name.empty() && isalpha(name[0])){
+          gen variable(name,contextptr);
+          if(variable.type!=_IDNT)invalid_varname();
+          else if(eval(variable,1,contextptr)==variable || confirm_overwrite())
+            giac::sto(parametric_display_selection(*raw_result,line,col),variable,contextptr);
+        }
+        continue;
+      }
+      if(key==KEY_CTRL_F9 || (key==KEY_CTRL_F3 && (keyflag==1 || alph))){
+        eq.attr.fontsize=eq.attr.fontsize==14?16:(eq.attr.fontsize==16?18:14);
+        eq.data=0;
+        // Always rebuild the complete view: row/column selections must keep
+        // referring to the same original branch after changing the font.
+        eq.data=xcas::Equation_compute_size(ge,eq.attr,LCD_WIDTH_PX,contextptr);
+        eqdata=xcas::Equation_total_size(eq.data);
+        dx=(eqdata.dx-LCD_WIDTH_PX)/2;
+        dy=LCD_HEIGHT_PX-2*STATUS_AREA_PX+eqdata.y;
+        firstrun=2;
+        continue;
+      }
+      // This mathematical view is read-only; retain navigation and font zoom.
+      if(key!=KEY_CTRL_LEFT && key!=KEY_CTRL_RIGHT && key!=KEY_CTRL_UP && key!=KEY_CTRL_DOWN &&
+         key!=KEY_SHIFT_LEFT && key!=KEY_SHIFT_RIGHT && key!=KEY_CTRL_PAGEUP && key!=KEY_CTRL_PAGEDOWN)continue;
+    }
     //cout << key << '\n';
     if (key==KEY_CTRL_SD){
       khicas_addins_menu(contextptr);
@@ -2523,6 +2579,12 @@ bool eqws(char * s,bool eval){ // s buffer must be at least GEN_PRINT_BUFSIZE ch
 }
 
 void check_do_graph(giac::gen & ge,const giac::gen & gs,int do_logo_graph_eqw,GIAC_CONTEXT) {
+  gen presentation;
+  if((do_logo_graph_eqw & 1) && parametric_display_view(gs,ge,presentation) &&
+     taille(presentation,xcas::max_prettyprint_equation)<xcas::max_prettyprint_equation){
+    eqw_presentation(presentation,false,&ge);
+    return;
+  }
   if (ge.type==giac::_SYMB || (ge.type==giac::_VECT && !ge._VECTptr->empty() && !is_numericv(*ge._VECTptr)) ){
     if (islogo(ge)){
       if (do_logo_graph_eqw & 4)
@@ -2551,7 +2613,7 @@ void check_do_graph(giac::gen & ge,const giac::gen & gs,int do_logo_graph_eqw,GI
 }
 
 char * c_load_script(const char * filename){
-  if (inexammode)
+  if (inexammode || !filename || strlen(filename)>MAX_FILENAME_SIZE-16)
     return 0;
   if (filename && filename[0]!='\\'){
     // print_msg12("Adding \\\\fls0\\",filename);int key; ck_getkey(&key);
@@ -2575,9 +2637,11 @@ char * c_load_script(const char * filename){
     return 0; //file too big, return
   }
   unsigned char* asrc = (unsigned char*)malloc(size*sizeof(unsigned char)+5); // 5 more bytes to make sure it fits...
+  if (!asrc){Bfile_CloseFile_OS(hFile);return 0;}
   memset(asrc, 0, size+5); //alloca does not clear the allocated space. Make sure the string is null-terminated this way.
   int rsize = Bfile_ReadFile_OS(hFile, asrc, size, 0);
   Bfile_CloseFile_OS(hFile); //we got file contents, close it
+  if (rsize!=size){free(asrc);return 0;}
   asrc[rsize]='\0';
   return (char *) asrc;
 }
@@ -2706,7 +2770,7 @@ int restore_session(const char * fname){
   string filename(remove_path0(remove_extension(fname)));
   if (!load_console_state_smem((string("\\\\fls0\\")+filename+string(".xw")).c_str())){
     int x=0,y=92;
-    PrintMini(&x,&y,(unsigned char*)"KhiCAS 1.8 (c) 2024 B. Parisse et al",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
+    PrintMini(&x,&y,(unsigned char*)KHICAS_DISPLAY_VERSION,0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
     x=0; y+=18;
 #ifdef MICROPY_LIB
     PrintMini(&x,&y,(unsigned char*)"MicroPython 1.12 (c) D. George et al",0x02, 0xFFFFFFFF, 0, 0, COLOR_BLACK, COLOR_WHITE, 1, 0);
@@ -3050,5 +3114,3 @@ void run(const char * s,int do_logo_graph_eqw){
   Console_Output((const unsigned char*)s_.c_str());
   //return ge; 
 }
-
-

@@ -1,0 +1,170 @@
+{
+  "sources": {
+    "derivations": "docs/GENERALIZATION-CYCLE8.md",
+    "generator": "tests/generate-coverage-cycle8.py"
+  },
+  "notes": "Independent audit frozen after 4c97dc5, checkpoint/integration-cycle7-2026a, before tested-engine evaluation. Two proved primitives, six ordinarily absolutely convergent definite integrals, two explicit resource-growth probes. No unknown-closed-form or PV placeholders.",
+  "summary": {
+    "cases": 8,
+    "definite": 6,
+    "indefinite": 2,
+    "resource_growth": 2,
+    "by_answer_class": {
+      "elementary-closed-form": 6,
+      "special-function-closed-form": 2
+    }
+  },
+  "cases": [
+    {
+      "id": "C8-quadratic-asinh-parts-01",
+      "family": "quadratic-asinh-parts",
+      "intent": "structural-composition",
+      "domain": "all real x; principal real asinh and positive square root",
+      "answer_class": "elementary-closed-form",
+      "f": "(2*x+1)*asinh(x^2+x+1)",
+      "expected": "(x^2+x+1)*asinh(x^2+x+1)-sqrt(1+(x^2+x+1)^2)",
+      "samples": [
+        "-3",
+        "-1/2",
+        "1/5",
+        "1",
+        "4"
+      ]
+    },
+    {
+      "id": "C8-composed-binomial-parts-boundary-01",
+      "family": "composed-binomial-parts-boundary",
+      "intent": "resource-expression-growth",
+      "domain": "all real x; integer powers and strictly positive 1+(x^2+x)^32",
+      "answer_class": "elementary-closed-form",
+      "f": "(2*x+1)*(x^2+x)^63*(1+(x^2+x)^32)^1024",
+      "expected": "(1+(x^2+x)^32)^1026/32832-(1+(x^2+x)^32)^1025/32800",
+      "samples": [
+        "-1/2",
+        "1/20",
+        "1/3",
+        "1",
+        "2"
+      ],
+      "verification": {
+        "resource_note": "Expanded integrand degree 65663; t=(x^2+x)^32 reduces to t*(1+t)^1024/32 and a two-term primitive.",
+        "symbolic_proof": "generic-binomial-parts"
+      }
+    },
+    {
+      "id": "C8-exponential-beta-boundary-01",
+      "family": "exponential-beta-boundary",
+      "intent": "resource-expression-growth",
+      "domain": "x>=0; O(x^4096) at zero and O(exp(-2*x)) at infinity",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-2*x)*(1-exp(-x))^4096",
+      "expected": "1/(4097*4098)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "alternate_f": "x*(1-x)^4096",
+        "alternate_bounds": [
+          "0",
+          "1"
+        ],
+        "resource_note": "Expanding the binomial creates 4097 exponential terms; t=exp(-x) leaves a single beta moment."
+      }
+    },
+    {
+      "id": "C8-laplace-erf-square-root-01",
+      "family": "laplace-erf-square-root",
+      "intent": "structural-composition",
+      "domain": "x>=0; principal square root; O(sqrt(x)) at zero and exponential decay at infinity",
+      "answer_class": "elementary-closed-form",
+      "f": "exp(-x)*erf(sqrt(x))",
+      "expected": "1/sqrt(2)",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "alternate_f": "2*exp(-2*x^2)/sqrt(pi)",
+        "alternate_bounds": [
+          "0",
+          "+infinity"
+        ]
+      }
+    },
+    {
+      "id": "C8-atan-log-cauchy-moment-01",
+      "family": "atan-log-cauchy-moment",
+      "intent": "structural-composition",
+      "domain": "0<x<=1; O(x*ln(x)) at zero; principal real atan",
+      "answer_class": "special-function-closed-form",
+      "f": "atan(x)*ln(x)/(1+x^2)",
+      "expected": "7*Zeta(3)/16-pi*(Psi(1/4,1)-Psi(3/4,1))/64",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "verification": {
+        "alternate_f": "x*ln(tan(x))",
+        "alternate_bounds": [
+          "0",
+          "pi/4"
+        ]
+      }
+    },
+    {
+      "id": "C8-opposite-trig-logarithm-product-01",
+      "family": "opposite-trig-logarithm-product",
+      "intent": "structural-composition",
+      "domain": "0<=x<pi/2; both log arguments positive in the interior; ordinary integrable logarithmic endpoint singularity",
+      "answer_class": "elementary-closed-form",
+      "f": "ln(1+sin(x))*ln(1-sin(x))",
+      "expected": "pi*ln(2)^2/2-pi^3/12",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "verification": {
+        "stable_near_endpoint": "sine-opposite-log-product",
+        "alternate_f": "(ln(2)+2*ln(sin(x)))*(ln(2)+2*ln(cos(x)))",
+        "alternate_bounds": [
+          "0",
+          "pi/2"
+        ]
+      }
+    },
+    {
+      "id": "C8-atan-square-cauchy-square-01",
+      "family": "atan-square-cauchy-square",
+      "intent": "structural-composition",
+      "domain": "x>=0; O(x^2) at zero and O(x^-4) at infinity",
+      "answer_class": "elementary-closed-form",
+      "f": "atan(x)^2/(1+x^2)^2",
+      "expected": "pi^3/48-pi/8",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "verification": {
+        "alternate_f": "x^2*cos(x)^2",
+        "alternate_bounds": [
+          "0",
+          "pi/2"
+        ]
+      }
+    },
+    {
+      "id": "C8-gaussian-log-square-moment-01",
+      "family": "gaussian-log-square-moment",
+      "intent": "structural-composition",
+      "domain": "x>0; logarithmic-square singularity integrable at zero; Gaussian decay at infinity",
+      "answer_class": "special-function-closed-form",
+      "f": "exp(-x^2)*ln(x)^2",
+      "expected": "sqrt(pi)*(Psi(1/2)^2+Psi(1/2,1))/8",
+      "bounds": [
+        "0",
+        "+infinity"
+      ]
+    }
+  ]
+}

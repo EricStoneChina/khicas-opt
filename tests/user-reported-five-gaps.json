@@ -1,0 +1,60 @@
+{
+  "sources": {
+    "inputs": "User reported five unsolved integrals before A1-F6 acceptance matrix"
+  },
+  "notes": "Retained work items. Do not claim solved without current full-pipeline verification.",
+  "cases": [
+    {
+      "id": "GAP-TRIG-LOG-QUARTER",
+      "f": "ln(3*cos(x)^2+sin(x)^2)",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "expected": "pi*ln((sqrt(3)+1)/2)",
+      "domain": "real x, positive logarithm argument"
+    },
+    {
+      "id": "GAP-SYMMETRIC-QUARTIC",
+      "f": "(1+x^2)/((1-x^2)*sqrt(1+x^4))",
+      "expected": "atanh(sqrt(2)*x/sqrt(1+x^4))/sqrt(2)",
+      "samples": [
+        "-2",
+        "-1/3",
+        "1/3",
+        "2"
+      ],
+      "domain": "real x, x != +/-1"
+    },
+    {
+      "id": "GAP-ATAN-CIRCLE",
+      "f": "atan(x)/(x*sqrt(1-x^2))",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "pi*ln(1+sqrt(2))/2",
+      "domain": "ordinary integrable endpoints"
+    },
+    {
+      "id": "GAP-OSCILLATORY-FRULLANI",
+      "f": "(exp(-x)-exp(-3*x))*cos(x)/x",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "ln(5)/2",
+      "domain": "combined integrand, ordinarily absolutely convergent"
+    },
+    {
+      "id": "GAP-TRIG-LOG-HALF",
+      "f": "ln(2+cos(x))",
+      "bounds": [
+        "0",
+        "pi"
+      ],
+      "expected": "pi*ln((2+sqrt(3))/2)",
+      "domain": "positive logarithm argument"
+    }
+  ]
+}

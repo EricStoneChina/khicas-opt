@@ -1,5 +1,6 @@
 // -*- mode:C++ ; compile-command: "g++ -I. -I.. -I../include -g -c vecteur.cc -fno-strict-aliasing -DGIAC_GENERIC_CONSTANTS -DHAVE_CONFIG_H -DIN_GIAC" -*-
 #include "giacPCH.h"
+#include "determinant_small.h"
 /*
  *  Copyright (C) 2000,14 B. Parisse, Institut Fourier, 38402 St Martin d'Heres
  *
@@ -3335,6 +3336,16 @@ namespace giac {
   }
 
   void mtran(const matrice & a,matrice & res,int ncolres,bool ckundef){
+    if (&a==&res){
+      matrice tmp;
+      mtran(a,tmp,ncolres,ckundef);
+      res.swap(tmp);
+      return;
+    }
+    if (ncolres<0){
+      res=vecteur(1,gensizeerr("Invalid transpose dimension"));
+      return;
+    }
     if (!ckmatrix(a,true,ckundef)){
       res=vecteur(1,vecteur(ncolres,gensizeerr("Unable to transpose")));
       return;
@@ -3348,48 +3359,19 @@ namespace giac {
       ncolres=n;
     int c=int(it->_VECTptr->size()); // ncols of a = rows of res
     res.reserve(c);
-    // find begin of each row
-#if 1 // def VISUALC
-    vecteur::const_iterator * itr=new vecteur::const_iterator[ncolres];
-#else
-    vecteur::const_iterator itr[ncolres];
-#endif
-    vecteur::const_iterator * itrend= itr+ncolres;
-    vecteur::const_iterator * itrcur;
-    int i;
-    for (i=0;(i<n) && (it!=itend);++it,++i)
-      itr[i]=it->_VECTptr->begin();
-    for (;(i<ncolres) ;++i)
-#if 1 // def VISUALC
-      * (int *) &itr[i]=0;
-#else
-      itr[i]=(vecteur::const_iterator) NULL;
-#endif
-    // make current row of res with currents elements of itr[]
+    // Read source rows directly: no iterator scratch array and no per-cell
+    // null-pointer check. ncolres may truncate or zero-pad the transpose.
+    const int copied = giacmin(n, ncolres);
     for (int j=0;j<c;++j){
       gen cr=new_ref_vecteur(0);
       vecteur & cur_row=*cr._VECTptr;
-      cur_row.clear();
       cur_row.reserve(ncolres);
-      for (itrcur=itr;itrcur!=itrend;++itrcur){
-	if
-#if 1 // def VISUALC
-	  (* (int *)itrcur!=0)
-#else
-	  (*itrcur!=(vecteur::const_iterator)NULL)
-#endif
-	    {
-	      cur_row.push_back(**itrcur);
-	      ++(*itrcur);
-	    }
-	else
-	  cur_row.push_back(0);
-      }
+      for (int i=0;i<copied;++i)
+        cur_row.push_back((*a[i]._VECTptr)[j]);
+      for (int i=copied;i<ncolres;++i)
+        cur_row.push_back(0);
       res.push_back(cr);
     }
-#if 1 // def VISUALC
-    delete [] itr;
-#endif
   }
 
 #ifndef GIAC_HAS_STO_38
@@ -3446,17 +3428,15 @@ namespace giac {
 
   gen _tran(const gen & a,GIAC_CONTEXT){
     if ( a.type==_STRNG && a.subtype==-1) return  a;
-    vecteur v;
-    if (!ckmatrix(a)){
-      if (a.type==_VECT && !a._VECTptr->empty())
-	v=vecteur(1,a);
-      else
-	return symb_tran(a);
+    matrice res;
+    if (ckmatrix(a))
+      mtran(*a._VECTptr,res);
+    else if (a.type==_VECT && !a._VECTptr->empty()) {
+      matrice row(1,a);
+      mtran(row,res);
     }
     else
-      v=*a._VECTptr;
-    matrice res;
-    mtran(v,res);
+      return symb_tran(a);
     return gen(res,_MATRIX__VECT);
   }
   static const char _tran_s []="tran";
@@ -11712,6 +11692,7 @@ namespace giac {
   }
 
   gen _det(const gen & a_orig,GIAC_CONTEXT){
+    gen compact;if(determinant_small(a_orig,compact,contextptr))return compact;
     if ( a_orig.type==_STRNG && a_orig.subtype==-1) return  a_orig;
     matrice a;
     bool convert_internal,minor_det,keep_pivot;

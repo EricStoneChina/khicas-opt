@@ -1,0 +1,116 @@
+{
+  "sources": {
+    "inputs": "User-supplied five integrals; not attributed to a contest",
+    "derivations": "docs/USER-CHALLENGE-INTEGRALS.md",
+    "dirichlet_functional_equation": "https://dlmf.nist.gov/25.15.E5",
+    "hurwitz_zeta_derivative": "https://dlmf.nist.gov/25.11.E18"
+  },
+  "notes": "References independently derived and checked with mpmath at 70 and 100 decimal digits before querying the tested integration engine. Case 03 has a proved weighted-disk identity, not a numerical conjecture. All five have exact references; numerical agreement alone does not count as symbolic validation.",
+  "cases": [
+    {
+      "id": "USER-CHALLENGE-01",
+      "family": "atan-square-symmetry",
+      "f": "atan(sqrt(x^2+2))/((x^2+1)*sqrt(x^2+2))",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "5*pi^2/96",
+      "answer_class": "elementary-closed-form",
+      "domain": "continuous real integrand on [0,1]",
+      "verification": {
+        "method": "Direct finite-interval quadrature; independent square symmetry proof",
+        "working_decimal_digits": [
+          70,
+          100
+        ],
+        "numeric_reference": "0.51404189589007076139762973957688287163092184412712451179236194667812733450100027307300903144",
+        "reference_status": "proved-exact-identity"
+      }
+    },
+    {
+      "id": "USER-CHALLENGE-02",
+      "family": "trigonometric-period-reciprocal",
+      "f": "1/(5-3*cos(x))",
+      "bounds": [
+        "0",
+        "2*pi"
+      ],
+      "expected": "pi/2",
+      "answer_class": "elementary-closed-form",
+      "domain": "denominator is at least 2 on the full real period",
+      "verification": {
+        "method": "Direct quadrature split at pi; tangent-half-angle exact proof",
+        "working_decimal_digits": [
+          70,
+          100
+        ],
+        "numeric_reference": "1.5707963267948966192313216916397514420985846996875529104874722961539082031431044993140174127",
+        "reference_status": "proved-exact-identity"
+      }
+    },
+    {
+      "id": "USER-CHALLENGE-03",
+      "family": "inverse-trig-disk-symmetry",
+      "f": "acos(cos(x)/(1+2*cos(x)))",
+      "bounds": [
+        "0",
+        "pi/2"
+      ],
+      "expected": "5*pi^2/24",
+      "answer_class": "elementary-closed-form",
+      "domain": "principal acos; its argument is in [0,1/3]",
+      "verification": {
+        "method": "Direct quadrature and tangent-half-angle quadrature agree; independent weighted quarter-disk proof",
+        "working_decimal_digits": [
+          70,
+          100
+        ],
+        "numeric_reference": "2.0561675835602830455905189583075314865236873765084980471694477867125093380040010922920361258",
+        "reference_status": "proved-exact-identity"
+      }
+    },
+    {
+      "id": "USER-CHALLENGE-04",
+      "family": "atan-frullani",
+      "f": "(atan(pi*x)-atan(x))/x",
+      "bounds": [
+        "0",
+        "+infinity"
+      ],
+      "expected": "pi*ln(pi)/2",
+      "answer_class": "elementary-closed-form",
+      "domain": "removable limit pi-1 at zero; absolutely convergent tail",
+      "verification": {
+        "method": "Stable arctangent-difference quadrature in x and independently after x=exp(t)",
+        "working_decimal_digits": [
+          70,
+          100
+        ],
+        "numeric_reference": "1.7981374998645790990430008758231801906845896448769386152486220604104797782718584141987344981",
+        "reference_status": "proved-exact-identity"
+      }
+    },
+    {
+      "id": "USER-CHALLENGE-05",
+      "family": "iterated-log-dirichlet-beta",
+      "f": "ln(ln(1/x))/(1+x^2)",
+      "bounds": [
+        "0",
+        "1"
+      ],
+      "expected": "pi*ln(2*pi)/4+pi*ln(Gamma(3/4)/Gamma(1/4))/2",
+      "answer_class": "special-function-closed-form",
+      "domain": "real on 0<x<1; integrable iterated-log and logarithmic endpoint singularities",
+      "verification": {
+        "method": "Quadrature after t=-ln(x); independent Dirichlet-beta functional-equation proof",
+        "working_decimal_digits": [
+          70,
+          100
+        ],
+        "numeric_reference": "-0.2604428063009884455400938687897272195318191777231426749876877921057716038147317392698933208",
+        "reference_status": "proved-exact-identity"
+      }
+    }
+  ]
+}
