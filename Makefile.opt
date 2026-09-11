@@ -42,12 +42,18 @@ BASE = -mb $(FP) -mhitachi -std=c++11 -fpermissive $(FLTO) $(FUNCSEC) \
 CXXFLAGS = -Wno-narrowing -Wno-write-strings -g -Os $(BASE)
 
 # 快速(速度优先):仅 .rominram 段(3MB 预算)的 z* CAS 模块
-# 用 -O2 而非 -O3/-funroll-loops:-O3 会把 r8c2 段撑爆(实测溢出 820KB)
-CXXFLAGS_FAST = -Wno-narrowing -Wno-write-strings -g -O2 -finline-functions \
+# 新增函数使用 -Os 控制 r8c2 段大小；旧版 -O2 会使新增积分路径超出内存预算
+CXXFLAGS_FAST = -Wno-narrowing -Wno-write-strings -g -Os -fno-inline-functions \
 		$(BASE)
 
 # C 代码(均在主段,保持 -Os 控尺寸)
 CFLAGS = -Wno-narrowing -Wno-write-strings -Os -DFXCG $(BASE)
+
+# 新增积分、导数和转换模块优先控制代码尺寸，确保 r8c2 段可装入计算器。
+CXXFLAGS_SIZE = -Wno-narrowing -Wno-write-strings -g -Os -fno-inline-functions -fno-inline-small-functions \
+        $(BASE)
+SIZE_CXX_OBJS = yintg.o yderive.o ksubst.o zvecteur.o kconvert.o
+$(SIZE_CXX_OBJS): CXXFLAGS := $(CXXFLAGS_SIZE)
 
 # --- 链接 -------------------------------------------------------------------
 LDFLAGS =  -g -static -nostdlib -Tprizm.ld -Wl,--gc-sections,--print-memory-usage
