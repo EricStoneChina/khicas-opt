@@ -3226,11 +3226,127 @@ namespace giac {
     return false;
   }
 
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool simplify_atan_addition(const gen &g,gen &result,GIAC_CONTEXT){
+    if(complex_mode(contextptr) || complex_variables(contextptr) || !angle_radian(contextptr) || taille(g,129)>128)return false;
+    vecteur angles=lop(g,at_atan);if(angles.size()!=3)return false;
+    gen remaining=g;vecteur coefficients;
+    for(unsigned j=0;j<3;++j){
+      gen c,next;
+      if(!is_linear_wrt(remaining,angles[j],c,next,contextptr) || !equation_rational(c) || is_zero(c))return false;
+      coefficients.push_back(c);remaining=next;
+    }
+    if(!equation_rational(remaining))return false;
+    for(unsigned j=0;j<3;++j){
+      unsigned k=(j+1)%3,l=(j+2)%3;
+      if(coefficients[k]!=coefficients[l] || coefficients[j]!=-coefficients[k])continue;
+      gen u=angles[k]._SYMBptr->feuille,v=angles[l]._SYMBptr->feuille;
+      unsigned budget=128;equation_polynomial_budget ub,vb,nb,db;
+      if(!equation_polynomial_bound(u,budget,0,ub) || !equation_polynomial_bound(v,budget,0,vb) ||
+         ub.degree>4 || vb.degree>4 || !is_zero(im(u,contextptr)) || !is_zero(im(v,contextptr)))continue;
+      const gen &argument=angles[j]._SYMBptr->feuille;
+      gen N=1,D=1;
+      vecteur factors=argument.is_symb_of_sommet(at_prod) && argument._SYMBptr->feuille.type==_VECT?*argument._SYMBptr->feuille._VECTptr:makevecteur(argument);
+      for(unsigned f=0;f<factors.size();++f){
+        if(factors[f].is_symb_of_sommet(at_inv))D=D*factors[f]._SYMBptr->feuille;
+        else if(factors[f].is_symb_of_sommet(at_division) && factors[f]._SYMBptr->feuille.type==_VECT && factors[f]._SYMBptr->feuille._VECTptr->size()==2){
+          N=N*factors[f]._SYMBptr->feuille[0];D=D*factors[f]._SYMBptr->feuille[1];
+        }
+        else N=N*factors[f];
+      }
+      if(!equation_polynomial_bound(N,budget,0,nb) || !equation_polynomial_bound(D,budget,0,db) || nb.degree>8 || db.degree>8)continue;
+      gen d=1-u*v,scale=ratnormal(D/d,contextptr);
+      // Proportional original denominators are essential: equality only
+      // after cancelling an extra factor would silently fill its holes.
+      if(!equation_rational(scale) || is_zero(scale) || !is_zero(ratnormal(N-scale*(u+v),contextptr)))continue;
+      gen value=symbolic(at_when,makesequence(symbolic(at_superieur_strict,makesequence(d,0)),0,cst_pi*symbolic(at_sign,u+v)));
+      result=symbolic(at_when,makesequence(symb_equal(d,0),undef,remaining+coefficients[k]*value));return true;
+    }
+    return false;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool simplify_minmax_clamp(const gen &g,gen &result,GIAC_CONTEXT){
+    if(complex_mode(contextptr) || complex_variables(contextptr) || !g.is_symb_of_sommet(at_plus) || taille(g,65)>64)return false;
+    const gen &terms=g._SYMBptr->feuille;
+    if(terms.type!=_VECT || terms._VECTptr->size()!=2)return false;
+    gen left=terms[0],right=terms[1],cl=equation_numeric_factor(left),cr=equation_numeric_factor(right);
+    if(left.is_symb_of_sommet(at_min)){gen tmp=left;left=right;right=tmp;tmp=cl;cl=cr;cr=tmp;}
+    if(!left.is_symb_of_sommet(at_max) || !right.is_symb_of_sommet(at_min) ||
+       !equation_rational(cl) || is_zero(cl) || cl!=-cr)return false;
+    const gen &lv=left._SYMBptr->feuille,&rv=right._SYMBptr->feuille;
+    if(lv.type!=_VECT || rv.type!=_VECT || lv._VECTptr->size()!=2 || rv._VECTptr->size()!=2)return false;
+    for(unsigned j=0;j<2;++j)for(unsigned k=0;k<2;++k){
+      if(!lv[j].is_symb_of_sommet(at_min) || !rv[k].is_symb_of_sommet(at_max))continue;
+      const gen &inner=lv[j]._SYMBptr->feuille,&other=rv[k]._SYMBptr->feuille;
+      if(inner.type!=_VECT || other.type!=_VECT || inner._VECTptr->size()!=2 || other._VECTptr->size()!=2)continue;
+      gen a=lv[1-j],b=rv[1-k];
+      for(unsigned l=0;l<2;++l)for(unsigned m=0;m<2;++m){
+        if(inner[l]!=b || other[m]!=a || inner[1-l]!=other[1-m])continue;
+        unsigned budget=96;equation_polynomial_budget bound;gen vars=makevecteur(a,b,inner[1-l]);bool real=true;
+        for(unsigned n=0;n<3;++n)if(!equation_polynomial_bound(vars[n],budget,0,bound) || bound.degree>8 || bound.terms>32 || !is_zero(im(vars[n],contextptr)))real=false;
+        if(!real)continue;
+        // For a<=b both clamp orders agree. For a>b they are the
+        // constants a and b, regardless of the middle argument.
+        result=cl*(a-b+symbolic(at_abs,a-b))/2;return true;
+      }
+    }
+    return false;
+  }
+
+#if defined(__GNUC__) && !defined(__clang__)
+  __attribute__((noinline,optimize("Os")))
+#endif
+  static bool simplify_conjugate_roots(const gen &g,gen &result,GIAC_CONTEXT){
+    if(complex_mode(contextptr) || complex_variables(contextptr) || !g.is_symb_of_sommet(at_plus) || taille(g,97)>96)return false;
+    const gen &f=g._SYMBptr->feuille;
+    if(f.type!=_VECT || f._VECTptr->size()!=2)return false;
+    gen radicands[2];
+    for(unsigned j=0;j<2;++j){
+      const gen &root=f[j];
+      if(root.is_symb_of_sommet(at_sqrt))radicands[j]=root._SYMBptr->feuille;
+      else if(root.is_symb_of_sommet(at_pow) && root._SYMBptr->feuille.type==_VECT && root._SYMBptr->feuille._VECTptr->size()==2 && root._SYMBptr->feuille[1]==plus_one_half)radicands[j]=root._SYMBptr->feuille[0];
+      else return false;
+    }
+    vecteur roots=mergevecteur(lop(radicands[0],at_sqrt),lop(radicands[0],at_pow));
+    for(unsigned j=0;j<roots.size();++j){
+      gen W;
+      if(roots[j].is_symb_of_sommet(at_sqrt))W=roots[j]._SYMBptr->feuille;
+      else {const gen &v=roots[j]._SYMBptr->feuille;if(v.type!=_VECT || v._VECTptr->size()!=2 || v[1]!=plus_one_half)continue;W=v[0];}
+      unsigned budget=128;equation_polynomial_budget wb,ub,vb;
+      if(!equation_polynomial_bound(W,budget,0,wb) || wb.degree>4 || wb.terms>16)continue;
+      gen B,U;
+      if(!is_linear_wrt(radicands[0],roots[j],B,U,contextptr) || !equation_rational(B) || is_zero(B) ||
+         !equation_polynomial_bound(U,budget,0,ub) || ub.degree>2 || ub.terms>8 ||
+         !is_zero(im(U,contextptr)) || !is_zero(im(W,contextptr)) ||
+         !is_zero(ratnormal(radicands[1]-U+B*roots[j],contextptr)))continue;
+      gen V=ratnormal(U*U-B*B*W,contextptr);
+      if(!equation_polynomial_bound(V,budget,0,vb) || vb.terms>16)continue;
+      // The exact real domain is V>=0 and U>=sqrt(V), equivalent to
+      // W>=0 and both outer radicands nonnegative (B is nonzero).
+      gen magnitude=symbolic(at_sqrt,V);
+      bool square=false;
+      if(V.is_symb_of_sommet(at_pow) && V._SYMBptr->feuille.type==_VECT && V._SYMBptr->feuille._VECTptr->size()==2){
+        const gen &v=V._SYMBptr->feuille;
+        if(v[1].type==_INT_ && v[1].val>0 && v[1].val%2==0){magnitude=symbolic(at_abs,pow(v[0],v[1].val/2,contextptr));square=true;}
+      }
+      gen value=symbolic(at_sqrt,2*(U+magnitude));
+      value=symbolic(at_when,makesequence(symbolic(at_inferieur_strict,makesequence(U,magnitude)),undef,value));
+      result=square?value:gen(symbolic(at_when,makesequence(symbolic(at_inferieur_strict,makesequence(V,0)),undef,value)));return true;
+    }
+    return false;
+  }
+
   gen _simplify(const gen & args,GIAC_CONTEXT){
     if ( args.type==_STRNG && args.subtype==-1) return  args;
     // A conditional value is a lazy branch boundary. Evaluating or
     // normalizing both branches can enter an undefined Gamma/log branch.
     if(args.is_symb_of_sommet(at_when) || args.is_symb_of_sommet(at_piecewise))return args;
+    gen atan_addition;if(simplify_minmax_clamp(args,atan_addition,contextptr) || simplify_conjugate_roots(args,atan_addition,contextptr) || simplify_atan_addition(args,atan_addition,contextptr))return atan_addition;
     if(simplify_root_domain(args))return args;
     // surd2pow's algebraic surrogate may be assumed nonnegative while a
     // real odd root changes sign. Keep real logarithm magnitudes intact.
