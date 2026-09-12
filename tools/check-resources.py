@@ -21,6 +21,7 @@ for name in regions:
     assert 0<used[name]<=regions[name][1], f'{name} exceeds linked region'
 # Verify every selected helper actually moved, including compiler clones.
 selectors=re.findall(r'yintg\.o\(\.text\.\*(\w+)\*\)',(d/'prizm.ld').read_text())
+definite_helpers=re.findall(r'zintgab\.o\(\.text\.\*(\w+)\*\)',(d/'prizm.ld').read_text())
 derivative_helpers=re.findall(r'yderive\.o\(\.text\.\*(\w+)\*\)',(d/'prizm.ld').read_text())
 simplify_helpers=re.findall(r'ksubst\.o\(\.text\.\*(\w+)\*\)',(d/'prizm.ld').read_text())
 conditional_helpers=re.findall(r'zprog\.o\(\.text\.\*(\w+)\*\)',(d/'prizm.ld').read_text())
@@ -28,12 +29,30 @@ matrix_helpers=re.findall(r'zvecteur\.o\(\.text\.\*(\w+)\*\)',(d/'prizm.ld').rea
 symbols=(d/'khicasen.elf.symbols').read_text(); moved={}
 conversion_names=['_'+name for name in ('cart2param','cart2polar','param2cart','param2polar','polar2cart','polar2param')] if 'kconvert.o(.text.*)' in (d/'prizm.ld').read_text() else []
 conversion_helpers=['curve_conic_param','curve_sign'] if 'static bool curve_conic_param(' in (d/'kconvert.cc').read_text() else []
-for name in selectors+conversion_names+conversion_helpers+derivative_helpers+simplify_helpers+conditional_helpers+matrix_helpers:
+for name in selectors+definite_helpers+conversion_names+conversion_helpers+derivative_helpers+simplify_helpers+conditional_helpers+matrix_helpers:
     hits=re.findall(r'^([0-9a-f]+)\s+.*?\bF\s+(\S+)\s+([0-9a-f]+)\s+giac::'+name+r'\(',symbols,re.M)
     assert hits, f'Missing helper: {name}'
     for address,section,size in hits:
         assert section=='.rominram' and regions['r8c2'][0]<=int(address,16)<sum(regions['r8c2']), name
     moved[name]=sum(int(size,16) for _,_,size in hits)
+# These bounded rules intentionally remain in ROM to balance the two
+# fixed code regions. Check the linked result, not just linker selectors.
+rom_rules={}
+for name,source in [('integrate_parameter_quadratic','yintg.cc'),('simplify_conjugate_roots','ksubst.cc')]:
+    if 'static bool '+name+'(' not in (d/source).read_text():continue
+    hits=re.findall(r'^([0-9a-f]+)\s+.*?\bF\s+(\S+)\s+([0-9a-f]+)\s+giac::'+name+r'\(',symbols,re.M)
+    assert len(hits)==1 and regions['rom'][0]<=int(hits[0][0],16)<sum(regions['rom']),name
+    rom_rules[name]={'address':hits[0][0],'code_bytes':int(hits[0][2],16),'source':source}
+shared_walkers={}
+if 'inline bool logarithmic_span_entire(' in (d/'logarithmic_span.h').read_text():
+    hits=re.findall(r'^([0-9a-f]+)\s+.*?\bF\s+(\S+)\s+([0-9a-f]+)\s+giac::logarithmic_span_entire\(',symbols,re.M)
+    assert len(hits)==1,'COMDAT must retain exactly one shared proof walker'
+    shared_walkers['logarithmic_span_entire']={'copies':len(hits),'address':hits[0][0],'code_bytes':int(hits[0][2],16)}
+for name in ('determinant_atoms','determinant_polynomial_bound','determinant_fraction'):
+    if not re.search(r'inline (?:bool|vecteur) '+name+r'\(', (d/'determinant_small.h').read_text()):continue
+    hits=re.findall(r'^([0-9a-f]+)\s+.*?\bF\s+(\S+)\s+([0-9a-f]+)\s+giac::'+name+r'\(',symbols,re.M)
+    assert len(hits)==1 and hits[0][1]=='.rominram','Shared fraction walker must be linked once in AC2: '+name
+    shared_walkers[name]={'copies':1,'address':hits[0][0],'code_bytes':int(hits[0][2],16)}
 # The calculator links zusual, so host extraction and provenance must use
 # this implementation rather than the parallel, unlinked kusual copy.
 assert 'zusual.o' in (d/'Makefile').read_text()
@@ -56,6 +75,8 @@ assert heap_sizes=={0x180000}, 'Review CAS heap change separately'
 report={'scope':'SH4 linker/binary capacity and single compiler stack frames; no CG50 runtime measurements',
         'regions':{name:{'origin':hex(origin),'used_bytes':used[name],'capacity_bytes':size,'remaining_bytes':size-used[name]} for name,(origin,size) in regions.items()},
         'configured_CAS_heap_bytes':0x180000,
+        'rom_rule_helpers':rom_rules,
+        'shared_proof_walkers':shared_walkers,
         'linked_usual_functions':linked_usual,
         'linked_determinant_entry':{'address':det_hits[0][0],'section':det_hits[0][1],'code_bytes':int(det_hits[0][2],16),'source':'zvecteur.cc'},
         'moved_helpers':{name:moved[name] for name in selectors},
@@ -63,14 +84,17 @@ report={'scope':'SH4 linker/binary capacity and single compiler stack frames; no
         'moved_conversion_helpers':{name:moved[name] for name in conversion_helpers},
         'moved_matrix_helpers':{name:moved[name] for name in matrix_helpers},
         'matrix_helper_frames':[r for r in frames if any(name+'(' in r['function'] for name in matrix_helpers)],
+        'moved_definite_helpers':{name:moved[name] for name in definite_helpers},
+        'definite_helper_frames':[r for r in frames if any(name+'(' in r['function'] for name in definite_helpers)],
         'moved_derivative_helpers':{name:moved[name] for name in derivative_helpers},
         'conversion_helper_frames':[r for r in frames if any(name+'(' in r['function'] for name in conversion_helpers)],
         'moved_conditional_helpers':{name:moved[name] for name in conditional_helpers},
         'moved_simplify_helpers':{name:moved[name] for name in simplify_helpers},
         'derivative_frames':[r for r in frames if 'derive' in r['function']],
+        'checkpoint21_frames':[r for r in frames if any(name+'(' in r['function'] for name in ('_integrate_','intgab','intgab_r','integrate_affine_trig_square','integrate_affine_trig_square_interval','integrate_quadratic_affine_root','integrate_elliptic_quartic','elliptic_first_rf','_EllipticF','derive_squared_affine_radical','derive_minmax_contact','simplify_minmax_clamp','curve_quadratic_image'))],
         'largest_single_frames':sorted(frames,key=lambda v:v['bytes'],reverse=True)[:30],
         'integration_helper_frames':[r for r in frames if any(name+'(' in r['function'] for name in selectors)],
-        'sha256':{name:hashlib.sha256((d/name).read_bytes()).hexdigest() for name in ('khicas50.g3a','khicas50.ac2','khicasen.elf','prizm.ld','main.cc','kglobal.cc','static_lexer_.h','static_lexer.h','static_extern.h','usual.h','dilogarithm.h','yderive.cc','zmaple.cc','yintg.cc','ksubst.cc','equation_normalize.h','parametric_display.h','kconvert.cc','zprog.cc','kusual.cc','zusual.cc','conditional_eval.h','input_lexer.cc','input_lexer.ll','zvecteur.cc','determinant_small.h','logarithmic_span.h') if (d/name).exists()}}
+        'sha256':{name:hashlib.sha256((d/name).read_bytes()).hexdigest() for name in ('khicas50.g3a','khicas50.ac2','khicasen.elf','prizm.ld','main.cc','kglobal.cc','static_lexer_.h','static_lexer.h','static_extern.h','usual.h','dilogarithm.h','yderive.cc','zmaple.cc','yintg.cc','zintgab.cc','ksubst.cc','equation_normalize.h','parametric_display.h','kconvert.cc','zprog.cc','kusual.cc','zusual.cc','conditional_eval.h','input_lexer.cc','input_lexer.ll','zvecteur.cc','determinant_small.h','logarithmic_span.h','elliptic_first.h','ksymbolic.cc') if (d/name).exists()}}
 a.report.write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n')
 for name,row in report['regions'].items():
     print(f"{name}: {row['used_bytes']} / {row['capacity_bytes']} bytes; {row['remaining_bytes']} free")
